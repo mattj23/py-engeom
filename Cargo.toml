@@ -9,8 +9,9 @@ name = "py_engeom"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version= "0.23.3" , features=["abi3-py38"]}
+pyo3 = { version= "0.23.3" , features=["abi3-py38", "extension-module"]}
 engeom = { path = "./engeom", features = ["stl"]}
 parry3d-f64 = {version= "0.18.0", features=["serde-serialize"]}
 parry2d-f64 = {version= "0.18.0", features=["serde-serialize"]}
+numpy = "0.23.0"
 
