@@ -1,5 +1,11 @@
 from __future__ import annotations
 from typing import Any, List, Tuple, Union
+from enum import Enum
+
+
+class DeviationMode(Enum):
+    Absolute=0
+    Normal=1
 
 
 class Plane:
@@ -20,4 +26,7 @@ class Mesh:
         ...
 
     def split(self, plane: Plane) -> Tuple[Mesh | None, Mesh | None]:
+        ...
+
+    def deviation(self, points: List[Tuple[float, float, float]], mode: DeviationMode) -> List[float]:
         ...

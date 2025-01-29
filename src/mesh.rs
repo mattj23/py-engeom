@@ -1,9 +1,11 @@
 use crate::primitives::Plane;
 use engeom;
+use engeom::common::points::dist;
 use engeom::common::SplitResult;
 use engeom::utility::slice_to_points;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
+use crate::common::DeviationMode;
 
 #[pyclass]
 pub struct Mesh {
@@ -58,4 +60,20 @@ impl Mesh {
             )),
         }
     }
+
+    fn deviation(&self, points: Vec<[f64; 3]>, mode: DeviationMode) -> PyResult<Vec<f64>> {
+        let points = slice_to_points(&points);
+        let mut result = Vec::new();
+
+        for point in points.iter() {
+            let closest = self.inner.surf_closest_to(point);
+            result.push(match mode {
+                DeviationMode::Absolute => dist(&closest.point, point),
+                DeviationMode::Normal => closest.scalar_projection(point),
+            })
+        }
+
+        Ok(result)
+    }
+
 }

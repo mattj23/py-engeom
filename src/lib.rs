@@ -1,6 +1,7 @@
 mod isometries;
 mod mesh;
 mod primitives;
+mod common;
 
 use pyo3::prelude::*;
 
@@ -11,6 +12,8 @@ fn py_engeom(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<primitives::Plane>()?;
     m.add_class::<isometries::Iso2>()?;
     m.add_class::<mesh::Mesh>()?;
+
+    m.add_class::<common::DeviationMode>()?;
 
     Ok(())
 }
