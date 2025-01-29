@@ -1,41 +1,61 @@
+use crate::common::DeviationMode;
+use crate::conversions::{array_to_faces, array_to_points3};
 use crate::primitives::Plane;
 use engeom;
 use engeom::common::points::dist;
 use engeom::common::SplitResult;
-use engeom::utility::slice_to_points;
-use pyo3::exceptions::PyValueError;
+use numpy::ndarray::{Array1, ArrayD};
+use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
 use pyo3::prelude::*;
-use crate::common::DeviationMode;
 
 #[pyclass]
 pub struct Mesh {
     inner: engeom::Mesh,
 }
 
+impl Mesh {
+    pub fn get_inner(&self) -> &engeom::Mesh {
+        &self.inner
+    }
+}
+
 #[pymethods]
 impl Mesh {
     #[new]
-    fn new(vertices: Vec<[f64; 3]>, triangles: Vec<[u32; 3]>) -> PyResult<Self> {
-        let vertices = slice_to_points(&vertices);
+    fn new<'py>(
+        vertices: PyReadonlyArrayDyn<'py, f64>,
+        triangles: PyReadonlyArrayDyn<'py, u32>,
+    ) -> PyResult<Self> {
+        let vertices = array_to_points3(&vertices.as_array())?;
+        let triangles = array_to_faces(&triangles.as_array())?;
         let mesh = engeom::Mesh::new(vertices, triangles, false);
         Ok(Self { inner: mesh })
     }
 
-    fn vertices(&self) -> Vec<[f64; 3]> {
-        self.inner
-            .vertices()
-            .iter()
-            .map(|v| v.coords.into())
-            .collect()
+    fn clone_vertices<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<f64>> {
+        let mut result = ArrayD::zeros(vec![self.inner.vertices().len(), 3]);
+        for (i, point) in self.inner.vertices().iter().enumerate() {
+            result[[i, 0]] = point.x;
+            result[[i, 1]] = point.y;
+            result[[i, 2]] = point.z;
+        }
+        result.into_pyarray(py)
     }
 
-    fn triangles(&self) -> Vec<[u32; 3]> {
-        self.inner.triangles().iter().map(|t| (*t).into()).collect()
+    fn clone_triangles<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<u32>> {
+        let mut result = ArrayD::zeros(vec![self.inner.triangles().len(), 3]);
+        for (i, triangle) in self.inner.triangles().iter().enumerate() {
+            result[[i, 0]] = triangle[0];
+            result[[i, 1]] = triangle[1];
+            result[[i, 2]] = triangle[2];
+        }
+
+        result.into_pyarray(py)
     }
 
     fn __repr__(&self) -> String {
         format!(
-            "<engeom::Mesh {} points, {} faces>",
+            "<Mesh {} points, {} faces>",
             self.inner.vertices().len(),
             self.inner.triangles().len()
         )
@@ -61,19 +81,26 @@ impl Mesh {
         }
     }
 
-    fn deviation(&self, points: Vec<[f64; 3]>, mode: DeviationMode) -> PyResult<Vec<f64>> {
-        let points = slice_to_points(&points);
-        let mut result = Vec::new();
+    fn deviation<'py>(
+        &self,
+        py: Python<'py>,
+        points: PyReadonlyArrayDyn<'py, f64>,
+        mode: DeviationMode,
+    ) -> PyResult<Bound<'py, PyArray1<f64>>> {
+        let points = array_to_points3(&points.as_array())?;
+        let mut result = Array1::zeros(points.len());
 
-        for point in points.iter() {
+        for (i, point) in points.iter().enumerate() {
             let closest = self.inner.surf_closest_to(point);
-            result.push(match mode {
-                DeviationMode::Absolute => dist(&closest.point, point),
-                DeviationMode::Normal => closest.scalar_projection(point),
-            })
+            let normal_dev = closest.scalar_projection(point);
+
+            result[i] = match mode {
+                // Copy the sign of the normal deviation
+                DeviationMode::Absolute => dist(&closest.point, point) * normal_dev.signum(),
+                DeviationMode::Normal => normal_dev,
+            }
         }
 
-        Ok(result)
+        Ok(result.into_pyarray(py))
     }
-
 }

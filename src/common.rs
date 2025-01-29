@@ -1,3 +1,4 @@
+use engeom::common::DistMode;
 use pyo3::prelude::*;
 
 #[pyclass]
@@ -5,4 +6,13 @@ use pyo3::prelude::*;
 pub enum DeviationMode {
     Absolute,
     Normal,
+}
+
+impl Into<DistMode> for DeviationMode {
+    fn into(self) -> DistMode {
+        match self {
+            DeviationMode::Absolute => DistMode::ToPoint,
+            DeviationMode::Normal => DistMode::ToPlane,
+        }
+    }
 }
