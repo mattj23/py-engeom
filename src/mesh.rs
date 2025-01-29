@@ -130,4 +130,22 @@ impl Mesh {
 
         Ok(result.into_pyarray(py))
     }
+
+    fn sample_poisson<'py>(
+        &self,
+        py: Python<'py>,
+        radius: f64,
+    ) -> Bound<'py, PyArrayDyn<f64>> {
+        let sps = self.inner.sample_poisson(radius);
+        let mut result = ArrayD::zeros(vec![sps.len(), 6]);
+        for (i, sp) in sps.iter().enumerate() {
+            result[[i, 0]] = sp.point.x;
+            result[[i, 1]] = sp.point.y;
+            result[[i, 2]] = sp.point.z;
+            result[[i, 3]] = sp.normal.x;
+            result[[i, 4]] = sp.normal.y;
+            result[[i, 5]] = sp.normal.z;
+        }
+        result.into_pyarray(py)
+    }
 }

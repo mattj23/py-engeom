@@ -176,3 +176,14 @@ class Mesh:
         :return: a numpy array of shape (n,) containing the deviation for each point.
         """
         ...
+
+    def sample_poisson(self, radius: float) -> numpy.ndarray[float]:
+        """
+        Sample the surface of the mesh using a Poisson disk sampling algorithm. This will return a numpy array of points
+        and their normals that are approximately evenly distributed across the surface of the mesh. The radius parameter
+        controls the minimum distance between points.
+
+        :param radius: the minimum distance between points.
+        :return: a numpy array of shape (n, 6) containing the sampled points.
+        """
+        ...
