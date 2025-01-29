@@ -1,3 +1,4 @@
+use std::path::Path;
 use crate::common::DeviationMode;
 use crate::conversions::{array_to_faces, array_to_points3};
 use crate::primitives::Plane;
@@ -6,6 +7,7 @@ use engeom::common::points::dist;
 use engeom::common::SplitResult;
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
+use pyo3::exceptions::{PyIOError, PyValueError};
 use pyo3::prelude::*;
 
 #[pyclass]
@@ -30,6 +32,31 @@ impl Mesh {
         let triangles = array_to_faces(&triangles.as_array())?;
         let mesh = engeom::Mesh::new(vertices, triangles, false);
         Ok(Self { inner: mesh })
+    }
+
+    #[staticmethod]
+    fn load_stl(path: &str) -> PyResult<Self> {
+        let path = Path::new(path);
+        let mesh = engeom::io::read_mesh_stl(&path)
+            .map_err(|e| PyIOError::new_err(e.to_string()))?;
+        Ok(Self { inner: mesh })
+    }
+
+    fn append(&mut self, other: &Mesh) -> PyResult<()> {
+        self.inner.append(&other.inner)
+            .map_err(|e| PyValueError::new_err(e.to_string()))
+    }
+
+    fn clone(&self) -> Self {
+        Self {
+            inner: self.inner.clone(),
+        }
+    }
+
+    fn write_stl(&self, path: &str) -> PyResult<()> {
+        let path = Path::new(path);
+        engeom::io::write_mesh_stl(&path, &self.inner)
+            .map_err(|e| PyIOError::new_err(e.to_string()))
     }
 
     fn clone_vertices<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<f64>> {

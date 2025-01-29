@@ -6,8 +6,9 @@ import numpy
 
 
 class DeviationMode(Enum):
-    Absolute=0
-    Normal=1
+    Absolute = 0
+    Normal = 1
+
 
 class Iso3:
     """ An isometry (rigid body transformation) in 3D space. """
@@ -79,6 +80,7 @@ class Mesh:
     """
     A class holding an unstructured, 3-dimensional mesh of triangles.
     """
+
     def __init__(
             self,
             vertices: numpy.ndarray[float],
@@ -92,6 +94,43 @@ class Mesh:
 
         :param vertices: a numpy array of shape (n, 3) containing the vertices of the mesh.
         :param triangles: a numpy array of shape (m, 3) containing the triangles of the mesh, should be uint.
+        """
+        ...
+
+    @staticmethod
+    def load_stl(file_path: str) -> Mesh:
+        """
+        Load a mesh from an STL file. This will return a new mesh object containing the vertices and triangles from the
+        file.
+
+        :param file_path: the path to the STL file to load.
+        :return: the mesh object containing the data from the file.
+        """
+        ...
+
+    def write_stl(self, file_path: str):
+        """
+        Write the mesh to an STL file. This will write the vertices and triangles of the mesh to the file in binary
+        format.
+
+        :param file_path: the path to the STL file to write.
+        """
+        ...
+
+    def clone(self) -> Mesh:
+        """
+        Will return a copy of the mesh. This is a copy of the data, so modifying the returned mesh will not modify the
+        original mesh.
+
+        :return:
+        """
+
+    def append(self, other: Mesh):
+        """
+        Append another mesh to this mesh. This will add the vertices and triangles from the other mesh to this mesh,
+        changing this one and leaving the other one unmodified.
+
+        :param other: the mesh to append to this mesh, will not be modified in this operation
         """
         ...
 
