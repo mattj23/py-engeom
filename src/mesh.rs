@@ -8,7 +8,7 @@ use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
 use pyo3::exceptions::{PyIOError, PyValueError};
 use pyo3::prelude::*;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 #[pyclass]
 pub struct Mesh {

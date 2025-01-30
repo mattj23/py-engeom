@@ -1,5 +1,5 @@
 use crate::conversions::{
-    array_to_points2, array_to_points3, array_to_vectors2, array_to_vectors3,
+    array_to_points3, array_to_vectors3,
 };
 use engeom::geom3::{iso3_try_from_array, Flip3};
 use numpy::ndarray::{Array1, ArrayD};
@@ -8,7 +8,6 @@ use pyo3::exceptions::PyValueError;
 use pyo3::types::PyIterator;
 use pyo3::{
     pyclass, pymethods, Bound, FromPyObject, IntoPy, IntoPyObject, PyObject, PyResult, Python,
-    ToPyObject,
 };
 
 #[derive(FromPyObject)]

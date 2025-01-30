@@ -8,12 +8,11 @@ mod mesh;
 mod primitives;
 mod svd_basis;
 
-use numpy::{IntoPyArray, PyUntypedArrayMethods};
 use pyo3::prelude::*;
 
 /// Geometry in 2D space.
 fn register_geom2<'py>(py: Python<'py>, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
-    let mut child = PyModule::new(parent_module.py(), "_geom2")?;
+    let child = PyModule::new(parent_module.py(), "_geom2")?;
     child.add_class::<geom2::Iso2>()?;
     child.add_class::<geom2::Vector2>()?;
     child.add_class::<geom2::Point2>()?;
@@ -24,7 +23,7 @@ fn register_geom2<'py>(py: Python<'py>, parent_module: &Bound<'_, PyModule>) -> 
 
 /// Geometry in 3D space.
 fn register_geom3<'py>(py: Python<'py>, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
-    let mut child = PyModule::new(parent_module.py(), "_geom3")?;
+    let child = PyModule::new(parent_module.py(), "_geom3")?;
 
     // Primitive geometry types
     child.add_class::<geom3::Iso3>()?;
@@ -62,7 +61,7 @@ fn register_align_module<'py>(
     py: Python<'py>,
     parent_module: &Bound<'_, PyModule>,
 ) -> PyResult<()> {
-    let mut child = PyModule::new(parent_module.py(), "_align")?;
+    let child = PyModule::new(parent_module.py(), "_align")?;
     child.add_function(wrap_pyfunction!(alignments::points_to_mesh, &child)?)?;
     parent_module.add_submodule(&child)
 }

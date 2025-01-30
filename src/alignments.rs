@@ -2,7 +2,7 @@ use crate::common::DeviationMode;
 use crate::conversions::array_to_points3;
 use crate::geom3::Iso3;
 use crate::mesh::Mesh;
-use numpy::{IntoPyArray, PyReadonlyArrayDyn, PyUntypedArrayMethods};
+use numpy::PyReadonlyArrayDyn;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
