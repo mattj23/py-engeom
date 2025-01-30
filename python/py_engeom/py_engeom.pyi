@@ -139,7 +139,7 @@ class Mesh:
         Will return a copy of the vertices of the mesh as a numpy array. If the mesh has not been modified, this will
         be the same as the original vertices. This is a copy of the data, so modifying the returned array will not
         modify the mesh.
-        :return:
+        :return: a numpy array of shape (n, 3) containing the vertices of the mesh.
         """
         ...
 
@@ -149,7 +149,7 @@ class Mesh:
         be the same as the original triangles. This is a copy of the data, so modifying the returned array will not
         modify the mesh.
 
-        :return:
+        :return: a numpy array of shape (m, 3) containing the triangles of the mesh.
         """
         ...
 
@@ -157,7 +157,9 @@ class Mesh:
         """
         Split the mesh by a plane. The plane will divide the mesh into two possible parts and return them as two new
         objects.  If the part lies entirely on one side of the plane, the other part will be None.
+
         :param plane: the plane to split the mesh by.
+
         :return: a tuple of two optional meshes, the first being that on the negative side of the plane, the second being
         that on the positive side of the plane.
         """
@@ -182,6 +184,11 @@ class Mesh:
         Sample the surface of the mesh using a Poisson disk sampling algorithm. This will return a numpy array of points
         and their normals that are approximately evenly distributed across the surface of the mesh. The radius parameter
         controls the minimum distance between points.
+
+        Internally, this algorithm will first re-sample each triangle of the mesh with a dense array of points at a
+        maximum distance of radius/2, before applying a random poisson disk sampling algorithm to thin the resampled
+        points. This means that the output points are not based on the mesh vertices, so large triangles will not be
+        under-represented and small triangles will not be over-represented.
 
         :param radius: the minimum distance between points.
         :return: a numpy array of shape (n, 6) containing the sampled points.
