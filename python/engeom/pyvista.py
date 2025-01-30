@@ -2,7 +2,7 @@
     This module contains helper functions for working with PyVista.
 """
 import numpy
-from .engeom import Mesh
+from .geom3 import Mesh
 
 try:
     import pyvista

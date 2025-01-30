@@ -1,7 +1,5 @@
-use std::path::{Path, PathBuf};
 use crate::common::DeviationMode;
 use crate::conversions::{array_to_faces, array_to_points3};
-use crate::primitives::Plane;
 use engeom;
 use engeom::common::points::dist;
 use engeom::common::SplitResult;
@@ -9,6 +7,8 @@ use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
 use pyo3::exceptions::{PyIOError, PyValueError};
 use pyo3::prelude::*;
+use std::path::{Path, PathBuf};
+use crate::geom3::{Iso3, Plane3};
 
 #[pyclass]
 pub struct Mesh {
@@ -36,13 +36,18 @@ impl Mesh {
 
     #[staticmethod]
     fn load_stl(path: PathBuf) -> PyResult<Self> {
-        let mesh = engeom::io::read_mesh_stl(&path)
-            .map_err(|e| PyIOError::new_err(e.to_string()))?;
+        let mesh =
+            engeom::io::read_mesh_stl(&path).map_err(|e| PyIOError::new_err(e.to_string()))?;
         Ok(Self { inner: mesh })
     }
 
+    fn transform_by(&mut self, iso: &Iso3) {
+        self.inner.transform(iso.get_inner());
+    }
+
     fn append(&mut self, other: &Mesh) -> PyResult<()> {
-        self.inner.append(&other.inner)
+        self.inner
+            .append(&other.inner)
             .map_err(|e| PyValueError::new_err(e.to_string()))
     }
 
@@ -86,7 +91,7 @@ impl Mesh {
         )
     }
 
-    fn split(&self, plane: &Plane) -> PyResult<(Option<Mesh>, Option<Mesh>)> {
+    fn split(&self, plane: &Plane3) -> PyResult<(Option<Mesh>, Option<Mesh>)> {
         match self.inner.split(&plane.inner) {
             SplitResult::Pair(mesh1, mesh2) => {
                 Ok((Some(Mesh { inner: mesh1 }), Some(Mesh { inner: mesh2 })))
@@ -129,11 +134,7 @@ impl Mesh {
         Ok(result.into_pyarray(py))
     }
 
-    fn sample_poisson<'py>(
-        &self,
-        py: Python<'py>,
-        radius: f64,
-    ) -> Bound<'py, PyArrayDyn<f64>> {
+    fn sample_poisson<'py>(&self, py: Python<'py>, radius: f64) -> Bound<'py, PyArrayDyn<f64>> {
         let sps = self.inner.sample_poisson(radius);
         let mut result = ArrayD::zeros(vec![sps.len(), 6]);
         for (i, sp) in sps.iter().enumerate() {

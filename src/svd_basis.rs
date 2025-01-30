@@ -1,5 +1,5 @@
 use crate::conversions::array_to_points3;
-use crate::isometries::Iso3;
+use crate::geom3::Iso3;
 use numpy::ndarray::Array1;
 use numpy::{IntoPyArray, PyArray1, PyArrayMethods, PyReadonlyArray1, PyReadonlyArrayDyn};
 use pyo3::exceptions::{PyIOError, PyValueError};

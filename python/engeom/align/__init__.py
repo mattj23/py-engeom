@@ -1,4 +1,4 @@
-from ..engeom import align as _align
+from ..engeom import _align
 
 # Global import of all functions from the align module
 for name in [n for n in dir(_align) if not n.startswith("_")]:

@@ -1,12 +1,10 @@
-use pyo3::prelude::*;
-use numpy::ndarray::{Array1, ArrayD};
-use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
-use pyo3::exceptions::PyValueError;
 use crate::common::DeviationMode;
 use crate::conversions::array_to_points3;
-use crate::isometries::Iso3;
+use crate::geom3::Iso3;
 use crate::mesh::Mesh;
-
+use numpy::{IntoPyArray, PyReadonlyArrayDyn, PyUntypedArrayMethods};
+use pyo3::exceptions::PyValueError;
+use pyo3::prelude::*;
 
 #[pyfunction]
 pub fn points_to_mesh<'py>(
