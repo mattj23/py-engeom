@@ -4,6 +4,7 @@ mod isometries;
 mod mesh;
 mod primitives;
 pub mod alignments;
+mod svd_basis;
 
 use numpy::{IntoPyArray, PyUntypedArrayMethods};
 use pyo3::prelude::*;
@@ -19,6 +20,10 @@ fn py_engeom<'py>(py: Python<'py>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Common features and primitives
     m.add_class::<common::DeviationMode>()?;
     m.add_class::<primitives::Plane>()?;
+
+    // SVD Basis
+    m.add_class::<svd_basis::SvdBasis2>()?;
+    m.add_class::<svd_basis::SvdBasis3>()?;
 
     // Mesh, curves, other complex geometries
     m.add_class::<mesh::Mesh>()?;

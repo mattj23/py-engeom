@@ -22,7 +22,7 @@ impl Plane {
 
     fn __repr__(&self) -> String {
         format!(
-            "<engeom::Plane3 normal=({}, {}, {}), d={}>",
+            "<Plane3 normal=({}, {}, {}), d={}>",
             self.inner.normal.x, self.inner.normal.y, self.inner.normal.z, self.inner.d
         )
     }

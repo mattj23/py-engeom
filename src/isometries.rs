@@ -1,10 +1,11 @@
+use crate::conversions::{array_to_points3, array_to_vectors3};
 use engeom;
 use engeom::geom3::iso3_try_from_array;
-use numpy::{IntoPyArray, PyArray3, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
-use numpy::ndarray::{Array3, ArrayD};
-use pyo3::exceptions::{PyTypeError, PyValueError};
+use engeom::geom3::Flip3;
+use numpy::ndarray::ArrayD;
+use numpy::{IntoPyArray, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use crate::conversions::{array_to_points3, array_to_vectors3};
 
 #[pyclass]
 pub struct Iso2 {
@@ -45,14 +46,15 @@ impl Iso3 {
 #[pymethods]
 impl Iso3 {
     fn __repr__(&self) -> String {
-        format!("<Iso3 t=[{}, {}, {}] r=[{}, {}, {}, {}]>",
-                self.inner.translation.x,
-                self.inner.translation.y,
-                self.inner.translation.z,
-                self.inner.rotation.i,
-                self.inner.rotation.j,
-                self.inner.rotation.k,
-                self.inner.rotation.w,
+        format!(
+            "<Iso3 t=[{}, {}, {}] r=[{}, {}, {}, {}]>",
+            self.inner.translation.x,
+            self.inner.translation.y,
+            self.inner.translation.z,
+            self.inner.rotation.i,
+            self.inner.rotation.j,
+            self.inner.rotation.k,
+            self.inner.rotation.w,
         )
     }
 
@@ -102,10 +104,7 @@ impl Iso3 {
         }
     }
 
-    fn clone_matrix<'py>(
-        &self,
-        py: Python<'py>,
-    ) -> Bound<'py, PyArrayDyn<f64>> {
+    fn clone_matrix<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<f64>> {
         let mut result = ArrayD::zeros(vec![4, 4]);
         let m = self.inner.to_matrix();
         // TODO: In a rush, fix this later
@@ -132,6 +131,24 @@ impl Iso3 {
     fn identity() -> Self {
         Self {
             inner: engeom::Iso3::identity(),
+        }
+    }
+
+    fn flip_around_x(&self) -> Self {
+        Self {
+            inner: self.inner.flip_around_x(),
+        }
+    }
+
+    fn flip_around_y(&self) -> Self {
+        Self {
+            inner: self.inner.flip_around_y(),
+        }
+    }
+
+    fn flip_around_z(&self) -> Self {
+        Self {
+            inner: self.inner.flip_around_z(),
         }
     }
 
@@ -170,5 +187,4 @@ impl Iso3 {
 
         Ok(result.into_pyarray(py))
     }
-
 }

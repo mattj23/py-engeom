@@ -70,9 +70,114 @@ class Iso3:
         """ Return a copy of the 4x4 matrix representation of the isometry. This is a copy operation. """
         ...
 
+    def flip_around_x(self) -> Iso3:
+        """ Return a new isometry that flips the isometry 180° around the x-axis. The origin of the isometry will be
+        preserved, but the y and z axes will point in the opposite directions. """
+        ...
+
+    def flip_around_y(self) -> Iso3:
+        """ Return a new isometry that flips the isometry 180° around the y-axis. The origin of the isometry will be
+        preserved, but the x and z axes will point in the opposite directions. """
+        ...
+
+    def flip_around_z(self) -> Iso3:
+        """ Return a new isometry that flips the isometry 180° around the z-axis. The origin of the isometry will be
+        preserved, but the x and y axes will point in the opposite directions. """
+        ...
+
+
+
+class SvdBasis3:
+    """
+    A class representing a basis in 3D space. This class is created from a set of points and will calculate the best
+    fitting basis for the points using a singular value decomposition.
+    """
+
+    def __init__(self, points: numpy.ndarray[float], weights: numpy.ndarray[float] | None):
+        """
+        Create a basis from a set of points. The basis will be calculated using a singular value decomposition of the
+        points.
+
+        :param points: a numpy array of shape (n, 3) containing the points to calculate the basis from.
+        :param weights: a numpy array of shape (n,) containing the weights of the points. If None, all points will be
+        weighted equally.
+        """
+        ...
+
+    def to_iso3(self) -> Iso3:
+        """
+        Produce an isometry which will transform from the world space to the basis space.
+
+        For example, if the basis is created from a set of points that lie in an arbitrary plane, transforming the
+        original points by this isometry will move the points such that all points lie on the XY plane.
+        :return: the isometry that transforms from the world space to the basis space.
+        """
+        ...
+
+    def largest(self) -> numpy.ndarray[float]:
+        """
+        Return the largest normalized basis vector.
+        :return: a numpy array of shape (3,) containing the largest basis vector.
+        """
+        ...
+
+    def smallest(self) -> numpy.ndarray[float]:
+        """
+        Return the smallest normalized basis vector.
+        :return: a numpy array of shape (3,) containing the smallest basis vector.
+        """
+        ...
+
+    def basis_variances(self) -> numpy.ndarray[float]:
+        """
+        Return the variances of the basis vectors.
+        :return: a numpy array of shape (3,) containing the variances of the basis vectors.
+        """
+        ...
+
+    def basis_stdevs(self) -> numpy.ndarray[float]:
+        """
+        Return the standard deviations of the basis vectors.
+        :return: a numpy array of shape (3,) containing the standard deviations of the basis vectors.
+        """
+        ...
+
+    def rank(self, tol: float) -> int:
+        """
+        Retrieve the rank of the decomposition by counting the number of singular values that are
+        greater than the provided tolerance.  A rank of 0 indicates that all singular values are
+        less than the tolerance, and thus the point set is essentially a single point. A rank of 1
+        indicates that the point set is essentially a line. A rank of 2 indicates that the point
+        set exists roughly in a plane.  The maximum rank is 3, which indicates that the point set
+        cannot be reduced to a lower dimension.
+
+        The singular values do not directly have a clear physical meaning. They are square roots of
+        the variance multiplied by the number of points used to compute the basis.  Thus, they can
+        be interpreted in relation to each other, and when they are very small.
+
+        This method should be used either when you know roughly what a cutoff tolerance for the
+        problem you're working on should be, or when you know the cutoff value should be very
+        small.  Otherwise, consider examining the standard deviations of the basis vectors
+        instead, as they will be easier to interpret (`basis_stdevs()`).
+        :param tol: the tolerance to use when determining the rank.
+        :return: the rank of the decomposition.
+        """
+        ...
+
 
 class Plane:
+    """
+    A class representing a plane in 3D space. The plane is represented by a unit normal vector and a distance from the
+    origin along the normal vector.
+    """
     def __init__(self, a: float, b: float, c: float, d: float):
+        """
+        Create a plane from the equation ax + by + cz + d = 0.
+        :param a: the x value of the unit normal vector.
+        :param b: the y value of the unit normal vector.
+        :param c: the z value of the unit normal vector.
+        :param d: the distance from the origin along the normal vector.
+        """
         ...
 
 
