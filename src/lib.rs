@@ -9,8 +9,7 @@ use numpy::{IntoPyArray, PyUntypedArrayMethods};
 use pyo3::prelude::*;
 
 /// Engeom is a library for geometric operations in 2D and 3D space.
-#[pymodule]
-// #[pyo3(name = "engeom")]
+#[pymodule(name="engeom")]
 fn py_engeom<'py>(py: Python<'py>, m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // Isometries
