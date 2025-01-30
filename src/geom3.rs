@@ -5,8 +5,10 @@ use engeom::geom3::{iso3_try_from_array, Flip3};
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
 use pyo3::exceptions::PyValueError;
+use pyo3::types::PyIterator;
 use pyo3::{
     pyclass, pymethods, Bound, FromPyObject, IntoPy, IntoPyObject, PyObject, PyResult, Python,
+    ToPyObject,
 };
 
 #[derive(FromPyObject)]
@@ -59,6 +61,11 @@ impl Vector3 {
         self.inner.z
     }
 
+    fn __iter__<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyIterator>> {
+        let o = [self.inner.x, self.inner.y, self.inner.z];
+        PyIterator::from_object(&o.into_pyobject(py)?)
+    }
+
     fn as_numpy<'py>(&self, py: Python<'py>) -> Bound<'py, PyArray1<f64>> {
         let mut array = Array1::zeros(3);
         array[0] = self.inner.x;
@@ -103,6 +110,28 @@ impl Vector3 {
             "Vector3({}, {}, {})",
             self.inner.x, self.inner.y, self.inner.z
         )
+    }
+
+    fn dot(&self, other: Vector3) -> f64 {
+        self.inner.dot(&other.inner)
+    }
+
+    fn cross(&self, other: Vector3) -> Self {
+        Self::from_inner(self.inner.cross(&other.inner))
+    }
+
+    fn norm(&self) -> f64 {
+        self.inner.norm()
+    }
+
+    fn normalized(&self) -> Self {
+        Self {
+            inner: self.inner.normalize(),
+        }
+    }
+
+    fn angle_to(&self, other: Vector3) -> f64 {
+        self.inner.angle(&other.inner)
     }
 }
 
@@ -155,6 +184,11 @@ impl Point3 {
         Vector3 {
             inner: self.inner.coords,
         }
+    }
+
+    fn __iter__<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyIterator>> {
+        let o = [self.inner.x, self.inner.y, self.inner.z];
+        PyIterator::from_object(&o.into_pyobject(py)?)
     }
 
     fn as_numpy<'py>(&self, py: Python<'py>) -> Bound<'py, PyArray1<f64>> {

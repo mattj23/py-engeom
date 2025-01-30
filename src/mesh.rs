@@ -1,5 +1,6 @@
 use crate::common::DeviationMode;
 use crate::conversions::{array_to_faces, array_to_points3};
+use crate::geom3::{Iso3, Plane3};
 use engeom;
 use engeom::common::points::dist;
 use engeom::common::SplitResult;
@@ -8,7 +9,6 @@ use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArra
 use pyo3::exceptions::{PyIOError, PyValueError};
 use pyo3::prelude::*;
 use std::path::{Path, PathBuf};
-use crate::geom3::{Iso3, Plane3};
 
 #[pyclass]
 pub struct Mesh {

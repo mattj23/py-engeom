@@ -1,6 +1,7 @@
 use crate::conversions::{array_to_points2, array_to_vectors2};
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn};
+use pyo3::types::PyIterator;
 use pyo3::{
     pyclass, pymethods, Bound, FromPyObject, IntoPy, IntoPyObject, PyObject, PyResult, Python,
 };
@@ -50,6 +51,11 @@ impl Vector2 {
         self.inner.y
     }
 
+    fn __iter__<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyIterator>> {
+        let o = [self.inner.x, self.inner.y];
+        PyIterator::from_object(&o.into_pyobject(py)?)
+    }
+
     fn as_numpy<'py>(&self, py: Python<'py>) -> Bound<'py, PyArray1<f64>> {
         let mut array = Array1::zeros(2);
         array[0] = self.inner.x;
@@ -95,6 +101,28 @@ impl Vector2 {
     fn __repr__(&self) -> String {
         format!("Vector2({}, {})", self.inner.x, self.inner.y)
     }
+
+    fn dot(&self, other: Vector2) -> f64 {
+        self.inner.dot(&other.inner)
+    }
+
+    fn cross(&self, other: Vector2) -> f64 {
+        self.inner.cross(&other.inner)[0]
+    }
+
+    fn norm(&self) -> f64 {
+        self.inner.norm()
+    }
+
+    fn normalized(&self) -> Self {
+        Self {
+            inner: self.inner.normalize(),
+        }
+    }
+
+    fn angle_to(&self, other: Vector2) -> f64 {
+        self.inner.angle(&other.inner)
+    }
 }
 
 // ================================================================================================
@@ -138,9 +166,12 @@ impl Point2 {
 
     #[getter]
     fn coords(&self) -> Vector2 {
-        Vector2 {
-            inner: self.inner.coords,
-        }
+        Vector2::from_inner(self.inner.coords)
+    }
+
+    fn __iter__<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyIterator>> {
+        let o = [self.inner.x, self.inner.y];
+        PyIterator::from_object(&o.into_pyobject(py)?)
     }
 
     fn as_numpy<'py>(&self, py: Python<'py>) -> Bound<'py, PyArray1<f64>> {

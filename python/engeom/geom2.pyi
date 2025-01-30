@@ -1,4 +1,7 @@
 from __future__ import annotations
+
+from typing import Iterable
+
 import numpy
 
 
@@ -17,6 +20,9 @@ class Vector2:
 
     @property
     def y(self) -> float:
+        ...
+
+    def __iter__(self) -> Iterable[float]:
         ...
 
     def __rmul__(self, other: float) -> Vector2:
@@ -40,6 +46,37 @@ class Vector2:
         """
         ...
 
+    def dot(self, other: Vector2) -> float:
+        """
+        Compute the dot product of two vectors.
+        """
+        ...
+
+    def cross(self, other: Vector2) -> float:
+        """
+        Compute the cross product of two vectors.
+        """
+        ...
+
+    def norm(self) -> float:
+        """
+        Compute the norm of the vector.
+        """
+        ...
+
+    def normalized(self) -> Vector2:
+        """
+        Return a normalized version of the vector.
+        """
+        ...
+
+    def angle_to(self, other: Vector2) -> float:
+        """
+        Compute the smallest angle between two vectors and return it in radians.
+        """
+        ...
+
+
 
 class Point2:
     def __init__(self, x: float, y: float):
@@ -56,6 +93,9 @@ class Point2:
 
     @property
     def y(self) -> float:
+        ...
+
+    def __iter__(self) -> Iterable[float]:
         ...
 
     @property

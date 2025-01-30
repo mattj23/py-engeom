@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Iterable
 
 import numpy
 
@@ -32,6 +32,9 @@ class Vector3:
     def z(self) -> float:
         ...
 
+    def __iter__(self) -> Iterable[float]:
+        ...
+
     def __rmul__(self, other: float) -> Vector3:
         ...
 
@@ -50,6 +53,42 @@ class Vector3:
     def as_numpy(self) -> numpy.ndarray[float]:
         """
         Create a numpy array of shape (3,) from the vector.
+        """
+        ...
+
+    def dot(self, other: Vector3) -> float:
+        """
+        Calculate the dot product of this vector with another vector.
+        :param other: the other vector to calculate the dot product with.
+        :return: the dot product of the two vectors.
+        """
+        ...
+
+    def cross(self, other: Vector3) -> Vector3:
+        """
+        Calculate the cross product of this vector with another vector.
+        :param other: the other vector to calculate the cross product with.
+        :return: the cross product of the two vectors.
+        """
+        ...
+
+    def norm(self) -> float:
+        """
+        Calculate the norm (length) of the vector.
+        :return:
+        """
+
+    def normalized(self) -> Vector3:
+        """
+        Return a normalized version of the vector.
+        :return: a new vector that has unit length
+        """
+
+    def angle_to(self, other: Vector3) -> float:
+        """
+        Calculate the smallest angle between this vector and another vector.
+        :param other: the other vector to calculate the angle to.
+        :return: the angle between the two vectors in radians.
         """
         ...
 
@@ -74,6 +113,9 @@ class Point3:
 
     @property
     def z(self) -> float:
+        ...
+
+    def __iter__(self) -> Iterable[float]:
         ...
 
     @property
