@@ -16,6 +16,7 @@ fn register_geom2<'py>(py: Python<'py>, parent_module: &Bound<'_, PyModule>) -> 
     child.add_class::<geom2::Iso2>()?;
     child.add_class::<geom2::Vector2>()?;
     child.add_class::<geom2::Point2>()?;
+    child.add_class::<geom2::SurfacePoint2>()?;
 
     child.add_class::<svd_basis::SvdBasis2>()?;
     parent_module.add_submodule(&child)
@@ -30,6 +31,7 @@ fn register_geom3<'py>(py: Python<'py>, parent_module: &Bound<'_, PyModule>) -> 
     child.add_class::<geom3::Vector3>()?;
     child.add_class::<geom3::Point3>()?;
     child.add_class::<geom3::Plane3>()?;
+    child.add_class::<geom3::SurfacePoint3>()?;
 
     // Mesh, curves, other complex geometries
     child.add_class::<mesh::Mesh>()?;

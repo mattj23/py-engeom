@@ -1,6 +1,4 @@
-use crate::conversions::{
-    array_to_points3, array_to_vectors3,
-};
+use crate::conversions::{array_to_points3, array_to_vectors3};
 use engeom::geom3::{iso3_try_from_array, Flip3};
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
@@ -222,6 +220,88 @@ impl Point3 {
 }
 
 // ================================================================================================
+// Surface Point
+// ================================================================================================
+#[pyclass]
+#[derive(Clone, Debug)]
+pub struct SurfacePoint3 {
+    pub inner: engeom::SurfacePoint3,
+}
+
+impl SurfacePoint3 {
+    pub fn get_inner(&self) -> &engeom::SurfacePoint3 {
+        &self.inner
+    }
+
+    pub fn from_inner(inner: engeom::SurfacePoint3) -> Self {
+        Self { inner }
+    }
+}
+
+#[pymethods]
+impl SurfacePoint3 {
+    #[new]
+    fn new(x: f64, y: f64, z: f64, nx: f64, ny: f64, nz: f64) -> Self {
+        Self {
+            inner: engeom::SurfacePoint3::new_normalize(
+                engeom::Point3::new(x, y, z),
+                engeom::Vector3::new(nx, ny, nz),
+            ),
+        }
+    }
+
+    #[getter]
+    fn point(&self) -> Point3 {
+        Point3::from_inner(self.inner.point.clone())
+    }
+
+    #[getter]
+    fn normal(&self) -> Vector3 {
+        Vector3::from_inner(self.inner.normal.into_inner())
+    }
+
+    fn at_distance(&self, distance: f64) -> Point3 {
+        Point3::from_inner(self.inner.at_distance(distance))
+    }
+
+    fn scalar_projection(&self, other: Point3) -> f64 {
+        self.inner.scalar_projection(other.get_inner())
+    }
+
+    fn projection(&self, other: Point3) -> Point3 {
+        Point3::from_inner(self.inner.projection(other.get_inner()))
+    }
+
+    fn reversed(&self) -> Self {
+        Self::from_inner(self.inner.reversed())
+    }
+
+    fn transformed(&self, iso: Iso3) -> Self {
+        Self::from_inner(self.inner.transformed(iso.get_inner()))
+    }
+
+    fn __repr__(&self) -> String {
+        format!(
+            "SurfacePoint3({}, {}, {}, {}, {}, {})",
+            self.inner.point.x,
+            self.inner.point.y,
+            self.inner.point.z,
+            self.inner.normal.x,
+            self.inner.normal.y,
+            self.inner.normal.z
+        )
+    }
+
+    fn planar_distance(&self, other: Point3) -> f64 {
+        self.inner.planar_distance(other.get_inner())
+    }
+
+    fn get_plane(&self) -> Plane3 {
+        Plane3::from_inner(engeom::Plane3::from(&self.inner))
+    }
+}
+
+// ================================================================================================
 // Plane
 // ================================================================================================
 #[pyclass]
@@ -287,6 +367,7 @@ enum Transformable3 {
     Vec(Vector3),
     Pnt(Point3),
     Plane(Plane3),
+    Sp(SurfacePoint3),
 }
 
 #[pyclass]
@@ -367,6 +448,9 @@ impl Iso3 {
             Transformable3::Pnt(other) => Point3::from_inner(self.inner * other.inner).into_py(py),
             Transformable3::Plane(other) => {
                 Plane3::from_inner(other.inner.transform_by(&self.inner)).into_py(py)
+            }
+            Transformable3::Sp(other) => {
+                SurfacePoint3::from_inner(other.inner.transformed(&self.inner)).into_py(py)
             }
         }
     }

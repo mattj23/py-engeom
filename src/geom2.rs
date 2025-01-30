@@ -206,6 +206,79 @@ impl Point2 {
 }
 
 // ================================================================================================
+// Surface Point
+// ================================================================================================
+#[pyclass]
+#[derive(Clone, Debug)]
+pub struct SurfacePoint2 {
+    pub inner: engeom::SurfacePoint2,
+}
+
+impl SurfacePoint2 {
+    pub fn get_inner(&self) -> &engeom::SurfacePoint2 {
+        &self.inner
+    }
+
+    pub fn from_inner(inner: engeom::SurfacePoint2) -> Self {
+        Self { inner }
+    }
+}
+
+#[pymethods]
+impl SurfacePoint2 {
+    #[new]
+    fn new(x: f64, y: f64, nx: f64, ny: f64) -> Self {
+        Self {
+            inner: engeom::SurfacePoint2::new_normalize(
+                engeom::Point2::new(x, y),
+                engeom::Vector2::new(nx, ny),
+            ),
+        }
+    }
+
+    #[getter]
+    fn point(&self) -> Point2 {
+        Point2::from_inner(self.inner.point.clone())
+    }
+
+    #[getter]
+    fn normal(&self) -> Vector2 {
+        Vector2::from_inner(self.inner.normal.into_inner())
+    }
+
+    fn at_distance(&self, distance: f64) -> Point2 {
+        Point2::from_inner(self.inner.at_distance(distance))
+    }
+
+    fn scalar_projection(&self, other: Point2) -> f64 {
+        self.inner.scalar_projection(other.get_inner())
+    }
+
+    fn projection(&self, other: Point2) -> Point2 {
+        Point2::from_inner(self.inner.projection(other.get_inner()))
+    }
+
+    fn reversed(&self) -> Self {
+        Self::from_inner(self.inner.reversed())
+    }
+
+    fn transformed(&self, iso: Iso2) -> Self {
+        Self::from_inner(self.inner.transformed(iso.get_inner()))
+    }
+
+    fn __repr__(&self) -> String {
+        format!(
+            "SurfacePoint2({}, {}, {}, {})",
+            self.inner.point.x, self.inner.point.y, self.inner.normal.x, self.inner.normal.y,
+        )
+    }
+
+    fn planar_distance(&self, other: Point2) -> f64 {
+        self.inner.planar_distance(other.get_inner())
+    }
+}
+
+// ================================================================================================
 // Transformations
 // ================================================================================================
 
@@ -214,6 +287,7 @@ enum Transformable2 {
     Iso(Iso2),
     Vec(Vector2),
     Pnt(Point2),
+    Sp(SurfacePoint2),
 }
 
 #[pyclass]
@@ -267,6 +341,9 @@ impl Iso2 {
             Transformable2::Iso(other) => Iso2::from_inner(self.inner * other.inner).into_py(py),
             Transformable2::Vec(other) => Vector2::from_inner(self.inner * other.inner).into_py(py),
             Transformable2::Pnt(other) => Point2::from_inner(self.inner * other.inner).into_py(py),
+            Transformable2::Sp(other) => {
+                SurfacePoint2::from_inner(other.inner.transformed(&self.inner)).into_py(py)
+            }
         }
     }
 

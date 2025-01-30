@@ -1,8 +1,8 @@
 from __future__ import annotations
-
+import numpy
 from typing import Iterable
 
-import numpy
+type Transformable2 = Vector2 | Point2 | Iso2 | SurfacePoint2
 
 
 class Vector2:
@@ -77,7 +77,6 @@ class Vector2:
         ...
 
 
-
 class Point2:
     def __init__(self, x: float, y: float):
         """
@@ -115,6 +114,81 @@ class Point2:
     def as_numpy(self) -> numpy.ndarray[float]:
         """
         Create a numpy array of shape (2,) from the point.
+        """
+        ...
+
+
+class SurfacePoint2:
+    def __init__(self, x: float, y: float, nx: float, ny: float):
+        """
+
+        :param x:
+        :param y:
+        :param nx:
+        :param ny:
+        """
+        ...
+
+    @property
+    def point(self) -> Point2:
+        """
+        Get the coordinates of the point as a Point2 object.
+        :return: a Point2 object
+        """
+        ...
+
+    @property
+    def normal(self) -> Vector2:
+        """
+        Get the normal of the point as a Vector2 object.
+        :return: a Vector2 object
+        """
+        ...
+
+    def at_distance(self, distance: float) -> Point2:
+        """
+        Get the point at a distance along the normal from the surface point.
+        :param distance: the distance to move along the normal.
+        :return: the point at the distance along the normal.
+        """
+        ...
+
+    def scalar_projection(self, point: Point2) -> float:
+        """
+        Calculate the scalar projection of a point onto the axis defined by the surface point position and direction.
+        Positive values indicate that the point is in the normal direction from the surface point, while negative values
+        indicate that the point is in the opposite direction.
+
+        :param point: the point to calculate the projection of.
+        :return: the scalar projection of the point onto the normal.
+        """
+        ...
+
+    def projection(self, point: Point2) -> Point2:
+        """
+        Calculate the projection of a point onto the axis defined by the surface point position and direction.
+
+        :param point: the point to calculate the projection of.
+        :return: the projection of the point onto the plane.
+        """
+        ...
+
+    def reversed(self) -> SurfacePoint2:
+        """
+        Return a new surface point with the normal vector inverted, but the position unchanged.
+        :return: a new surface point with the inverted normal vector.
+        """
+        ...
+
+    def planar_distance(self, point: Point2) -> float:
+        """
+        Calculate the planar (non-normal) distance between the surface point and a point. This is complementary to the
+        scalar projection. A point is projected onto the plane defined by the position and normal of the surface point,
+        and the distance between the surface point position and the projected point is returned.  The value will always
+        be positive.
+
+        :param point: the point to calculate the distance to.
+        :return: the planar distance between the surface point and the point.
         """
         ...
 
