@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from pathlib import Path
 from typing import Any, List, Tuple, Union
 from enum import Enum
 
@@ -86,7 +88,6 @@ class Iso3:
         ...
 
 
-
 class SvdBasis3:
     """
     A class representing a basis in 3D space. This class is created from a set of points and will calculate the best
@@ -170,6 +171,7 @@ class Plane:
     A class representing a plane in 3D space. The plane is represented by a unit normal vector and a distance from the
     origin along the normal vector.
     """
+
     def __init__(self, a: float, b: float, c: float, d: float):
         """
         Create a plane from the equation ax + by + cz + d = 0.
@@ -203,22 +205,22 @@ class Mesh:
         ...
 
     @staticmethod
-    def load_stl(file_path: str) -> Mesh:
+    def load_stl(path: str | Path) -> Mesh:
         """
         Load a mesh from an STL file. This will return a new mesh object containing the vertices and triangles from the
         file.
 
-        :param file_path: the path to the STL file to load.
+        :param path: the path to the STL file to load.
         :return: the mesh object containing the data from the file.
         """
         ...
 
-    def write_stl(self, file_path: str):
+    def write_stl(self, path: str | Path):
         """
         Write the mesh to an STL file. This will write the vertices and triangles of the mesh to the file in binary
         format.
 
-        :param file_path: the path to the STL file to write.
+        :param path: the path to the STL file to write.
         """
         ...
 

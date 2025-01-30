@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use crate::common::DeviationMode;
 use crate::conversions::{array_to_faces, array_to_points3};
 use crate::primitives::Plane;
@@ -35,8 +35,7 @@ impl Mesh {
     }
 
     #[staticmethod]
-    fn load_stl(path: &str) -> PyResult<Self> {
-        let path = Path::new(path);
+    fn load_stl(path: PathBuf) -> PyResult<Self> {
         let mesh = engeom::io::read_mesh_stl(&path)
             .map_err(|e| PyIOError::new_err(e.to_string()))?;
         Ok(Self { inner: mesh })
@@ -53,8 +52,7 @@ impl Mesh {
         }
     }
 
-    fn write_stl(&self, path: &str) -> PyResult<()> {
-        let path = Path::new(path);
+    fn write_stl(&self, path: PathBuf) -> PyResult<()> {
         engeom::io::write_mesh_stl(&path, &self.inner)
             .map_err(|e| PyIOError::new_err(e.to_string()))
     }
