@@ -1,10 +1,11 @@
 from __future__ import annotations
 import numpy
-from typing import Iterable, Tuple
+from typing import Iterable, Tuple, Type, TypeVar
 
 from engeom.engeom import Resample
 
-type Transformable2 = Vector2 | Point2 | Iso2 | SurfacePoint2
+Transformable2 = TypeVar("Transformable2", Vector2, Point2, Iso2, SurfacePoint2)
+PointOrVec2 = TypeVar("PointOrVec2", Point2, Vector2)
 
 
 class Vector2:
@@ -30,7 +31,7 @@ class Vector2:
     def __rmul__(self, other: float) -> Vector2:
         ...
 
-    def __add__(self, other: Vector2 | Point2) -> Vector2 | Point2:
+    def __add__(self, other: PointOrVec2) -> PointOrVec2:
         ...
 
     def __sub__(self, other: Vector2) -> Vector2:
@@ -107,7 +108,7 @@ class Point2:
         """
         ...
 
-    def __sub__(self, other: Vector2 | Point2) -> Vector2 | Point2:
+    def __sub__(self, other: PointOrVec2) -> PointOrVec2:
         ...
 
     def __add__(self, other: Vector2) -> Vector2:
@@ -212,7 +213,7 @@ class Iso2:
         """
         ...
 
-    def __matmul__(self, other: Iso2 | Vector2 | Point2) -> Iso2 | Vector2 | Point2:
+    def __matmul__(self, other: Transformable2) -> Transformable2:
         ...
 
     def inverse(self) -> Iso2:

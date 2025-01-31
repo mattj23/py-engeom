@@ -6,7 +6,7 @@ use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArra
 use pyo3::exceptions::PyValueError;
 use pyo3::types::PyIterator;
 use pyo3::{
-    pyclass, pymethods, Bound, FromPyObject, IntoPy, IntoPyObject, PyObject, PyResult, Python,
+    pyclass, pymethods, Bound, FromPyObject, IntoPyObject, IntoPyObjectExt, PyAny, PyResult, Python,
 };
 
 #[derive(FromPyObject)]
@@ -88,13 +88,13 @@ impl Vector3 {
         }
     }
 
-    fn __add__<'py>(&self, py: Python<'py>, other: Vector3OrPoint3) -> PyObject {
+    fn __add__<'py>(&self, py: Python<'py>, other: Vector3OrPoint3) -> PyResult<Bound<'py, PyAny>> {
         match other {
             Vector3OrPoint3::Vector(other) => {
-                Vector3::from_inner(self.inner + other.inner).into_py(py)
+                Vector3::from_inner(self.inner + other.inner).into_bound_py_any(py)
             }
             Vector3OrPoint3::Point(other) => {
-                Point3::from_inner((self.inner + other.inner.coords).into()).into_py(py)
+                Point3::from_inner((self.inner + other.inner.coords).into()).into_bound_py_any(py)
             }
         }
     }
@@ -201,13 +201,13 @@ impl Point3 {
         Self::from_inner(self.inner + other.inner)
     }
 
-    fn __sub__<'py>(&self, py: Python<'py>, other: Vector3OrPoint3) -> PyObject {
+    fn __sub__<'py>(&self, py: Python<'py>, other: Vector3OrPoint3) -> PyResult<Bound<'py, PyAny>> {
         match other {
             Vector3OrPoint3::Vector(other) => {
-                Point3::from_inner(self.inner - other.inner).into_py(py)
+                Point3::from_inner(self.inner - other.inner).into_bound_py_any(py)
             }
             Vector3OrPoint3::Point(other) => {
-                Vector3::from_inner(self.inner - other.inner).into_py(py)
+                Vector3::from_inner(self.inner - other.inner).into_bound_py_any(py)
             }
         }
     }
@@ -612,16 +612,27 @@ impl Iso3 {
         }
     }
 
-    fn __matmul__<'py>(&self, py: Python<'py>, other: Transformable3) -> PyObject {
+    fn __matmul__<'py>(
+        &self,
+        py: Python<'py>,
+        other: Transformable3,
+    ) -> PyResult<Bound<'py, PyAny>> {
         match other {
-            Transformable3::Iso(other) => Iso3::from_inner(self.inner * other.inner).into_py(py),
-            Transformable3::Vec(other) => Vector3::from_inner(self.inner * other.inner).into_py(py),
-            Transformable3::Pnt(other) => Point3::from_inner(self.inner * other.inner).into_py(py),
+            Transformable3::Iso(other) => {
+                Iso3::from_inner(self.inner * other.inner).into_bound_py_any(py)
+            }
+            Transformable3::Vec(other) => {
+                Vector3::from_inner(self.inner * other.inner).into_bound_py_any(py)
+            }
+            Transformable3::Pnt(other) => {
+                Point3::from_inner(self.inner * other.inner).into_bound_py_any(py)
+            }
             Transformable3::Plane(other) => {
-                Plane3::from_inner(other.inner.transform_by(&self.inner)).into_py(py)
+                Plane3::from_inner(other.inner.transform_by(&self.inner)).into_bound_py_any(py)
             }
             Transformable3::Sp(other) => {
-                SurfacePoint3::from_inner(other.inner.transformed(&self.inner)).into_py(py)
+                SurfacePoint3::from_inner(other.inner.transformed(&self.inner))
+                    .into_bound_py_any(py)
             }
         }
     }

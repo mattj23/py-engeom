@@ -1,12 +1,12 @@
 use crate::common::Resample;
 use crate::conversions::{array_to_points2, array_to_vectors2};
-use crate::geom3::Curve3;
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::exceptions::PyValueError;
 use pyo3::types::PyIterator;
 use pyo3::{
-    pyclass, pymethods, Bound, FromPyObject, IntoPy, IntoPyObject, PyObject, PyResult, Python,
+    pyclass, pymethods, Bound, FromPyObject, IntoPyObject, IntoPyObjectExt, PyAny, PyObject,
+    PyResult, Python,
 };
 
 #[derive(FromPyObject)]
@@ -82,15 +82,15 @@ impl Vector2 {
         }
     }
 
-    fn __add__<'py>(&self, py: Python<'py>, other: Vector2OrPoint2) -> PyObject {
+    fn __add__<'py>(&self, py: Python<'py>, other: Vector2OrPoint2) -> PyResult<Bound<'py, PyAny>> {
         match other {
             Vector2OrPoint2::Vector(other) => {
                 let result = self.inner + other.inner;
-                Vector2::new(result.x, result.y).into_py(py)
+                Vector2::new(result.x, result.y).into_bound_py_any(py)
             }
             Vector2OrPoint2::Point(other) => {
                 let result = self.inner + other.inner.coords;
-                Point2::new(result.x, result.y).into_py(py)
+                Point2::new(result.x, result.y).into_bound_py_any(py)
             }
         }
     }
@@ -190,15 +190,15 @@ impl Point2 {
         }
     }
 
-    fn __sub__<'py>(&self, py: Python<'py>, other: Vector2OrPoint2) -> PyObject {
+    fn __sub__<'py>(&self, py: Python<'py>, other: Vector2OrPoint2) -> PyResult<Bound<'py, PyAny>> {
         match other {
             Vector2OrPoint2::Vector(other) => {
                 let result = self.inner - other.inner;
-                Point2::new(result.x, result.y).into_py(py)
+                Point2::new(result.x, result.y).into_bound_py_any(py)
             }
             Vector2OrPoint2::Point(other) => {
                 let result = self.inner - other.inner.coords;
-                Vector2::new(result.x, result.y).into_py(py)
+                Vector2::new(result.x, result.y).into_bound_py_any(py)
             }
         }
     }
@@ -626,13 +626,24 @@ impl Iso2 {
         )
     }
 
-    fn __matmul__<'py>(&self, py: Python<'py>, other: Transformable2) -> PyObject {
+    fn __matmul__<'py>(
+        &self,
+        py: Python<'py>,
+        other: Transformable2,
+    ) -> PyResult<Bound<'py, PyAny>> {
         match other {
-            Transformable2::Iso(other) => Iso2::from_inner(self.inner * other.inner).into_py(py),
-            Transformable2::Vec(other) => Vector2::from_inner(self.inner * other.inner).into_py(py),
-            Transformable2::Pnt(other) => Point2::from_inner(self.inner * other.inner).into_py(py),
+            Transformable2::Iso(other) => {
+                Iso2::from_inner(self.inner * other.inner).into_bound_py_any(py)
+            }
+            Transformable2::Vec(other) => {
+                Vector2::from_inner(self.inner * other.inner).into_bound_py_any(py)
+            }
+            Transformable2::Pnt(other) => {
+                Point2::from_inner(self.inner * other.inner).into_bound_py_any(py)
+            }
             Transformable2::Sp(other) => {
-                SurfacePoint2::from_inner(other.inner.transformed(&self.inner)).into_py(py)
+                SurfacePoint2::from_inner(other.inner.transformed(&self.inner))
+                    .into_bound_py_any(py)
             }
         }
     }

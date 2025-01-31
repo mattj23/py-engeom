@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Tuple, Iterable, List
+from typing import Tuple, Iterable, List, TypeVar
 
 import numpy
 from engeom import DeviationMode, Resample
 
-type Transformable3 = Vector3 | Point3 | Plane3 | Iso3 | SurfacePoint3
+Transformable3 = TypeVar("Transformable3", Vector3, Point3, Plane3, Iso3, SurfacePoint3)
+PointOrVector3 = TypeVar("PointOrVector3", Vector3, Point3)
 
 
 class Vector3:
@@ -37,7 +38,7 @@ class Vector3:
     def __rmul__(self, other: float) -> Vector3:
         ...
 
-    def __add__(self, other: Vector3 | Point3) -> Vector3 | Point3:
+    def __add__(self, other: PointOrVector3) -> PointOrVector3:
         ...
 
     def __sub__(self, other: Vector3) -> Vector3:
@@ -125,7 +126,7 @@ class Point3:
         """
         ...
 
-    def __sub__(self, other: Vector3 | Point3) -> Vector3 | Point3:
+    def __sub__(self, other: PointOrVector3) -> PointOrVector3:
         ...
 
     def __add__(self, other: Vector3) -> Vector3:
