@@ -7,8 +7,8 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
 #[pyfunction]
-pub fn points_to_mesh<'py>(
-    points: PyReadonlyArrayDyn<'py, f64>,
+pub fn points_to_mesh(
+    points: PyReadonlyArrayDyn<'_, f64>,
     mesh: &Mesh,
     initial: &Iso3,
     mode: DeviationMode,
@@ -23,7 +23,7 @@ pub fn points_to_mesh<'py>(
     );
 
     match result {
-        Ok(align) => Ok(Iso3::from_inner(align.transform().clone())),
+        Ok(align) => Ok(Iso3::from_inner(*align.transform())),
         Err(e) => Err(PyValueError::new_err(e.to_string())),
     }
 }

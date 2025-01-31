@@ -1,11 +1,10 @@
 use crate::common::DeviationMode;
 use crate::conversions::{array_to_faces, array_to_points3};
 use crate::geom3::{Curve3, Iso3, Plane3};
-use engeom;
 use engeom::common::points::dist;
 use engeom::common::SplitResult;
 use numpy::ndarray::{Array1, ArrayD};
-use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
+use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::exceptions::{PyIOError, PyValueError};
 use pyo3::prelude::*;
 use std::path::PathBuf;
@@ -24,34 +23,32 @@ impl Mesh {
 #[pymethods]
 impl Mesh {
     #[new]
+    #[pyo3(signature=(vertices, triangles, merge_duplicates = false, delete_degenerate = false))]
     fn new<'py>(
         vertices: PyReadonlyArrayDyn<'py, f64>,
         triangles: PyReadonlyArrayDyn<'py, u32>,
-        merge_duplicates: Option<bool>,
-        delete_degenerate: Option<bool>,
+        merge_duplicates: bool,
+        delete_degenerate: bool,
     ) -> PyResult<Self> {
         let vertices = array_to_points3(&vertices.as_array())?;
         let triangles = array_to_faces(&triangles.as_array())?;
-
-        let merge = merge_duplicates.unwrap_or(false);
-        let degenerate = delete_degenerate.unwrap_or(false);
-
-        let mesh =
-            engeom::Mesh::new_with_options(vertices, triangles, false, merge, degenerate, None)
-                .map_err(|e| PyValueError::new_err(e.to_string()))?;
+        let mesh = engeom::Mesh::new_with_options(
+            vertices,
+            triangles,
+            false,
+            merge_duplicates,
+            delete_degenerate,
+            None,
+        )
+        .map_err(|e| PyValueError::new_err(e.to_string()))?;
 
         Ok(Self { inner: mesh })
     }
 
     #[staticmethod]
-    fn load_stl(
-        path: PathBuf,
-        merge_duplicates: Option<bool>,
-        delete_degenerate: Option<bool>,
-    ) -> PyResult<Self> {
-        let merge = merge_duplicates.unwrap_or(false);
-        let degenerate = delete_degenerate.unwrap_or(false);
-        let mesh = engeom::io::read_mesh_stl(&path, merge, degenerate)
+    #[pyo3(signature=(path, merge_duplicates = false, delete_degenerate = false))]
+    fn load_stl(path: PathBuf, merge_duplicates: bool, delete_degenerate: bool) -> PyResult<Self> {
+        let mesh = engeom::io::read_mesh_stl(&path, merge_duplicates, delete_degenerate)
             .map_err(|e| PyIOError::new_err(e.to_string()))?;
 
         Ok(Self { inner: mesh })
@@ -142,8 +139,8 @@ impl Mesh {
 
             result[i] = match mode {
                 // Copy the sign of the normal deviation
-                DeviationMode::Absolute => dist(&closest.point, point) * normal_dev.signum(),
-                DeviationMode::Normal => normal_dev,
+                DeviationMode::Point => dist(&closest.point, point) * normal_dev.signum(),
+                DeviationMode::Plane => normal_dev,
             }
         }
 
@@ -164,12 +161,13 @@ impl Mesh {
         result.into_pyarray(py)
     }
 
+    #[pyo3(signature=(plane, tol = None))]
     fn section(&self, plane: Plane3, tol: Option<f64>) -> PyResult<Vec<Curve3>> {
         let results = self
             .inner
             .section(plane.get_inner(), tol)
             .map_err(|e| PyValueError::new_err(e.to_string()))?;
 
-        Ok(results.into_iter().map(|c| Curve3::from_inner(c)).collect())
+        Ok(results.into_iter().map(Curve3::from_inner).collect())
     }
 }

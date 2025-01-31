@@ -1,8 +1,8 @@
 from __future__ import annotations
 from enum import Enum
 
-type Resample = Resample_ByCount | Resample_BySpacing | Resample_ByMaxSpacing
+type Resample = Resample_Count | Resample_Spacing | Resample_MaxSpacing
 
 class DeviationMode(Enum):
-    Absolute = 0
-    Normal = 1
+    Point = 0
+    Plane = 1

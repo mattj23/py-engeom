@@ -435,8 +435,8 @@ class Mesh:
             self,
             vertices: numpy.ndarray[float],
             triangles: numpy.ndarray[numpy.uint32],
-            merge_duplicates: bool | None = None,
-            delete_degenerate: bool | None = None
+            merge_duplicates: bool = False,
+            delete_degenerate: bool = False
     ):
         """
         Create an engeom mesh from vertices and triangles.  The vertices should be a numpy array of shape (n, 3), while
@@ -446,13 +446,13 @@ class Mesh:
 
         :param vertices: a numpy array of shape (n, 3) containing the vertices of the mesh.
         :param triangles: a numpy array of shape (m, 3) containing the triangles of the mesh, should be uint.
-        :param merge_duplicates: merge duplicate vertices and triangles. If None, the default behavior is to do nothing
-        :param delete_degenerate: delete degenerate triangles. If None, the default behavior is to do nothing
+        :param merge_duplicates: merge duplicate vertices and triangles
+        :param delete_degenerate: delete degenerate triangles
         """
         ...
 
     @staticmethod
-    def load_stl(path: str | Path, merge_duplicates: bool | None = None, delete_degenerate: bool | None = None) -> Mesh:
+    def load_stl(path: str | Path, merge_duplicates: bool = False, delete_degenerate: bool = False) -> Mesh:
         """
         Load a mesh from an STL file. This will return a new mesh object containing the vertices and triangles from the
         file.  Optional parameters can be used to control the behavior of the loader when handling duplicate vertices/
@@ -612,11 +612,12 @@ class Curve3:
     between them.
     """
 
-    def __init__(self, vertices: numpy.ndarray):
+    def __init__(self, vertices: numpy.ndarray, tol: float = 1.0e-6):
         """
         Create a curve from a set of vertices. The vertices should be a numpy array of shape (n, 3).
 
         :param vertices: a numpy array of shape (n, 3) containing the vertices of the curve.
+        :param tol: the inherent tolerance of the curve; points closer than this distance will be considered the same.
         """
         ...
 

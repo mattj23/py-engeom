@@ -5,8 +5,7 @@ use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::exceptions::PyValueError;
 use pyo3::types::PyIterator;
 use pyo3::{
-    pyclass, pymethods, Bound, FromPyObject, IntoPyObject, IntoPyObjectExt, PyAny, PyObject,
-    PyResult, Python,
+    pyclass, pymethods, Bound, FromPyObject, IntoPyObject, IntoPyObjectExt, PyAny, PyResult, Python,
 };
 
 #[derive(FromPyObject)]
@@ -241,7 +240,7 @@ impl SurfacePoint2 {
 
     #[getter]
     fn point(&self) -> Point2 {
-        Point2::from_inner(self.inner.point.clone())
+        Point2::from_inner(self.inner.point)
     }
 
     #[getter]
@@ -320,12 +319,12 @@ impl CurveStation2 {
 impl CurveStation2 {
     #[getter]
     pub fn point(&self) -> Point2 {
-        Point2::from_inner(self.i_point.clone())
+        Point2::from_inner(self.i_point)
     }
 
     #[getter]
     pub fn direction(&self) -> Vector2 {
-        Vector2::from_inner(self.i_direction.clone())
+        Vector2::from_inner(self.i_direction)
     }
 
     #[getter]
@@ -368,12 +367,12 @@ impl CurveStation2 {
 impl From<engeom::CurveStation2<'_>> for CurveStation2 {
     fn from(station: engeom::CurveStation2) -> Self {
         Self::new(
-            station.point().clone(),
-            station.direction().clone().into_inner(),
+            station.point(),
+            station.direction().into_inner(),
             station.index(),
             station.fraction(),
             station.length_along(),
-            station.normal().clone().into_inner(),
+            station.normal().into_inner(),
         )
     }
 }
@@ -397,17 +396,15 @@ impl Curve2 {
 #[pymethods]
 impl Curve2 {
     #[new]
+    #[pyo3(signature=(points, normals=None, tol=1e-6, force_closed=false, hull_ccw=false))]
     fn new(
         points: PyReadonlyArrayDyn<'_, f64>,
         normals: Option<PyReadonlyArrayDyn<'_, f64>>,
-        tol: Option<f64>,
-        force_closed: Option<bool>,
-        hull_ccw: Option<bool>,
+        tol: f64,
+        force_closed: bool,
+        hull_ccw: bool,
     ) -> PyResult<Self> {
         let points = array_to_points2(&points.as_array())?;
-        let tol = tol.unwrap_or(1e-6);
-        let force_closed = force_closed.unwrap_or(false);
-        let hull_ccw = hull_ccw.unwrap_or(true);
 
         let curve = if let Some(normal_array) = normals {
             let normals = array_to_vectors2(&normal_array.as_array())?;
@@ -420,7 +417,7 @@ impl Curve2 {
             let surf_points = points
                 .iter()
                 .zip(normals.iter())
-                .map(|(p, n)| engeom::SurfacePoint2::new_normalize(p.clone(), n.clone()))
+                .map(|(p, n)| engeom::SurfacePoint2::new_normalize(*p, *n))
                 .collect::<Vec<_>>();
 
             engeom::Curve2::from_surf_points(&surf_points, tol, force_closed)

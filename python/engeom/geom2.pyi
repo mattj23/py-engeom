@@ -317,7 +317,7 @@ class Curve2:
             self,
             vertices: numpy.ndarray,
             normals: numpy.ndarray | None = None,
-            tol: float | None = None,
+            tol: float = 1e-6,
             force_closed: bool = False,
             hull_ccw: bool = False,
     ):

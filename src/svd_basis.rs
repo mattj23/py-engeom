@@ -1,7 +1,7 @@
 use crate::conversions::array_to_points3;
 use crate::geom3::Iso3;
 use numpy::ndarray::Array1;
-use numpy::{IntoPyArray, PyArray1, PyArrayMethods, PyReadonlyArray1, PyReadonlyArrayDyn};
+use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1, PyReadonlyArrayDyn};
 use pyo3::prelude::*;
 
 #[pyclass]
@@ -32,6 +32,7 @@ impl SvdBasis3 {
 #[pymethods]
 impl SvdBasis3 {
     #[new]
+    #[pyo3(signature=(points, weights = None))]
     pub fn new<'py>(
         points: PyReadonlyArrayDyn<'py, f64>,
         weights: Option<PyReadonlyArray1<'py, f64>>,
@@ -42,7 +43,7 @@ impl SvdBasis3 {
         let basis = match weights {
             Some(weights) => engeom::SvdBasis3::from_points(
                 &points,
-                Some(&weights.as_array().as_slice().unwrap()),
+                Some(weights.as_array().as_slice().unwrap()),
             ),
             None => engeom::SvdBasis3::from_points(&points, None),
         };

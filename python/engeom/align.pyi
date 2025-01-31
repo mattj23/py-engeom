@@ -1,7 +1,7 @@
 from __future__ import annotations
 import numpy
-from typing import Any, List, Tuple, Union
-from .engeom import DeviationMode, Iso3, Mesh
+from .engeom import DeviationMode
+from .geom3 import Mesh, Iso3
 
 
 def points_to_mesh(

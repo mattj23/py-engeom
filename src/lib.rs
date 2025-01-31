@@ -9,7 +9,7 @@ mod svd_basis;
 use pyo3::prelude::*;
 
 /// Geometry in 2D space.
-fn register_geom2<'py>(py: Python<'py>, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
+fn register_geom2(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     let child = PyModule::new(parent_module.py(), "_geom2")?;
     child.add_class::<geom2::Iso2>()?;
     child.add_class::<geom2::Vector2>()?;
@@ -24,7 +24,7 @@ fn register_geom2<'py>(py: Python<'py>, parent_module: &Bound<'_, PyModule>) -> 
 }
 
 /// Geometry in 3D space.
-fn register_geom3<'py>(py: Python<'py>, parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
+fn register_geom3(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     let child = PyModule::new(parent_module.py(), "_geom3")?;
 
     // Primitive geometry types
@@ -44,30 +44,27 @@ fn register_geom3<'py>(py: Python<'py>, parent_module: &Bound<'_, PyModule>) -> 
     parent_module.add_submodule(&child)
 }
 
+fn register_align_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
+    let child = PyModule::new(parent_module.py(), "_align")?;
+    child.add_function(wrap_pyfunction!(alignments::points_to_mesh, &child)?)?;
+    parent_module.add_submodule(&child)
+}
+
 /// Engeom is a library for geometric operations in 2D and 3D space.
 #[pymodule(name = "engeom")]
-fn py_engeom<'py>(py: Python<'py>, m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn py_engeom(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // 2D geometry submodule
-    register_geom2(py, m)?;
+    register_geom2(m)?;
 
     // 3D geometry submodule
-    register_geom3(py, m)?;
+    register_geom3(m)?;
 
     // Alignment submodule
-    register_align_module(py, m)?;
+    register_align_module(m)?;
 
     // Common features and primitives
     m.add_class::<common::DeviationMode>()?;
     m.add_class::<common::Resample>()?;
 
     Ok(())
-}
-
-fn register_align_module<'py>(
-    py: Python<'py>,
-    parent_module: &Bound<'_, PyModule>,
-) -> PyResult<()> {
-    let child = PyModule::new(parent_module.py(), "_align")?;
-    child.add_function(wrap_pyfunction!(alignments::points_to_mesh, &child)?)?;
-    parent_module.add_submodule(&child)
 }

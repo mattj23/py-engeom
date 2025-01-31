@@ -253,7 +253,7 @@ impl SurfacePoint3 {
 
     #[getter]
     fn point(&self) -> Point3 {
-        Point3::from_inner(self.inner.point.clone())
+        Point3::from_inner(self.inner.point)
     }
 
     #[getter]
@@ -444,8 +444,8 @@ impl Curve3 {
 #[pymethods]
 impl Curve3 {
     #[new]
-    fn new<'py>(points: PyReadonlyArrayDyn<'py, f64>, tol: Option<f64>) -> PyResult<Self> {
-        let tol = tol.unwrap_or(1.0e-6);
+    #[pyo3(signature=(points, tol=1.0e-6))]
+    fn new(points: PyReadonlyArrayDyn<'_, f64>, tol: f64) -> PyResult<Self> {
         let points = array_to_points3(&points.as_array())?;
         let inner = engeom::Curve3::from_points(&points, tol)
             .map_err(|e| PyValueError::new_err(e.to_string()))?;
@@ -519,11 +519,11 @@ impl Curve3 {
 impl From<engeom::CurveStation3<'_>> for CurveStation3 {
     fn from(station: engeom::CurveStation3) -> Self {
         Self::new(
-            station.point().clone(),
-            station.direction().into_inner().clone(),
-            station.index().clone(),
-            station.fraction().clone(),
-            station.length_along().clone(),
+            station.point(),
+            station.direction().into_inner(),
+            station.index(),
+            station.fraction(),
+            station.length_along(),
         )
     }
 }
@@ -573,7 +573,7 @@ impl Iso3 {
     }
 
     #[new]
-    fn new<'py>(matrix: PyReadonlyArrayDyn<'py, f64>) -> PyResult<Self> {
+    fn new(matrix: PyReadonlyArrayDyn<'_, f64>) -> PyResult<Self> {
         if matrix.shape().len() != 2 || matrix.shape()[0] != 4 || matrix.shape()[1] != 4 {
             return Err(PyValueError::new_err("Expected 4x4 matrix"));
         }
