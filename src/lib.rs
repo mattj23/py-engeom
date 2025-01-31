@@ -16,6 +16,9 @@ fn register_geom2<'py>(py: Python<'py>, parent_module: &Bound<'_, PyModule>) -> 
     child.add_class::<geom2::Point2>()?;
     child.add_class::<geom2::SurfacePoint2>()?;
 
+    child.add_class::<geom2::Curve2>()?;
+    child.add_class::<geom2::CurveStation2>()?;
+
     child.add_class::<svd_basis::SvdBasis2>()?;
     parent_module.add_submodule(&child)
 }

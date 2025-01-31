@@ -510,6 +510,10 @@ impl Curve3 {
     fn simplify(&self, tol: f64) -> Self {
         Self::from_inner(self.inner.simplify(tol))
     }
+
+    fn transformed_by(&mut self, iso: Iso3) -> Self {
+        Self::from_inner(self.inner.transformed_by(iso.get_inner()))
+    }
 }
 
 impl From<engeom::CurveStation3<'_>> for CurveStation3 {

@@ -308,7 +308,11 @@ class SvdBasis3:
     fitting basis for the points using a singular value decomposition.
     """
 
-    def __init__(self, points: numpy.ndarray[float], weights: numpy.ndarray[float] | None):
+    def __init__(
+            self,
+            points: numpy.ndarray[float],
+            weights: numpy.ndarray[float] | None = None
+    ):
         """
         Create a basis from a set of points. The basis will be calculated using a singular value decomposition of the
         points.
@@ -577,6 +581,7 @@ class CurveStation3:
     def point(self) -> Point3:
         """ The 3d position in space on the curve. """
         ...
+
     @property
     def direction(self) -> Vector3:
         """ The tangent (direction) vector of the curve at the station. """
@@ -697,5 +702,24 @@ class Curve3:
 
         :param resample: the resampling method to use.
         :return: a new curve object with the resampled vertices.
+        """
+        ...
+
+    def simplify(self, tolerance: float) -> Curve3:
+        """
+        Simplify the curve using the Ramer-Douglas-Peucker algorithm. This will remove vertices from the curve that are
+        within the given tolerance of the line between the previous and next vertices.
+
+        :param tolerance: the tolerance to use when simplifying the curve.
+        :return: a new curve object with the simplified vertices.
+        """
+        ...
+
+    def transformed_by(self, iso: Iso3) -> Curve3:
+        """
+        Transform the curve by an isometry. This will return a new curve object with the transformed vertices.
+
+        :param iso: the isometry to transform the curve by.
+        :return: a new curve object with the transformed vertices.
         """
         ...
