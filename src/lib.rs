@@ -3,9 +3,7 @@ mod common;
 mod conversions;
 mod geom2;
 mod geom3;
-mod isometries;
 mod mesh;
-mod primitives;
 mod svd_basis;
 
 use pyo3::prelude::*;

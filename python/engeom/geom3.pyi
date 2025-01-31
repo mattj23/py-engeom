@@ -431,6 +431,8 @@ class Mesh:
             self,
             vertices: numpy.ndarray[float],
             triangles: numpy.ndarray[numpy.uint32],
+            merge_duplicates: bool | None = None,
+            delete_degenerate: bool | None = None
     ):
         """
         Create an engeom mesh from vertices and triangles.  The vertices should be a numpy array of shape (n, 3), while
@@ -440,16 +442,21 @@ class Mesh:
 
         :param vertices: a numpy array of shape (n, 3) containing the vertices of the mesh.
         :param triangles: a numpy array of shape (m, 3) containing the triangles of the mesh, should be uint.
+        :param merge_duplicates: merge duplicate vertices and triangles. If None, the default behavior is to do nothing
+        :param delete_degenerate: delete degenerate triangles. If None, the default behavior is to do nothing
         """
         ...
 
     @staticmethod
-    def load_stl(path: str | Path) -> Mesh:
+    def load_stl(path: str | Path, merge_duplicates: bool | None = None, delete_degenerate: bool | None = None) -> Mesh:
         """
         Load a mesh from an STL file. This will return a new mesh object containing the vertices and triangles from the
-        file.
+        file.  Optional parameters can be used to control the behavior of the loader when handling duplicate vertices/
+        triangles and degenerate triangles.
 
         :param path: the path to the STL file to load.
+        :param merge_duplicates: merge duplicate vertices and triangles. If None, the default behavior is to do nothing
+        :param delete_degenerate: delete degenerate triangles. If None, the default behavior is to do nothing
         :return: the mesh object containing the data from the file.
         """
         ...

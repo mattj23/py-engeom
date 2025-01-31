@@ -27,17 +27,33 @@ impl Mesh {
     fn new<'py>(
         vertices: PyReadonlyArrayDyn<'py, f64>,
         triangles: PyReadonlyArrayDyn<'py, u32>,
+        merge_duplicates: Option<bool>,
+        delete_degenerate: Option<bool>,
     ) -> PyResult<Self> {
         let vertices = array_to_points3(&vertices.as_array())?;
         let triangles = array_to_faces(&triangles.as_array())?;
-        let mesh = engeom::Mesh::new(vertices, triangles, false);
+
+        let merge = merge_duplicates.unwrap_or(false);
+        let degenerate = delete_degenerate.unwrap_or(false);
+
+        let mesh =
+            engeom::Mesh::new_with_options(vertices, triangles, false, merge, degenerate, None)
+                .map_err(|e| PyValueError::new_err(e.to_string()))?;
+
         Ok(Self { inner: mesh })
     }
 
     #[staticmethod]
-    fn load_stl(path: PathBuf) -> PyResult<Self> {
-        let mesh =
-            engeom::io::read_mesh_stl(&path).map_err(|e| PyIOError::new_err(e.to_string()))?;
+    fn load_stl(
+        path: PathBuf,
+        merge_duplicates: Option<bool>,
+        delete_degenerate: Option<bool>,
+    ) -> PyResult<Self> {
+        let merge = merge_duplicates.unwrap_or(false);
+        let degenerate = delete_degenerate.unwrap_or(false);
+        let mesh = engeom::io::read_mesh_stl(&path, merge, degenerate)
+            .map_err(|e| PyIOError::new_err(e.to_string()))?;
+
         Ok(Self { inner: mesh })
     }
 
