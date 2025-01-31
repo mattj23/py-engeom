@@ -1,6 +1,6 @@
 use crate::common::DeviationMode;
 use crate::conversions::{array_to_faces, array_to_points3};
-use crate::geom3::{Iso3, Plane3};
+use crate::geom3::{Curve3, Iso3, Plane3};
 use engeom;
 use engeom::common::points::dist;
 use engeom::common::SplitResult;
@@ -162,5 +162,14 @@ impl Mesh {
             result[[i, 5]] = sp.normal.z;
         }
         result.into_pyarray(py)
+    }
+
+    fn section(&self, plane: Plane3, tol: Option<f64>) -> PyResult<Vec<Curve3>> {
+        let results = self
+            .inner
+            .section(plane.get_inner(), tol)
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+
+        Ok(results.into_iter().map(|c| Curve3::from_inner(c)).collect())
     }
 }

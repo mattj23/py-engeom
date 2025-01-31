@@ -1,3 +1,4 @@
+use crate::common::Resample;
 use crate::conversions::{array_to_points3, array_to_vectors3};
 use engeom::geom3::{iso3_try_from_array, Flip3};
 use numpy::ndarray::{Array1, ArrayD};
@@ -354,6 +355,172 @@ impl Plane3 {
 
     fn project_point(&self, point: Point3) -> Point3 {
         Point3::from_inner(self.inner.project_point(point.get_inner()))
+    }
+}
+
+// ================================================================================================
+// Curve
+// ================================================================================================
+#[pyclass]
+#[derive(Clone, Debug)]
+pub struct CurveStation3 {
+    i_point: engeom::Point3,
+    i_direction: engeom::Vector3,
+    i_index: usize,
+    i_fraction: f64,
+    i_length_along: f64,
+}
+
+impl CurveStation3 {
+    pub fn new(
+        point: engeom::Point3,
+        direction: engeom::Vector3,
+        index: usize,
+        fraction: f64,
+        length_along: f64,
+    ) -> Self {
+        Self {
+            i_point: point,
+            i_direction: direction,
+            i_index: index,
+            i_fraction: fraction,
+            i_length_along: length_along,
+        }
+    }
+}
+
+#[pymethods]
+impl CurveStation3 {
+    #[getter]
+    pub fn point(&self) -> Point3 {
+        Point3::from_inner(self.i_point)
+    }
+
+    #[getter]
+    pub fn direction(&self) -> Vector3 {
+        Vector3::from_inner(self.i_direction)
+    }
+
+    #[getter]
+    pub fn direction_point(&self) -> SurfacePoint3 {
+        SurfacePoint3::from_inner(engeom::SurfacePoint3::new_normalize(
+            self.i_point,
+            self.i_direction,
+        ))
+    }
+
+    #[getter]
+    pub fn index(&self) -> usize {
+        self.i_index
+    }
+
+    #[getter]
+    pub fn fraction(&self) -> f64 {
+        self.i_fraction
+    }
+
+    #[getter]
+    pub fn length_along(&self) -> f64 {
+        self.i_length_along
+    }
+}
+
+#[pyclass]
+#[derive(Clone)]
+pub struct Curve3 {
+    inner: engeom::Curve3,
+}
+
+impl Curve3 {
+    pub fn get_inner(&self) -> &engeom::Curve3 {
+        &self.inner
+    }
+
+    pub fn from_inner(inner: engeom::Curve3) -> Self {
+        Self { inner }
+    }
+}
+
+#[pymethods]
+impl Curve3 {
+    #[new]
+    fn new<'py>(points: PyReadonlyArrayDyn<'py, f64>, tol: Option<f64>) -> PyResult<Self> {
+        let tol = tol.unwrap_or(1.0e-6);
+        let points = array_to_points3(&points.as_array())?;
+        let inner = engeom::Curve3::from_points(&points, tol)
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+        Ok(Self::from_inner(inner))
+    }
+
+    fn __repr__(&self) -> String {
+        format!(
+            "<Curve3 {} points, {} long>",
+            self.inner.vertices().len(),
+            self.inner.length()
+        )
+    }
+
+    fn clone(&self) -> Self {
+        Self::from_inner(self.inner.clone())
+    }
+
+    fn length(&self) -> f64 {
+        self.inner.length()
+    }
+
+    fn clone_vertices<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<f64>> {
+        let mut result = ArrayD::zeros(vec![self.inner.vertices().len(), 3]);
+        for (i, point) in self.inner.vertices().iter().enumerate() {
+            result[[i, 0]] = point.x;
+            result[[i, 1]] = point.y;
+            result[[i, 2]] = point.z;
+        }
+        result.into_pyarray(py)
+    }
+
+    fn at_length(&self, length: f64) -> PyResult<CurveStation3> {
+        let station = self
+            .inner
+            .at_length(length)
+            .ok_or(PyValueError::new_err("Invalid length"))?;
+        Ok(station.into())
+    }
+
+    fn at_fraction(&self, fraction: f64) -> PyResult<CurveStation3> {
+        self.at_length(fraction * self.inner.length())
+    }
+
+    fn at_closest_to_point(&self, point: Point3) -> PyResult<CurveStation3> {
+        let station = self.inner.at_closest_to_point(point.get_inner());
+        Ok(station.into())
+    }
+
+    fn at_front(&self) -> CurveStation3 {
+        self.inner.at_front().into()
+    }
+
+    fn at_back(&self) -> CurveStation3 {
+        self.inner.at_back().into()
+    }
+
+    fn resample(&self, resample: Resample) -> Self {
+        Self::from_inner(self.inner.resample(resample.into()))
+    }
+
+    fn simplify(&self, tol: f64) -> Self {
+        Self::from_inner(self.inner.simplify(tol))
+    }
+}
+
+impl From<engeom::CurveStation3<'_>> for CurveStation3 {
+    fn from(station: engeom::CurveStation3) -> Self {
+        Self::new(
+            station.point().clone(),
+            station.direction().into_inner().clone(),
+            station.index().clone(),
+            station.fraction().clone(),
+            station.length_along().clone(),
+        )
     }
 }
 

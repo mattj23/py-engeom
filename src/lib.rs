@@ -33,6 +33,8 @@ fn register_geom3<'py>(py: Python<'py>, parent_module: &Bound<'_, PyModule>) -> 
 
     // Mesh, curves, other complex geometries
     child.add_class::<mesh::Mesh>()?;
+    child.add_class::<geom3::Curve3>()?;
+    child.add_class::<geom3::CurveStation3>()?;
 
     child.add_class::<svd_basis::SvdBasis3>()?;
 
@@ -53,6 +55,7 @@ fn py_engeom<'py>(py: Python<'py>, m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // Common features and primitives
     m.add_class::<common::DeviationMode>()?;
+    m.add_class::<common::Resample>()?;
 
     Ok(())
 }

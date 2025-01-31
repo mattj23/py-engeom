@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Tuple, Iterable
+from typing import Tuple, Iterable, List
 
 import numpy
-
-from engeom import DeviationMode
+from engeom import DeviationMode, Resample
 
 type Transformable3 = Vector3 | Point3 | Plane3 | Iso3 | SurfacePoint3
 
@@ -554,5 +553,149 @@ class Mesh:
 
         :param radius: the minimum distance between points.
         :return: a numpy array of shape (n, 6) containing the sampled points.
+        """
+        ...
+
+    def section(self, plane: Plane3, tol: float | None = None) -> List[Curve3]:
+        """
+        Calculate and return the intersection curves between the mesh and a plane.
+
+        :param plane:
+        :param tol:
+        :return:
+        """
+        ...
+
+
+class CurveStation3:
+    """
+    A class representing a station along a curve in 3D space. The station is represented by a point on the curve, a
+    tangent (direction) vector, and a length along the curve.
+    """
+
+    @property
+    def point(self) -> Point3:
+        """ The 3d position in space on the curve. """
+        ...
+    @property
+    def direction(self) -> Vector3:
+        """ The tangent (direction) vector of the curve at the station. """
+        ...
+
+    @property
+    def direction_point(self) -> SurfacePoint3:
+        """
+        A `SurfacePoint3` object representing the point on the curve and the curve's tangent/direction vector.
+        """
+        ...
+
+    @property
+    def index(self) -> int:
+        """ The index of the previous vertex on the curve, at or before the station. """
+        ...
+
+    @property
+    def length_along(self) -> float:
+        """ The length along the curve from the start of the curve to the station. """
+        ...
+
+
+class Curve3:
+    """
+    A class representing a polyline in 3D space. The curve is represented by a set of vertices and the segments
+    between them.
+    """
+
+    def __init__(self, vertices: numpy.ndarray):
+        """
+        Create a curve from a set of vertices. The vertices should be a numpy array of shape (n, 3).
+
+        :param vertices: a numpy array of shape (n, 3) containing the vertices of the curve.
+        """
+        ...
+
+    def clone(self) -> Curve3:
+        """
+        Will return a copy of the curve. This is a copy of the data, so modifying the returned curve will not modify
+        the original curve.
+
+        :return: a copy of the curve.
+        """
+        ...
+
+    def length(self) -> float:
+        """
+        Return the total length of the curve in the units of the vertices.
+
+        :return: the length of the curve.
+        """
+        ...
+
+    def clone_vertices(self) -> numpy.ndarray[float]:
+        """
+        Will return a copy of the vertices of the curve as a numpy array. If the curve has not been modified, this will
+        be the same as the original vertices. This is a copy of the data, so modifying the returned array will not
+        modify the curve.
+
+        :return: a numpy array of shape (n, 3) containing the vertices of the curve.
+        """
+        ...
+
+    def at_length(self, length: float) -> CurveStation3:
+        """
+        Return a station along the curve at the given length. The length is measured from the start of the curve to the
+        station. If the length is greater than the length of the curve or less than 0, an error will be raised.
+
+        :param length: the length along the curve to return the station at.
+        :return: a `CurveStation3` object representing the station along the curve.
+        """
+        ...
+
+    def at_fraction(self, fraction: float) -> CurveStation3:
+        """
+        Return a station along the curve at the given fraction of the length of the curve. If the fraction is greater
+        than 1 or less than 0, an error will be raised.
+
+        :param fraction: the fraction of the length of the curve to return the station at.
+        :return: a `CurveStation3` object representing the station along the curve.
+        """
+        ...
+
+    def at_closest_to_point(self, point: Point3) -> CurveStation3:
+        """
+        Return a station along the curve at the closest point to the given point. The station will be the point on the
+        curve that is closest to the given point.
+
+        :param point: the point to find the closest station to.
+        :return: a `CurveStation3` object representing the station along the curve.
+        """
+        ...
+
+    def at_front(self) -> CurveStation3:
+        """
+        Return a station at the front of the curve. This is equivalent to calling `at_length(0)`.
+
+        :return: a `CurveStation3` object representing the station at the front of the curve.
+        """
+        ...
+
+    def at_back(self) -> CurveStation3:
+        """
+        Return a station at the back of the curve. This is equivalent to calling `at_length(length)`.
+
+        :return: a `CurveStation3` object representing the station at the back of the curve.
+        """
+        ...
+
+    def resample(self, resample: Resample) -> Curve3:
+        """
+        Resample the curve using the given resampling method. The resampling method can be one of the following:
+
+        - `Resample.ByCount(count: int)`: resample the curve to have the given number of points.
+        - `Resample.BySpacing(distance: float)`: resample the curve to have points spaced by the given distance.
+        - `Resample.ByMaxSpacing(distance: float)`: resample the curve to have points spaced by a maximum distance.
+
+        :param resample: the resampling method to use.
+        :return: a new curve object with the resampled vertices.
         """
         ...
