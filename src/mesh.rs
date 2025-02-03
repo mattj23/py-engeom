@@ -1,6 +1,6 @@
 use crate::common::DeviationMode;
 use crate::conversions::{array_to_faces, array_to_points3};
-use crate::geom3::{Curve3, Iso3, Plane3};
+use crate::geom3::{Aabb3, Curve3, Iso3, Plane3};
 use engeom::common::points::dist;
 use engeom::common::SplitResult;
 use numpy::ndarray::{Array1, ArrayD};
@@ -43,6 +43,10 @@ impl Mesh {
         .map_err(|e| PyValueError::new_err(e.to_string()))?;
 
         Ok(Self { inner: mesh })
+    }
+
+    fn aabb(&self) -> Aabb3 {
+        Aabb3::from_inner(self.inner.aabb())
     }
 
     #[staticmethod]

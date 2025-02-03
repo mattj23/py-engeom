@@ -451,6 +451,10 @@ class Mesh:
         """
         ...
 
+    def aabb(self) -> Aabb3:
+        """ Return the axis-aligned bounding box of the mesh. """
+        ...
+
     @staticmethod
     def load_stl(path: str | Path, merge_duplicates: bool = False, delete_degenerate: bool = False) -> Mesh:
         """
@@ -724,4 +728,42 @@ class Curve3:
         :param iso: the isometry to transform the curve by.
         :return: a new curve object with the transformed vertices.
         """
+        ...
+
+
+class Aabb3:
+    """
+    A class representing an axis-aligned bounding box in 3D space. The box is defined by its minimum and maximum
+    """
+
+    def __init__(self, x_min: float, y_min: float, z_min: float, x_max: float, y_max: float, z_max: float):
+        """
+        Create an axis-aligned bounding box from the minimum and maximum coordinates.
+        :param x_min: the minimum x coordinate of the box.
+        :param y_min: the minimum y coordinate of the box.
+        :param z_min: the minimum z coordinate of the box.
+        :param x_max: the maximum x coordinate of the box.
+        :param y_max: the maximum y coordinate of the box.
+        :param z_max: the maximum z coordinate of the box.
+        """
+        ...
+
+    @property
+    def min(self) -> Point3:
+        """ The minimum point of the box. """
+        ...
+
+    @property
+    def max(self) -> Point3:
+        """ The maximum point of the box. """
+        ...
+
+    @property
+    def center(self) -> Point3:
+        """ The center point of the box. """
+        ...
+
+    @property
+    def extent(self) -> Vector3:
+        """ The extent of the box. """
         ...
