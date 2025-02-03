@@ -515,3 +515,47 @@ class Curve2:
         :return: a new curve object with the transformed vertices.
         """
         ...
+
+
+class Circle2:
+    def __init__(self, x: float, y: float, r: float):
+        """
+
+        :param x:
+        :param y:
+        :param r:
+        """
+        ...
+
+
+    @property
+    def center(self) -> Point2:
+        """
+        Get the center of the circle.
+        :return: the center of the circle.
+        """
+        ...
+
+    @property
+    def x(self) -> float:
+        """
+        Get the x-coordinate of the circle.
+        :return: the x-coordinate of the circle.
+        """
+        ...
+
+    @property
+    def y(self) -> float:
+        """
+        Get the y-coordinate of the circle.
+        :return: the y-coordinate of the circle.
+        """
+        ...
+
+    @property
+    def r(self) -> float:
+        """
+        Get the radius of the circle.
+        :return: the radius of the circle.
+        """
+        ...

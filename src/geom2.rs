@@ -281,6 +281,57 @@ impl SurfacePoint2 {
 }
 
 // ================================================================================================
+// Circle
+// ================================================================================================
+#[pyclass]
+#[derive(Clone, Debug)]
+pub struct Circle2 {
+    inner: engeom::Circle2,
+}
+
+impl Circle2 {
+    pub fn get_inner(&self) -> &engeom::Circle2 {
+        &self.inner
+    }
+
+    pub fn from_inner(inner: engeom::Circle2) -> Self {
+        Self { inner }
+    }
+}
+
+#[pymethods]
+impl Circle2 {
+    #[new]
+    fn new(x: f64, y: f64, r: f64) -> Self {
+        Self {
+            inner: engeom::Circle2::new(x, y, r),
+        }
+    }
+
+    #[getter]
+    fn center(&self) -> Point2 {
+        Point2::from_inner(self.inner.center)
+    }
+
+    #[getter]
+    fn x(&self) -> f64 {
+        self.inner.x()
+    }
+
+    #[getter]
+    fn y(&self) -> f64 {
+        self.inner.y()
+    }
+
+    #[getter]
+    fn r(&self) -> f64 {
+        self.inner.r()
+    }
+
+}
+
+
+// ================================================================================================
 // Curve
 // ================================================================================================
 
