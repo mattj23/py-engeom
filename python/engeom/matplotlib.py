@@ -79,12 +79,14 @@ else:
             x_mid = (x0 + x1) / 2
             ax.set_xlim(x_mid - x_range / 2, x_mid + x_range / 2)
 
-    class ViewHelper:
-        def __init__(self, ax: Axes):
+    class Geom2View:
+        def __init__(self, ax: Axes, skip_aspect=False, hide_axes=False):
             self.ax = ax
+            if not skip_aspect:
+                ax.set_aspect("equal", adjustable="datalim")
 
-        def set_aspect_fill(self):
-            set_aspect_fill(self.ax)
+            if hide_axes:
+                ax.axis("off")
 
         def set_bounds(self, box: Aabb2):
             """
