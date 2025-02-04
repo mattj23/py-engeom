@@ -504,21 +504,18 @@ class Mesh:
         """
         ...
 
-    def clone_vertices(self) -> numpy.ndarray[float]:
+    @property
+    def points(self) -> numpy.ndarray[float]:
         """
-        Will return a copy of the vertices of the mesh as a numpy array. If the mesh has not been modified, this will
-        be the same as the original vertices. This is a copy of the data, so modifying the returned array will not
-        modify the mesh.
+        Will return an immutable view of the vertices of the mesh as a numpy array of shape (n, 3).
         :return: a numpy array of shape (n, 3) containing the vertices of the mesh.
         """
         ...
 
-    def clone_triangles(self) -> numpy.ndarray[numpy.uint32]:
+    @property
+    def triangles(self) -> numpy.ndarray[numpy.uint32]:
         """
-        Will return a copy of the triangles of the mesh as a numpy array. If the mesh has not been modified, this will
-        be the same as the original triangles. This is a copy of the data, so modifying the returned array will not
-        modify the mesh.
-
+        Will return an immutable view of the triangles of the mesh as a numpy array of shape (m, 3).
         :return: a numpy array of shape (m, 3) containing the triangles of the mesh.
         """
         ...
@@ -642,13 +639,11 @@ class Curve3:
         """
         ...
 
-    def clone_vertices(self) -> numpy.ndarray[float]:
+    @property
+    def points(self) -> numpy.ndarray[float]:
         """
-        Will return a copy of the vertices of the curve as a numpy array. If the curve has not been modified, this will
-        be the same as the original vertices. This is a copy of the data, so modifying the returned array will not
-        modify the curve.
-
-        :return: a numpy array of shape (n, 3) containing the vertices of the curve.
+        Will return an immutable view of the vertices of the mesh as a numpy array of shape (n, 3).
+        :return: a numpy array of shape (n, 3) containing the vertices of the mesh.
         """
         ...
 

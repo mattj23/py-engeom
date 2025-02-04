@@ -1,6 +1,6 @@
 use crate::bounding::Aabb3;
 use crate::common::DeviationMode;
-use crate::conversions::{array_to_faces, array_to_points3};
+use crate::conversions::{array_to_faces, array_to_points3, faces_to_array, points_to_array3};
 use crate::geom3::{Curve3, Iso3, Plane3};
 use engeom::common::points::dist;
 use engeom::common::SplitResult;
@@ -13,11 +13,27 @@ use std::path::PathBuf;
 #[pyclass]
 pub struct Mesh {
     inner: engeom::Mesh,
+    points: Option<Py<PyArrayDyn<f64>>>,
+    triangles: Option<Py<PyArrayDyn<u32>>>,
 }
 
 impl Mesh {
     pub fn get_inner(&self) -> &engeom::Mesh {
         &self.inner
+    }
+
+    pub fn from_inner(inner: engeom::Mesh) -> Self {
+        Self {
+            inner,
+            points: None,
+            triangles: None,
+        }
+    }
+}
+
+impl Clone for Mesh {
+    fn clone(&self) -> Self {
+        Self::from_inner(self.inner.clone())
     }
 }
 
@@ -43,7 +59,7 @@ impl Mesh {
         )
         .map_err(|e| PyValueError::new_err(e.to_string()))?;
 
-        Ok(Self { inner: mesh })
+        Ok(Self::from_inner(mesh))
     }
 
     fn aabb(&self) -> Aabb3 {
@@ -56,7 +72,7 @@ impl Mesh {
         let mesh = engeom::io::read_mesh_stl(&path, merge_duplicates, delete_degenerate)
             .map_err(|e| PyIOError::new_err(e.to_string()))?;
 
-        Ok(Self { inner: mesh })
+        Ok(Self::from_inner(mesh))
     }
 
     fn transform_by(&mut self, iso: &Iso3) {
@@ -70,9 +86,7 @@ impl Mesh {
     }
 
     fn clone(&self) -> Self {
-        Self {
-            inner: self.inner.clone(),
-        }
+        self.clone()
     }
 
     fn write_stl(&self, path: PathBuf) -> PyResult<()> {
@@ -80,25 +94,23 @@ impl Mesh {
             .map_err(|e| PyIOError::new_err(e.to_string()))
     }
 
-    fn clone_vertices<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<f64>> {
-        let mut result = ArrayD::zeros(vec![self.inner.vertices().len(), 3]);
-        for (i, point) in self.inner.vertices().iter().enumerate() {
-            result[[i, 0]] = point.x;
-            result[[i, 1]] = point.y;
-            result[[i, 2]] = point.z;
+    #[getter]
+    fn points<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<f64>> {
+        if self.points.is_none() {
+            let array = points_to_array3(self.inner.vertices());
+            self.points = Some(array.into_pyarray(py).unbind());
         }
-        result.into_pyarray(py)
+        self.points.as_ref().unwrap().bind(py)
     }
 
-    fn clone_triangles<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<u32>> {
-        let mut result = ArrayD::zeros(vec![self.inner.triangles().len(), 3]);
-        for (i, triangle) in self.inner.triangles().iter().enumerate() {
-            result[[i, 0]] = triangle[0];
-            result[[i, 1]] = triangle[1];
-            result[[i, 2]] = triangle[2];
+    #[getter]
+    fn triangles<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<u32>> {
+        if self.triangles.is_none() {
+            let faces = faces_to_array(self.inner.triangles());
+            self.triangles = Some(faces.into_pyarray(py).unbind());
         }
 
-        result.into_pyarray(py)
+        self.triangles.as_ref().unwrap().bind(py)
     }
 
     fn __repr__(&self) -> String {
@@ -109,22 +121,18 @@ impl Mesh {
         )
     }
 
-    fn split(&self, plane: &Plane3) -> PyResult<(Option<Mesh>, Option<Mesh>)> {
+    fn split(&self, plane: &Plane3) -> PyResult<(Option<Self>, Option<Self>)> {
         match self.inner.split(&plane.inner) {
             SplitResult::Pair(mesh1, mesh2) => {
-                Ok((Some(Mesh { inner: mesh1 }), Some(Mesh { inner: mesh2 })))
+                Ok((Some(Self::from_inner(mesh1)), Some(Self::from_inner(mesh2))))
             }
             SplitResult::Negative => Ok((
-                Some(Mesh {
-                    inner: self.inner.clone(),
-                }),
+                Some(self.clone()),
                 None,
             )),
             SplitResult::Positive => Ok((
                 None,
-                Some(Mesh {
-                    inner: self.inner.clone(),
-                }),
+                Some(self.clone()),
             )),
         }
     }

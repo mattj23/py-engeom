@@ -1,12 +1,13 @@
 use crate::common::Resample;
-use crate::conversions::{array_to_points3, array_to_vectors3};
+use crate::conversions::{array_to_points3, array_to_vectors3, points_to_array3};
 use engeom::geom3::{iso3_try_from_array, Flip3};
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
 use pyo3::exceptions::PyValueError;
 use pyo3::types::PyIterator;
 use pyo3::{
-    pyclass, pymethods, Bound, FromPyObject, IntoPyObject, IntoPyObjectExt, PyAny, PyResult, Python,
+    pyclass, pymethods, Bound, FromPyObject, IntoPyObject, IntoPyObjectExt, Py, PyAny, PyResult,
+    Python,
 };
 
 #[derive(FromPyObject)]
@@ -426,9 +427,18 @@ impl CurveStation3 {
 }
 
 #[pyclass]
-#[derive(Clone)]
 pub struct Curve3 {
     inner: engeom::Curve3,
+    points: Option<Py<PyArrayDyn<f64>>>,
+}
+
+impl Clone for Curve3 {
+    fn clone(&self) -> Self {
+        Self {
+            inner: self.inner.clone(),
+            points: None,
+        }
+    }
 }
 
 impl Curve3 {
@@ -437,7 +447,10 @@ impl Curve3 {
     }
 
     pub fn from_inner(inner: engeom::Curve3) -> Self {
-        Self { inner }
+        Self {
+            inner,
+            points: None,
+        }
     }
 }
 
@@ -450,6 +463,16 @@ impl Curve3 {
         let inner = engeom::Curve3::from_points(&points, tol)
             .map_err(|e| PyValueError::new_err(e.to_string()))?;
         Ok(Self::from_inner(inner))
+    }
+
+    #[getter]
+    fn points<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<f64>> {
+        if self.points.is_none() {
+            let mut result = points_to_array3(self.inner.vertices());
+            self.points = Some(result.into_pyarray(py).unbind())
+        }
+
+        self.points.as_ref().unwrap().bind(py)
     }
 
     fn __repr__(&self) -> String {
@@ -466,16 +489,6 @@ impl Curve3 {
 
     fn length(&self) -> f64 {
         self.inner.length()
-    }
-
-    fn clone_vertices<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<f64>> {
-        let mut result = ArrayD::zeros(vec![self.inner.vertices().len(), 3]);
-        for (i, point) in self.inner.vertices().iter().enumerate() {
-            result[[i, 0]] = point.x;
-            result[[i, 1]] = point.y;
-            result[[i, 2]] = point.z;
-        }
-        result.into_pyarray(py)
     }
 
     fn at_length(&self, length: f64) -> PyResult<CurveStation3> {

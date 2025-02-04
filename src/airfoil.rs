@@ -120,7 +120,8 @@ impl InscribedCircle {
 #[pyclass]
 pub struct AirfoilGeometry {
     inner: engeom::airfoil::AirfoilGeometry,
-    camber: Py<Curve2>,
+    camber: Option<Py<Curve2>>,
+    circle_array: Option<Py<PyArrayDyn<f64>>>,
 }
 
 impl AirfoilGeometry {
@@ -128,29 +129,40 @@ impl AirfoilGeometry {
         &self.inner
     }
 
-    pub fn from_inner(py: Python, inner: engeom::airfoil::AirfoilGeometry) -> Self {
-        let camber = Curve2::from_inner(inner.camber.clone());
-        let camber = Py::new(py, camber).unwrap();
-        Self { inner, camber }
+    pub fn from_inner(inner: engeom::airfoil::AirfoilGeometry) -> Self {
+        Self { inner, camber: None, circle_array: None }
+    }
+}
+
+impl Clone for AirfoilGeometry {
+    fn clone(&self) -> Self {
+        Self::from_inner(self.inner.clone())
     }
 }
 
 #[pymethods]
 impl AirfoilGeometry {
     #[getter]
-    fn camber<'py>(&self, py: Python<'py>) -> &Bound<'py, Curve2> {
-        self.camber.bind(py)
+    fn camber<'py>(&mut self, py: Python<'py>) -> &Bound<'py, Curve2> {
+        if self.camber.is_none() {
+            let camber = Curve2::from_inner(self.inner.camber.clone());
+            self.camber = Some(Py::new(py, camber).unwrap());
+        }
+        self.camber.as_ref().unwrap().bind(py)
     }
 
-    fn circles_as_numpy<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<f64>> {
-        let mut result = ArrayD::zeros(vec![self.inner.stations.len(), 3]);
-        for (i, c) in self.inner.stations.iter().enumerate() {
-            result[[i, 0]] = c.circle.center.x;
-            result[[i, 1]] = c.circle.center.y;
-            result[[i, 2]] = c.circle.r();
+    #[getter]
+    fn circle_array<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<f64>> {
+        if self.circle_array.is_none() {
+            let mut result = ArrayD::zeros(vec![self.inner.stations.len(), 3]);
+            for (i, c) in self.inner.stations.iter().enumerate() {
+                result[[i, 0]] = c.circle.center.x;
+                result[[i, 1]] = c.circle.center.y;
+                result[[i, 2]] = c.circle.r();
+            }
+            self.circle_array = Some(result.into_pyarray(py).unbind());
         }
-
-        result.into_pyarray(py)
+        self.circle_array.as_ref().unwrap().bind(py)
     }
 }
 
@@ -158,8 +170,7 @@ impl AirfoilGeometry {
 // Functions
 // ================================================================================================
 #[pyfunction]
-pub fn compute_airfoil_geometry<'py>(
-    py: Python<'py>,
+pub fn compute_airfoil_geometry(
     section: Curve2,
     refine_tol: f64,
     orient: MclOrient,
@@ -173,7 +184,7 @@ pub fn compute_airfoil_geometry<'py>(
     let result = engeom::airfoil::analyze_airfoil_geometry(section.get_inner(), &params)
         .map_err(|e| PyValueError::new_err(e.to_string()))?;
 
-    Ok(AirfoilGeometry::from_inner(py, result))
+    Ok(AirfoilGeometry::from_inner(result))
 }
 
 #[pyfunction]

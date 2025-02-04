@@ -126,30 +126,18 @@ class AirfoilGeometry:
     @property
     def camber(self) -> Curve2:
         """
-        The mean camber line of the airfoil cross-section. This is a curve that represents the average position of the
+        The mean camber line of the airfoil cross-section. The curve will be oriented so that the first point is at
+        the leading edge of the airfoil and the last point is at the trailing edge.
         :return:
         """
         ...
 
-    def circles_as_numpy(self) -> numpy.ndarray[float]:
+    @property
+    def circle_array(self) -> numpy.ndarray[float]:
         """
         Returns the list of inscribed circles as a numpy array of shape (N, 3) where N is the number of inscribed
         circles. The first two columns are the x and y coordinates of the circle center, and the third column is the
         radius of the circle.
-        """
-        ...
-
-    @property
-    def first_circle(self) -> InscribedCircle:
-        """
-        The first inscribed circle of the airfoil cross-section. This is the circle closest to the leading edge.
-        """
-        ...
-
-    @property
-    def last_circle(self) -> InscribedCircle:
-        """
-        The last inscribed circle of the airfoil cross-section. This is the circle closest to the trailing edge.
         """
         ...
 

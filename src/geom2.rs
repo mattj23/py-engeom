@@ -1,12 +1,13 @@
 use crate::bounding::Aabb2;
 use crate::common::Resample;
-use crate::conversions::{array_to_points2, array_to_vectors2};
+use crate::conversions::{array_to_points2, array_to_vectors2, points_to_array2};
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::exceptions::PyValueError;
 use pyo3::types::PyIterator;
 use pyo3::{
-    pyclass, pymethods, Bound, FromPyObject, IntoPyObject, IntoPyObjectExt, PyAny, PyResult, Python,
+    pyclass, pymethods, Bound, FromPyObject, IntoPyObject, IntoPyObjectExt, Py, PyAny, PyResult,
+    Python,
 };
 
 #[derive(FromPyObject)]
@@ -442,9 +443,9 @@ impl From<engeom::CurveStation2<'_>> for CurveStation2 {
 }
 
 #[pyclass]
-#[derive(Clone)]
 pub struct Curve2 {
     inner: engeom::Curve2,
+    points: Option<Py<PyArrayDyn<f64>>>,
 }
 
 impl Curve2 {
@@ -453,12 +454,34 @@ impl Curve2 {
     }
 
     pub fn from_inner(inner: engeom::Curve2) -> Self {
-        Self { inner }
+        Self {
+            inner,
+            points: None,
+        }
+    }
+}
+
+impl Clone for Curve2 {
+    fn clone(&self) -> Self {
+        Self {
+            inner: self.inner.clone(),
+            points: None,
+        }
     }
 }
 
 #[pymethods]
 impl Curve2 {
+    #[getter]
+    fn points<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<f64>> {
+        if self.points.is_none() {
+            let mut result = points_to_array2(self.inner.points());
+            self.points = Some(result.into_pyarray(py).unbind())
+        }
+
+        self.points.as_ref().unwrap().bind(py)
+    }
+
     #[new]
     #[pyo3(signature=(points, normals=None, tol=1e-6, force_closed=false, hull_ccw=false))]
     fn new(
@@ -593,15 +616,6 @@ impl Curve2 {
 
     fn max_dist_in_direction(&self, surf_point: SurfacePoint2) -> f64 {
         self.inner.max_dist_in_direction(surf_point.get_inner())
-    }
-
-    fn clone_points<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<f64>> {
-        let mut result = ArrayD::zeros(vec![self.inner.points().len(), 2]);
-        for (i, point) in self.inner.points().iter().enumerate() {
-            result[[i, 0]] = point.x;
-            result[[i, 1]] = point.y;
-        }
-        result.into_pyarray(py)
     }
 
     fn simplify(&self, tol: f64) -> Self {

@@ -480,9 +480,10 @@ class Curve2:
         """
         ...
 
-    def clone_points(self) -> numpy.ndarray[float]:
+    @property
+    def points(self) -> numpy.ndarray[float]:
         """
-        Clone the points of the curve.
+        Get the points of the curve.
         :return: a numpy array of shape (N, 2) representing the points of the curve.
         """
         ...

@@ -79,7 +79,7 @@ else:
             x_mid = (x0 + x1) / 2
             ax.set_xlim(x_mid - x_range / 2, x_mid + x_range / 2)
 
-    class Geom2View:
+    class AxesHelper:
         def __init__(self, ax: Axes, skip_aspect=False, hide_axes=False):
             self.ax = ax
             if not skip_aspect:
