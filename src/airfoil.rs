@@ -4,6 +4,7 @@ use numpy::ndarray::ArrayD;
 use numpy::{IntoPyArray, PyArrayDyn};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
+use pyo3::IntoPyObjectExt;
 
 // ================================================================================================
 // Orientation Methods
@@ -117,9 +118,9 @@ impl InscribedCircle {
 // Airfoil geometry result
 // ================================================================================================
 #[pyclass]
-#[derive(Clone)]
 pub struct AirfoilGeometry {
     inner: engeom::airfoil::AirfoilGeometry,
+    camber: Py<Curve2>,
 }
 
 impl AirfoilGeometry {
@@ -127,26 +128,18 @@ impl AirfoilGeometry {
         &self.inner
     }
 
-    pub fn from_inner(inner: engeom::airfoil::AirfoilGeometry) -> Self {
-        Self { inner }
+    pub fn from_inner(py: Python, inner: engeom::airfoil::AirfoilGeometry) -> Self {
+        let camber = Curve2::from_inner(inner.camber.clone());
+        let camber = Py::new(py, camber).unwrap();
+        Self { inner, camber }
     }
 }
 
 #[pymethods]
 impl AirfoilGeometry {
     #[getter]
-    fn camber(&self) -> Curve2 {
-        Curve2::from_inner(self.inner.camber.clone())
-    }
-
-    #[getter]
-    fn first_circle(&self) -> InscribedCircle {
-        InscribedCircle::from_inner(self.inner.stations.first().unwrap().clone())
-    }
-
-    #[getter]
-    fn last_circle(&self) -> InscribedCircle {
-        InscribedCircle::from_inner(self.inner.stations.last().unwrap().clone())
+    fn camber<'py>(&self, py: Python<'py>) -> &Bound<'py, Curve2> {
+        self.camber.bind(py)
     }
 
     fn circles_as_numpy<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<f64>> {
@@ -165,7 +158,8 @@ impl AirfoilGeometry {
 // Functions
 // ================================================================================================
 #[pyfunction]
-pub fn compute_airfoil_geometry(
+pub fn compute_airfoil_geometry<'py>(
+    py: Python<'py>,
     section: Curve2,
     refine_tol: f64,
     orient: MclOrient,
@@ -173,20 +167,13 @@ pub fn compute_airfoil_geometry(
     trailing: EdgeFind,
 ) -> PyResult<AirfoilGeometry> {
     // Construct the parameters
-    let orient = match orient {
-        MclOrient::TmaxFwd {} => engeom::airfoil::TMaxFwd::make(),
-        MclOrient::DirFwd { x, y } => {
-            engeom::airfoil::DirectionFwd::make(engeom::Vector2::new(x, y))
-        }
-    };
-
     let params =
-        engeom::airfoil::AfParams::new(refine_tol, orient, leading.into(), trailing.into());
+        engeom::airfoil::AfParams::new(refine_tol, orient.into(), leading.into(), trailing.into());
 
     let result = engeom::airfoil::analyze_airfoil_geometry(section.get_inner(), &params)
         .map_err(|e| PyValueError::new_err(e.to_string()))?;
 
-    Ok(AirfoilGeometry::from_inner(result))
+    Ok(AirfoilGeometry::from_inner(py, result))
 }
 
 #[pyfunction]

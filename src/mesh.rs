@@ -1,3 +1,4 @@
+use crate::bounding::Aabb3;
 use crate::common::DeviationMode;
 use crate::conversions::{array_to_faces, array_to_points3};
 use crate::geom3::{Curve3, Iso3, Plane3};
@@ -8,7 +9,6 @@ use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::exceptions::{PyIOError, PyValueError};
 use pyo3::prelude::*;
 use std::path::PathBuf;
-use crate::bounding::Aabb3;
 
 #[pyclass]
 pub struct Mesh {
