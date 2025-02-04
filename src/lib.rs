@@ -1,11 +1,12 @@
+mod airfoil;
 pub mod alignments;
+mod bounding;
 mod common;
 mod conversions;
 mod geom2;
 mod geom3;
 mod mesh;
 mod svd_basis;
-mod airfoil;
 
 use pyo3::prelude::*;
 
@@ -23,6 +24,8 @@ fn register_geom2(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     child.add_class::<geom2::Curve2>()?;
     child.add_class::<geom2::CurveStation2>()?;
 
+    // Bounding and tools
+    child.add_class::<bounding::Aabb2>()?;
     child.add_class::<svd_basis::SvdBasis2>()?;
 
     parent_module.add_submodule(&child)
@@ -44,6 +47,8 @@ fn register_geom3(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     child.add_class::<geom3::Curve3>()?;
     child.add_class::<geom3::CurveStation3>()?;
 
+    // Bounding and tools
+    child.add_class::<bounding::Aabb3>()?;
     child.add_class::<svd_basis::SvdBasis3>()?;
 
     parent_module.add_submodule(&child)
@@ -64,7 +69,10 @@ fn register_airfoil_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> 
     child.add_class::<airfoil::InscribedCircle>()?;
     child.add_class::<airfoil::AirfoilGeometry>()?;
 
-    child.add_function(wrap_pyfunction!(airfoil::compute_inscribed_circles, &child)?)?;
+    child.add_function(wrap_pyfunction!(
+        airfoil::compute_inscribed_circles,
+        &child
+    )?)?;
     child.add_function(wrap_pyfunction!(airfoil::compute_airfoil_geometry, &child)?)?;
 
     parent_module.add_submodule(&child)

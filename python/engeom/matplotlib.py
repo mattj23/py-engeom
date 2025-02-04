@@ -1,8 +1,8 @@
-from typing import List
+from typing import List, Iterable
 
 import matplotlib.lines
 import numpy
-from .geom2 import Curve2
+from .geom2 import Curve2, Circle2, Aabb2
 
 try:
     from matplotlib.pyplot import Axes, Circle
@@ -78,3 +78,45 @@ else:
             x_range = x_scale / y_scale * (x1 - x0)
             x_mid = (x0 + x1) / 2
             ax.set_xlim(x_mid - x_range / 2, x_mid + x_range / 2)
+
+    class ViewHelper:
+        def __init__(self, ax: Axes):
+            self.ax = ax
+
+        def set_aspect_fill(self):
+            set_aspect_fill(self.ax)
+
+        def set_bounds(self, box: Aabb2):
+            """
+            Set the bounds of a Matplotlib Axes object.
+            :param box: an Aabb2 object
+            :return: None
+            """
+            self.ax.set_xlim(box.min.x, box.max.x)
+            self.ax.set_ylim(box.min.y, box.max.y)
+
+        def plot_circle(self, *circle: Circle2 | Iterable[float], **kwargs):
+            """
+            Plot a circle on a Matplotlib Axes object.
+            :param circle: a Circle2 object
+            :param kwargs: keyword arguments to pass to the plot function
+            :return: None
+            """
+            from matplotlib.pyplot import Circle
+            for cdata in circle:
+                if isinstance(cdata, Circle2):
+                    c = Circle((cdata.center.x, cdata.center.y), cdata.r, **kwargs)
+                else:
+                    x, y, r, *_ = cdata
+                    c = Circle((x, y), r, **kwargs)
+                self.ax.add_patch(c)
+
+        def plot_curve(self, curve: Curve2, **kwargs):
+            """
+            Plot a curve on a Matplotlib Axes object.
+            :param curve: a Curve2 object
+            :param kwargs: keyword arguments to pass to the plot function
+            :return: None
+            """
+            points = curve.clone_points()
+            self.ax.plot(points[:, 0], points[:, 1], **kwargs)

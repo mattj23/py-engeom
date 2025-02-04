@@ -139,6 +139,20 @@ class AirfoilGeometry:
         """
         ...
 
+    @property
+    def first_circle(self) -> InscribedCircle:
+        """
+        The first inscribed circle of the airfoil cross-section. This is the circle closest to the leading edge.
+        """
+        ...
+
+    @property
+    def last_circle(self) -> InscribedCircle:
+        """
+        The last inscribed circle of the airfoil cross-section. This is the circle closest to the trailing edge.
+        """
+        ...
+
 
 def compute_airfoil_geometry(
         section: Curve2,

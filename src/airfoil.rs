@@ -29,7 +29,9 @@ impl From<MclOrient> for Box<dyn engeom::airfoil::CamberOrientation> {
     fn from(value: MclOrient) -> Self {
         match value {
             MclOrient::TmaxFwd {} => engeom::airfoil::TMaxFwd::make(),
-            MclOrient::DirFwd { x, y } => engeom::airfoil::DirectionFwd::make(engeom::Vector2::new(x, y)),
+            MclOrient::DirFwd { x, y } => {
+                engeom::airfoil::DirectionFwd::make(engeom::Vector2::new(x, y))
+            }
         }
     }
 }
@@ -53,7 +55,9 @@ impl EdgeFind {
             EdgeFind::Open {} => "EdgeFind.Open".to_string(),
             EdgeFind::OpenIntersect { max_iter } => format!("EdgeFind.OpenIntersect({})", max_iter),
             EdgeFind::Intersect {} => "EdgeFind.Intersect".to_string(),
-            EdgeFind::RansacRadius { in_tol, n } => format!("EdgeFind.RansacRadius({}, {})", in_tol, n),
+            EdgeFind::RansacRadius { in_tol, n } => {
+                format!("EdgeFind.RansacRadius({}, {})", in_tol, n)
+            }
         }
     }
 }
@@ -133,6 +137,16 @@ impl AirfoilGeometry {
     #[getter]
     fn camber(&self) -> Curve2 {
         Curve2::from_inner(self.inner.camber.clone())
+    }
+
+    #[getter]
+    fn first_circle(&self) -> InscribedCircle {
+        InscribedCircle::from_inner(self.inner.stations.first().unwrap().clone())
+    }
+
+    #[getter]
+    fn last_circle(&self) -> InscribedCircle {
+        InscribedCircle::from_inner(self.inner.stations.last().unwrap().clone())
     }
 
     fn circles_as_numpy<'py>(&self, py: Python<'py>) -> Bound<'py, PyArrayDyn<f64>> {

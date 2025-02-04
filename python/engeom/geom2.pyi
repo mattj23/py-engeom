@@ -559,3 +559,75 @@ class Circle2:
         :return: the radius of the circle.
         """
         ...
+
+    @property
+    def aabb(self) -> Aabb2:
+        """
+        Get the axis-aligned bounding box of the circle.
+        :return: the axis-aligned bounding box of the circle.
+        """
+        ...
+
+
+class Aabb2:
+    def __init__(self, x_min: float, x_max: float, y_min: float, y_max: float):
+        """
+
+        :param x_min:
+        :param x_max:
+        :param y_min:
+        :param y_max:
+        """
+        ...
+
+    @property
+    def min(self) -> Point2:
+        """
+        Get the minimum point of the AABB.
+        :return: the minimum point of the AABB.
+        """
+        ...
+
+    @property
+    def max(self) -> Point2:
+        """
+        Get the maximum point of the AABB.
+        :return: the maximum point of the AABB.
+        """
+        ...
+
+    @property
+    def center(self) -> Point2:
+        """
+        Get the center point of the AABB.
+        :return: the center point of the AABB.
+        """
+        ...
+
+    @property
+    def extent(self) -> Vector2:
+        """
+        Get the extent of the AABB.
+        :return: the extent of the AABB.
+        """
+        ...
+
+    def expand(self, d: float) -> Aabb2:
+        """
+        Expand the AABB by a given distance in all directions. The resulting height and
+        width will be increased by 2 * d.
+
+        :param d: the distance to expand the AABB by.
+        :return: a new AABB object with the expanded bounds.
+        """
+        ...
+
+    def shrink(self, d: float) -> Aabb2:
+        """
+        Shrink the AABB by a given distance in all directions. The resulting height and
+        width will be decreased by 2 * d.
+
+        :param d: the distance to shrink the AABB by.
+        :return: a new AABB object with the shrunk bounds.
+        """
+        ...

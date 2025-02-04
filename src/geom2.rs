@@ -1,3 +1,4 @@
+use crate::bounding::Aabb2;
 use crate::common::Resample;
 use crate::conversions::{array_to_points2, array_to_vectors2};
 use numpy::ndarray::{Array1, ArrayD};
@@ -328,8 +329,20 @@ impl Circle2 {
         self.inner.r()
     }
 
-}
+    fn __repr__(&self) -> String {
+        format!(
+            "Circle2({}, {}, {})",
+            self.inner.x(),
+            self.inner.y(),
+            self.inner.r()
+        )
+    }
 
+    #[getter]
+    fn aabb(&self) -> Aabb2 {
+        Aabb2::from_inner(self.inner.aabb())
+    }
+}
 
 // ================================================================================================
 // Curve
@@ -492,6 +505,11 @@ impl Curve2 {
 
     fn at_back(&self) -> CurveStation2 {
         self.inner.at_back().into()
+    }
+
+    #[getter]
+    fn aabb(&self) -> Aabb2 {
+        Aabb2::from_inner(*self.inner.aabb())
     }
 
     fn at_length(&self, length: f64) -> PyResult<CurveStation2> {
