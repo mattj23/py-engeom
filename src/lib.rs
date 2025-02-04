@@ -58,9 +58,14 @@ fn register_align_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
 fn register_airfoil_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     let child = PyModule::new(parent_module.py(), "_airfoil")?;
 
+    child.add_class::<airfoil::MclOrient>()?;
+    child.add_class::<airfoil::EdgeFind>()?;
+
     child.add_class::<airfoil::InscribedCircle>()?;
+    child.add_class::<airfoil::AirfoilGeometry>()?;
 
     child.add_function(wrap_pyfunction!(airfoil::compute_inscribed_circles, &child)?)?;
+    child.add_function(wrap_pyfunction!(airfoil::compute_airfoil_geometry, &child)?)?;
 
     parent_module.add_submodule(&child)
 }

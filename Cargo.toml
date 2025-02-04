@@ -14,4 +14,5 @@ engeom = { path = "./engeom", features = ["stl"]}
 parry3d-f64 = {version= "0.18.0", features=["serde-serialize"]}
 parry2d-f64 = {version= "0.18.0", features=["serde-serialize"]}
 numpy = "0.23.0"
+rand = "0.8.4"
 

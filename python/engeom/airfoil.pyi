@@ -1,6 +1,99 @@
 from typing import List
 
+import numpy
+
 from .geom2 import Circle2, Curve2, Point2, SurfacePoint2
+
+type MclOrientEnum = MclOrient.TmaxFwd | MclOrient.DirFwd
+type EdgeFindEnum = EdgeFind.Open | EdgeFind.OpenIntersect | EdgeFind.Intersect | EdgeFind.RansacRadius
+
+
+class MclOrient:
+    """
+    An enumeration of the possible ways to orient (to identify which side is the leading edge and which side is the
+    trailing edge) the mean camber line of an airfoil.
+    """
+
+    class TmaxFwd:
+        """
+        This method will take advantage of the fact that for most typical subsonic airfoils the maximum thickness point
+        is closer to the leading edge than the trailing edge.
+        """
+        ...
+
+    class DirFwd:
+        """
+        This method will orient the airfoil based on a vector direction provided by the user.
+        """
+
+        def __init__(self, x: float, y: float):
+            """
+            Create a new forward direction parameter. The x and y arguments are components of a direction vector which
+            should distinguish the forward (leading edge) direction of the airfoil. The position of the first and last
+            inscribed circle will be projected onto this vector, and the larger result (the one that is more in the
+            direction of this vector) will be considered the leading edge of the airfoil.
+
+            For instance, if you know that the airfoil is oriented so that the leading edge will have a smaller x value
+            than the trailing edge, `DirFwd(-1, 0)` will correctly orient the airfoil.
+            :param x: the x component of the forward direction vector
+            :param y: the y component of the forward direction vector
+            """
+            ...
+
+
+class EdgeFind:
+    """
+    An enumeration of the possible techniques to find the leading and/or trailing edge geometry of an airfoil.
+    """
+
+    class Open:
+        """
+        This algorithm will not attempt to find edge geometry, and will simply leave the inscribed circles for the side
+        as they are. Use this if you know that the airfoil cross-section is open/incomplete on this side, and you don't
+        care to extend the MCL any further.
+        """
+        ...
+
+    class OpenIntersect:
+        def __init__(self, max_iter: int):
+            """
+            This algorithm will attempt to find the edge geometry by intersecting the end of the inscribed circles
+            camber curve with the open gap in the airfoil cross-section, then refining the end of the MCL with more
+            inscribed circles until the location of the end converges to within 1/100th of the general refinement
+            tolerance.
+
+            If the maximum number of iterations is reached before convergence, the method will throw an error instead.
+
+            :param max_iter: the maximum number of iterations to attempt to find the edge geometry
+            """
+            ...
+
+    class Intersect:
+        """
+        This algorithm will simply intersect the end of the inscribed circles camber curve with the airfoil
+        cross-section. This is the fastest method with the least amount of assumptions, and makes sense for airfoil
+        edges where you know the mean camber line has very low curvature in the vicinity of the edge.
+        """
+        ...
+
+    class RansacRadius:
+        def __init__(self, in_tol: float, n: int = 500):
+            """
+            This algorithm uses RANSAC (Random Sample Consensus) to find a constant radius leading edge circle that
+            fits the greatest number of points leftover at the edge within the tolerance `in_tol`.
+
+            The method will try `n` different combinations of three points picked at random from the remaining points
+            at the edge, construct a circle, and then count the number of points within `in_tol` distance of the circle
+            perimeter. The circle with the most points within tolerance will be considered the last inscribed circle.
+
+            The MCL will be extended to this final circle, and then intersected with the airfoil cross-section to find
+            the final edge point.
+
+            :param in_tol: the max distance from the circle perimeter for a point to be considered a RANSAC inlier
+            :param n: The number of RANSAC iterations to perform
+            """
+            ...
+
 
 class InscribedCircle:
     @property
@@ -23,6 +116,47 @@ class InscribedCircle:
         depend on the ordering of the circles and the coordinate system of the airfoil.
         """
         ...
+
+
+class AirfoilGeometry:
+    """
+    The result of an airfoil geometry computation.
+    """
+
+    @property
+    def camber(self) -> Curve2:
+        """
+        The mean camber line of the airfoil cross-section. This is a curve that represents the average position of the
+        :return:
+        """
+        ...
+
+    def circles_as_numpy(self) -> numpy.ndarray[float]:
+        """
+        Returns the list of inscribed circles as a numpy array of shape (N, 3) where N is the number of inscribed
+        circles. The first two columns are the x and y coordinates of the circle center, and the third column is the
+        radius of the circle.
+        """
+        ...
+
+
+def compute_airfoil_geometry(
+        section: Curve2,
+        refine_tol: float,
+        orient: MclOrientEnum,
+        leading: EdgeFindEnum,
+        trailing: EdgeFindEnum
+) -> AirfoilGeometry:
+    """
+
+    :param section:
+    :param refine_tol:
+    :param orient:
+    :param leading:
+    :param trailing:
+    :return:
+    """
+    ...
 
 
 def compute_inscribed_circles(section: Curve2, refine_tol: float) -> List[InscribedCircle]:
