@@ -62,6 +62,7 @@ impl Mesh {
         Ok(Self::from_inner(mesh))
     }
 
+    #[getter]
     fn aabb(&self) -> Aabb3 {
         Aabb3::from_inner(self.inner.aabb())
     }

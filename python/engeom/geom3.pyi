@@ -451,6 +451,7 @@ class Mesh:
         """
         ...
 
+    @property
     def aabb(self) -> Aabb3:
         """ Return the axis-aligned bounding box of the mesh. """
         ...

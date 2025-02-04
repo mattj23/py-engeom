@@ -10,18 +10,22 @@ try:
 except ImportError:
     pass
 else:
+
     class GomColorMap(ListedColormap):
         def __init__(self):
-            colors = numpy.array([
-                [1, 0, 160],
-                [1, 0, 255],
-                [0, 254, 255],
-                [0, 160, 0],
-                [0, 254, 0],
-                [255, 255, 0],
-                [255, 128, 0],
-                [255, 1, 0]
-            ], dtype=numpy.float64)
+            colors = numpy.array(
+                [
+                    [1, 0, 160],
+                    [1, 0, 255],
+                    [0, 254, 255],
+                    [0, 160, 0],
+                    [0, 254, 0],
+                    [255, 255, 0],
+                    [255, 128, 0],
+                    [255, 1, 0],
+                ],
+                dtype=numpy.float64,
+            )
             colors /= 256.0
             colors = numpy.hstack((colors, numpy.ones((len(colors), 1))))
             super().__init__(colors)
@@ -30,7 +34,9 @@ else:
 
     GOM_CMAP = GomColorMap()
 
-    def add_curve_plots(ax: Axes, *curves: Curve2, **kwargs) -> List[List[matplotlib.lines.Line2D]]:
+    def add_curve_plots(
+        ax: Axes, *curves: Curve2, **kwargs
+    ) -> List[List[matplotlib.lines.Line2D]]:
         """
         Plot a list of curves on a Matplotlib Axes object.
         :param ax: a Matplotlib Axes object
@@ -44,7 +50,6 @@ else:
             a = ax.plot(points[:, 0], points[:, 1], **kwargs)
             actors.append(a)
         return actors
-
 
     def set_aspect_fill(ax: Axes):
         """
@@ -105,6 +110,7 @@ else:
             :return: None
             """
             from matplotlib.pyplot import Circle
+
             for cdata in circle:
                 if isinstance(cdata, Circle2):
                     c = Circle((cdata.center.x, cdata.center.y), cdata.r, **kwargs)
@@ -120,5 +126,4 @@ else:
             :param kwargs: keyword arguments to pass to the plot function
             :return: None
             """
-            points = curve.clone_points()
-            self.ax.plot(points[:, 0], points[:, 1], **kwargs)
+            self.ax.plot(curve.points[:, 0], curve.points[:, 1], **kwargs)

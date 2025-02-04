@@ -1,6 +1,7 @@
 """
-    This module contains helper functions for working with PyVista.
+This module contains helper functions for working with PyVista.
 """
+
 from __future__ import annotations
 
 from typing import List
@@ -15,14 +16,19 @@ try:
 except ImportError:
     pass
 else:
+
     class PlotterHelper:
         def __init__(self, plotter: pyvista.Plotter):
             self.plotter = plotter
 
         def add_curves(
-                self,
-                *curves: Curve3, color: ColorLike = 'w', width: float = 5.0, label: str | None = None,
-                name: str | None = None) -> List[pyvista.vtkActor]:
+            self,
+            *curves: Curve3,
+            color: ColorLike = "w",
+            width: float = 5.0,
+            label: str | None = None,
+            name: str | None = None,
+        ) -> List[pyvista.vtkActor]:
             """
 
             :param curves:
@@ -34,8 +40,14 @@ else:
             """
             result_list = []
             for curve in curves:
-                added = self.plotter.add_lines(curve.points, connected=True, color=color, width=width, label=label,
-                                               name=name)
+                added = self.plotter.add_lines(
+                    curve.points,
+                    connected=True,
+                    color=color,
+                    width=width,
+                    label=label,
+                    name=name,
+                )
                 result_list.append(added)
 
             return result_list
@@ -46,6 +58,7 @@ else:
             :param mesh:
             :return:
             """
-            faces = numpy.hstack((numpy.ones((mesh.triangles.shape[0], 1), dtype=mesh.triangles.dtype) * 3, mesh.triangles))
+            prefix = numpy.ones((mesh.triangles.shape[0], 1), dtype=mesh.triangles.dtype)
+            faces = numpy.hstack((prefix * 3, mesh.triangles))
             data = pyvista.PolyData(mesh.points, faces)
             return self.plotter.add_mesh(data, **kwargs)
