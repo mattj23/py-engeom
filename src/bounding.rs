@@ -35,6 +35,19 @@ impl Aabb2 {
         }
     }
 
+    #[staticmethod]
+    #[pyo3(signature=(x, y, w, h=None))]
+    fn at_point(x: f64, y: f64, w: f64, h: Option<f64>) -> Self {
+        let h = h.unwrap_or(w) / 2.0;
+        let w = w / 2.0;
+        let p = engeom::Point2::new(x, y);
+        let v = engeom::Vector2::new(w, h);
+
+        Self {
+            inner: engeom::geom2::Aabb2::new(p - v, p + v),
+        }
+    }
+
     fn __repr__(&self) -> String {
         format!(
             "Aabb2({}, {}, {}, {})",

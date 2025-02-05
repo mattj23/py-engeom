@@ -1,5 +1,4 @@
-use crate::geom2::{Circle2, Curve2, Point2};
-use engeom::airfoil::EdgeLocation;
+use crate::geom2::{Arc2, Circle2, Curve2, Point2};
 use numpy::ndarray::ArrayD;
 use numpy::{IntoPyArray, PyArrayDyn};
 use pyo3::exceptions::PyValueError;
@@ -9,6 +8,34 @@ use pyo3::IntoPyObjectExt;
 // ================================================================================================
 // Orientation Methods
 // ================================================================================================
+#[pyclass]
+#[derive(Clone, Copy, Debug)]
+pub enum FaceOrient {
+    Detect {},
+    UpperDir { x: f64, y: f64 },
+}
+
+#[pymethods]
+impl FaceOrient {
+    fn __repr__(&self) -> String {
+        match self {
+            FaceOrient::Detect {} => "FaceOrient.Detect".to_string(),
+            FaceOrient::UpperDir { x, y } => format!("FaceOrient.UpperDir({}, {})", x, y),
+        }
+    }
+}
+
+impl From<FaceOrient> for engeom::airfoil::FaceOrient {
+    fn from(value: FaceOrient) -> Self {
+        match value {
+            FaceOrient::Detect {} => engeom::airfoil::FaceOrient::Detect,
+            FaceOrient::UpperDir { x, y } => {
+                engeom::airfoil::FaceOrient::UpperDir(engeom::Vector2::new(x, y))
+            }
+        }
+    }
+}
+
 #[pyclass]
 #[derive(Clone, Copy, Debug)]
 pub enum MclOrient {
@@ -26,7 +53,7 @@ impl MclOrient {
     }
 }
 
-impl From<MclOrient> for Box<dyn engeom::airfoil::CamberOrientation> {
+impl From<MclOrient> for Box<dyn engeom::airfoil::CamberOrient> {
     fn from(value: MclOrient) -> Self {
         match value {
             MclOrient::TmaxFwd {} => engeom::airfoil::TMaxFwd::make(),
@@ -63,7 +90,7 @@ impl EdgeFind {
     }
 }
 
-impl From<EdgeFind> for Box<dyn EdgeLocation> {
+impl From<EdgeFind> for Box<dyn engeom::airfoil::EdgeLocate> {
     fn from(value: EdgeFind) -> Self {
         use engeom::airfoil;
 
@@ -105,22 +132,83 @@ impl InscribedCircle {
 
     #[getter]
     fn contact_a(&self) -> Point2 {
-        Point2::from_inner(self.inner.upper.clone())
+        Point2::from_inner(self.inner.contact_pos.clone())
     }
 
     #[getter]
     fn contact_b(&self) -> Point2 {
-        Point2::from_inner(self.inner.lower.clone())
+        Point2::from_inner(self.inner.contact_neg.clone())
     }
 }
 
 // ================================================================================================
 // Airfoil geometry result
 // ================================================================================================
+
+#[pyclass]
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub enum EdgeType {
+    Open,
+    Closed,
+}
+
+#[pymethods]
+impl EdgeType {
+    fn __repr__(&self) -> String {
+        match self {
+            EdgeType::Open => "EdgeType.Open".to_string(),
+            EdgeType::Closed => "EdgeType.Closed".to_string(),
+        }
+    }
+}
+
+#[pyclass]
+#[derive(Clone)]
+pub struct EdgeResult {
+    inner: engeom::airfoil::AirfoilEdge,
+}
+
+impl EdgeResult {
+    pub fn get_inner(&self) -> &engeom::airfoil::AirfoilEdge {
+        &self.inner
+    }
+
+    pub fn from_inner(inner: engeom::airfoil::AirfoilEdge) -> Self {
+        Self { inner }
+    }
+}
+
+#[pymethods]
+impl EdgeResult {
+    #[getter]
+    fn point(&self) -> Point2 {
+        Point2::from_inner(self.inner.point)
+    }
+
+    #[getter]
+    fn geometry<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyAny>> {
+        use engeom::airfoil::EdgeGeometry;
+
+        match self.inner.geometry {
+            EdgeGeometry::Open => EdgeType::Open.into_bound_py_any(py),
+            EdgeGeometry::Closed => EdgeType::Closed.into_bound_py_any(py),
+            EdgeGeometry::Arc(a) => Arc2::from_inner(a).into_bound_py_any(py),
+        }
+    }
+}
+
 #[pyclass]
 pub struct AirfoilGeometry {
     inner: engeom::airfoil::AirfoilGeometry,
+
+    leading: Option<EdgeResult>,
+    trailing: Option<EdgeResult>,
+
     camber: Option<Py<Curve2>>,
+    upper: Option<Py<Curve2>>,
+    lower: Option<Py<Curve2>>,
+
+    sides_failed: bool,
     circle_array: Option<Py<PyArrayDyn<f64>>>,
 }
 
@@ -130,7 +218,37 @@ impl AirfoilGeometry {
     }
 
     pub fn from_inner(inner: engeom::airfoil::AirfoilGeometry) -> Self {
-        Self { inner, camber: None, circle_array: None }
+        let leading = inner
+            .leading_edge
+            .as_ref()
+            .map(|e| EdgeResult::from_inner(e.clone()));
+        let trailing = inner
+            .trailing_edge
+            .as_ref()
+            .map(|e| EdgeResult::from_inner(e.clone()));
+        Self {
+            inner,
+            leading,
+            trailing,
+            camber: None,
+            upper: None,
+            lower: None,
+            sides_failed: false,
+            circle_array: None,
+        }
+    }
+
+    pub fn build_sides(&mut self, py: Python) {
+        if self.sides_failed || (self.upper.is_some() && self.lower.is_some()) {
+            return;
+        }
+
+        if let (Some(u), Some(l)) = (self.inner.upper.as_ref(), self.inner.lower.as_ref()) {
+            self.upper = Some(Py::new(py, Curve2::from_inner(u.clone())).unwrap());
+            self.lower = Some(Py::new(py, Curve2::from_inner(l.clone())).unwrap());
+        } else {
+            self.sides_failed = true;
+        }
     }
 }
 
@@ -152,6 +270,28 @@ impl AirfoilGeometry {
     }
 
     #[getter]
+    fn leading(&self) -> Option<EdgeResult> {
+        self.leading.as_ref().map(|l| l.clone())
+    }
+
+    #[getter]
+    fn trailing(&self) -> Option<EdgeResult> {
+        self.trailing.as_ref().map(|t| t.clone())
+    }
+
+    #[getter]
+    fn upper<'py>(&mut self, py: Python<'py>) -> Option<&Bound<'py, Curve2>> {
+        self.build_sides(py);
+        self.upper.as_ref().map(|u| u.bind(py))
+    }
+
+    #[getter]
+    fn lower<'py>(&mut self, py: Python<'py>) -> Option<&Bound<'py, Curve2>> {
+        self.build_sides(py);
+        self.lower.as_ref().map(|l| l.bind(py))
+    }
+
+    #[getter]
     fn circle_array<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<f64>> {
         if self.circle_array.is_none() {
             let mut result = ArrayD::zeros(vec![self.inner.stations.len(), 3]);
@@ -164,29 +304,33 @@ impl AirfoilGeometry {
         }
         self.circle_array.as_ref().unwrap().bind(py)
     }
+
+    #[staticmethod]
+    fn from_analyze(
+        section: &Curve2,
+        refine_tol: f64,
+        camber_orient: MclOrient,
+        leading: EdgeFind,
+        trailing: EdgeFind,
+        face_orient: FaceOrient,
+    ) -> PyResult<Self> {
+        let result = engeom::airfoil::AirfoilGeometry::try_analyze(
+            section.get_inner(),
+            refine_tol,
+            camber_orient.into(),
+            leading.into(),
+            trailing.into(),
+            face_orient.into(),
+        )
+        .map_err(|e| PyValueError::new_err(e.to_string()))?;
+
+        Ok(AirfoilGeometry::from_inner(result))
+    }
 }
 
 // ================================================================================================
 // Functions
 // ================================================================================================
-#[pyfunction]
-pub fn compute_airfoil_geometry(
-    section: Curve2,
-    refine_tol: f64,
-    orient: MclOrient,
-    leading: EdgeFind,
-    trailing: EdgeFind,
-) -> PyResult<AirfoilGeometry> {
-    // Construct the parameters
-    let params =
-        engeom::airfoil::AfParams::new(refine_tol, orient.into(), leading.into(), trailing.into());
-
-    let result = engeom::airfoil::analyze_airfoil_geometry(section.get_inner(), &params)
-        .map_err(|e| PyValueError::new_err(e.to_string()))?;
-
-    Ok(AirfoilGeometry::from_inner(result))
-}
-
 #[pyfunction]
 pub fn compute_inscribed_circles(
     section: Curve2,

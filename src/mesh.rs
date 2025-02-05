@@ -86,7 +86,7 @@ impl Mesh {
             .map_err(|e| PyValueError::new_err(e.to_string()))
     }
 
-    fn clone(&self) -> Self {
+    fn cloned(&self) -> Self {
         self.clone()
     }
 
@@ -127,14 +127,8 @@ impl Mesh {
             SplitResult::Pair(mesh1, mesh2) => {
                 Ok((Some(Self::from_inner(mesh1)), Some(Self::from_inner(mesh2))))
             }
-            SplitResult::Negative => Ok((
-                Some(self.clone()),
-                None,
-            )),
-            SplitResult::Positive => Ok((
-                None,
-                Some(self.clone()),
-            )),
+            SplitResult::Negative => Ok((Some(self.clone()), None)),
+            SplitResult::Positive => Ok((None, Some(self.clone()))),
         }
     }
 

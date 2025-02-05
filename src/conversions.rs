@@ -34,7 +34,6 @@ pub fn faces_to_array(faces: &[[u32; 3]]) -> ArrayD<u32> {
     array
 }
 
-
 pub fn array_to_faces(array: &ArrayViewD<'_, u32>) -> PyResult<Vec<[u32; 3]>> {
     let shape = array.shape();
     if shape.len() != 2 || shape[1] != 3 {

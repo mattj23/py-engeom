@@ -1,6 +1,7 @@
 use crate::bounding::Aabb2;
 use crate::common::Resample;
 use crate::conversions::{array_to_points2, array_to_vectors2, points_to_array2};
+use engeom::geom2::{HasBounds2, Line2};
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::exceptions::PyValueError;
@@ -341,7 +342,153 @@ impl Circle2 {
 
     #[getter]
     fn aabb(&self) -> Aabb2 {
-        Aabb2::from_inner(self.inner.aabb())
+        Aabb2::from_inner(*self.inner.aabb())
+    }
+}
+
+// ================================================================================================
+// Segment
+// ================================================================================================
+// TODO: Type hints for this
+
+#[pyclass]
+#[derive(Clone, Debug)]
+pub struct Segment2 {
+    inner: engeom::geom2::Segment2,
+}
+
+impl Segment2 {
+    pub fn get_inner(&self) -> &engeom::geom2::Segment2 {
+        &self.inner
+    }
+
+    pub fn from_inner(inner: engeom::geom2::Segment2) -> Self {
+        Self { inner }
+    }
+}
+
+#[pymethods]
+impl Segment2 {
+    #[new]
+    fn new(x0: f64, y0: f64, x1: f64, y1: f64) -> PyResult<Self> {
+        let p0 = engeom::Point2::new(x0, y0);
+        let p1 = engeom::Point2::new(x1, y1);
+        Ok(Self {
+            inner: engeom::geom2::Segment2::try_new(p0, p1)
+                .map_err(|e| PyValueError::new_err(e.to_string()))?,
+        })
+    }
+
+    fn __repr__(&self) -> String {
+        format!(
+            "Segment2({}, {}, {}, {})",
+            self.inner.a.x, self.inner.a.y, self.inner.b.x, self.inner.b.y
+        )
+    }
+
+    #[getter]
+    fn a(&self) -> Point2 {
+        Point2::from_inner(self.inner.a)
+    }
+
+    #[getter]
+    fn b(&self) -> Point2 {
+        Point2::from_inner(self.inner.b)
+    }
+
+    #[getter]
+    fn direction(&self) -> Vector2 {
+        Vector2::from_inner(self.inner.dir())
+    }
+}
+
+// ================================================================================================
+// Arc
+// ================================================================================================
+#[pyclass]
+#[derive(Clone, Debug)]
+pub struct Arc2 {
+    inner: engeom::Arc2,
+}
+
+impl Arc2 {
+    pub fn get_inner(&self) -> &engeom::Arc2 {
+        &self.inner
+    }
+
+    pub fn from_inner(inner: engeom::Arc2) -> Self {
+        Self { inner }
+    }
+}
+
+#[pymethods]
+impl Arc2 {
+    fn __repr__(&self) -> String {
+        format!(
+            "Arc2({}, {}, {}, {}, {})",
+            self.inner.center().x,
+            self.inner.center().y,
+            self.inner.radius(),
+            self.inner.angle0,
+            self.inner.angle
+        )
+    }
+
+    #[new]
+    fn new(x: f64, y: f64, r: f64, start_radians: f64, sweep_radians: f64) -> Self {
+        Self {
+            inner: engeom::Arc2::circle_angles(
+                engeom::Point2::new(x, y),
+                r,
+                start_radians,
+                sweep_radians,
+            ),
+        }
+    }
+
+    #[getter]
+    fn center(&self) -> Point2 {
+        Point2::from_inner(self.inner.center())
+    }
+
+    #[getter]
+    fn x(&self) -> f64 {
+        self.inner.center().x
+    }
+
+    #[getter]
+    fn y(&self) -> f64 {
+        self.inner.center().y
+    }
+
+    #[getter]
+    fn r(&self) -> f64 {
+        self.inner.radius()
+    }
+
+    #[getter]
+    fn start(&self) -> f64 {
+        self.inner.angle0
+    }
+
+    #[getter]
+    fn sweep(&self) -> f64 {
+        self.inner.angle
+    }
+
+    #[getter]
+    fn aabb(&self) -> Aabb2 {
+        Aabb2::from_inner(*self.inner.aabb())
+    }
+
+    #[getter]
+    fn start_point(&self) -> Point2 {
+        Point2::from_inner(self.inner.start())
+    }
+
+    #[getter]
+    fn end_point(&self) -> Point2 {
+        Point2::from_inner(self.inner.end())
     }
 }
 

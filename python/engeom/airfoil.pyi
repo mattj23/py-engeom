@@ -1,11 +1,49 @@
 from typing import List
 
 import numpy
+from enum import Enum
 
-from .geom2 import Circle2, Curve2, Point2, SurfacePoint2
+from .geom2 import Circle2, Curve2, Point2, SurfacePoint2, Arc2
 
 type MclOrientEnum = MclOrient.TmaxFwd | MclOrient.DirFwd
+type FaceOrientEnum = FaceOrient.Detect | FaceOrient.UpperDir
 type EdgeFindEnum = EdgeFind.Open | EdgeFind.OpenIntersect | EdgeFind.Intersect | EdgeFind.RansacRadius
+type EdgeTypeEnum = EdgeType | Arc2
+
+class EdgeType(Enum):
+    Open=0
+    Closed=1
+
+class FaceOrient:
+    """
+    An enumeration of the possible ways to orient the upper/lower (suction/pressure, convex/concave) faces of an
+    airfoil cross-section.
+    """
+
+    class Detect:
+        """
+        In an airfoil with an MCL that exhibits curvature, this will attempt to detect which direction the camber line
+        curves and thus identify convex/concave. This will fail if the MCL is straight.
+        """
+        ...
+
+    class UpperDir:
+        """
+        This method will orient the faces based on a vector direction provided by the user.
+        """
+
+        def __init__(self, x: float, y: float):
+            """
+            Create a new upper direction parameter. The x and y arguments are components of a direction vector which
+            should distinguish the upper (pressure side, convex) face of the airfoil. At the center of the mean camber
+            line, an intersection in this direction will be taken with each of the two faces. The intersection that
+            is further in the direction of this vector will be considered the upper face of the airfoil, and the other
+            will be considered the lower face.
+
+            :param x: the x component of the upper direction vector
+            :param y: the y component of the upper direction vector
+            """
+            ...
 
 
 class MclOrient:
@@ -118,10 +156,52 @@ class InscribedCircle:
         ...
 
 
+class EdgeResult:
+    """
+    Represents the results of an edge detection algorithm
+    """
+
+    @property
+    def point(self) -> Point2:
+        """
+        The point on the airfoil cross-section that was detected as the edge.
+        """
+        ...
+
+    @property
+    def geometry(self):
+        ...
+
+
 class AirfoilGeometry:
     """
     The result of an airfoil geometry computation.
     """
+
+    @staticmethod
+    def from_analyze(
+            section: Curve2,
+            refine_tol: float,
+            camber_orient: MclOrientEnum,
+            leading: EdgeFindEnum,
+            trailing: EdgeFindEnum,
+            face_orient: FaceOrientEnum,
+    ) -> AirfoilGeometry:
+        ...
+
+    @property
+    def leading(self) -> EdgeResult | None:
+        """
+        The result of the leading edge detection algorithm.
+        """
+        ...
+
+    @property
+    def trailing(self) -> EdgeResult | None:
+        """
+        The result of the trailing edge detection algorithm.
+        """
+        ...
 
     @property
     def camber(self) -> Curve2:
@@ -133,6 +213,28 @@ class AirfoilGeometry:
         ...
 
     @property
+    def upper(self) -> Curve2 | None:
+        """
+        The curve representing the upper (suction, convex) side of the airfoil cross-section. The curve will be oriented
+        in the same winding direction as the original section, so the first point may be at either the leading or
+        trailing edge based on the airfoil geometry and the coordinate system.
+
+        :return: A Curve2, or None if there was an issue detecting the leading or trailing edge.
+        """
+        ...
+
+    @property
+    def lower(self) -> Curve2 | None:
+        """
+        The curve representing the lower (pressure, concave) side of the airfoil cross-section. The curve will be
+        oriented in the same winding direction as the original section, so the first point may be at either the leading
+        or trailing edge based on the airfoil geometry and the coordinate system.
+
+        :return: A Curve2, or None if there was an issue detecting the leading or trailing edge.
+        """
+        ...
+
+    @property
     def circle_array(self) -> numpy.ndarray[float]:
         """
         Returns the list of inscribed circles as a numpy array of shape (N, 3) where N is the number of inscribed
@@ -140,25 +242,6 @@ class AirfoilGeometry:
         radius of the circle.
         """
         ...
-
-
-def compute_airfoil_geometry(
-        section: Curve2,
-        refine_tol: float,
-        orient: MclOrientEnum,
-        leading: EdgeFindEnum,
-        trailing: EdgeFindEnum
-) -> AirfoilGeometry:
-    """
-
-    :param section:
-    :param refine_tol:
-    :param orient:
-    :param leading:
-    :param trailing:
-    :return:
-    """
-    ...
 
 
 def compute_inscribed_circles(section: Curve2, refine_tol: float) -> List[InscribedCircle]:

@@ -570,6 +570,89 @@ class Circle2:
         ...
 
 
+class Arc2:
+    def __init__(self, x: float, y: float, r: float, start_radians: float, sweep_radians: float):
+        """
+
+        :param x:
+        :param y:
+        :param r:
+        :param start_radians:
+        :param sweep_radians:
+        """
+
+    @property
+    def center(self) -> Point2:
+        """
+        Get the center of the arc.
+        :return: the center of the arc.
+        """
+        ...
+
+    @property
+    def x(self) -> float:
+        """
+        Get the x-coordinate of the arc.
+        :return: the x-coordinate of the arc.
+        """
+        ...
+
+    @property
+    def y(self) -> float:
+        """
+        Get the y-coordinate of the arc.
+        :return: the y-coordinate of the arc.
+        """
+        ...
+
+    @property
+    def r(self) -> float:
+        """
+        Get the radius of the arc.
+        :return: the radius of the arc.
+        """
+        ...
+
+    @property
+    def start(self) -> float:
+        """
+        Get the start angle of the arc in radians.
+        :return: the start angle of the arc in radians.
+        """
+        ...
+
+    @property
+    def sweep(self) -> float:
+        """
+        Get the sweep angle of the arc in radians.
+        :return: the sweep angle of the arc in radians.
+        """
+        ...
+
+    @property
+    def aabb(self) -> Aabb2:
+        """
+        Get the axis-aligned bounding box of the arc.
+        :return: the axis-aligned bounding box of the arc.
+        """
+        ...
+
+    @property
+    def start_point(self) -> Point2:
+        """
+        Get the start point of the arc.
+        :return: the start point of the arc.
+        """
+        ...
+
+    @property
+    def end_point(self) -> Point2:
+        """
+        Get the end point of the arc.
+        :return: the end point of the arc.
+        """
+        ...
+
 class Aabb2:
     def __init__(self, x_min: float, x_max: float, y_min: float, y_max: float):
         """
@@ -578,6 +661,18 @@ class Aabb2:
         :param x_max:
         :param y_min:
         :param y_max:
+        """
+        ...
+
+    @staticmethod
+    def at_point(x: float, y: float, w: float, h: float | None = None) -> Aabb2:
+        """
+        Create an AABB centered at a point with a given width and height.
+        :param x: the x-coordinate of the center of the AABB.
+        :param y: the y-coordinate of the center of the AABB.
+        :param w: the width of the AABB.
+        :param h: the height of the AABB. If not provided, the AABB will be square.
+        :return: a new AABB object.
         """
         ...
 

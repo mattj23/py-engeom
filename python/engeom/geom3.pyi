@@ -479,7 +479,7 @@ class Mesh:
         """
         ...
 
-    def clone(self) -> Mesh:
+    def cloned(self) -> Mesh:
         """
         Will return a copy of the mesh. This is a copy of the data, so modifying the returned mesh will not modify the
         original mesh.
