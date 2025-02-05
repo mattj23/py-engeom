@@ -4,6 +4,7 @@ import numpy
 from enum import Enum
 
 from .geom2 import Circle2, Curve2, Point2, SurfacePoint2, Arc2
+from .metrology import Length2
 
 type MclOrientEnum = MclOrient.TmaxFwd | MclOrient.DirFwd
 type FaceOrientEnum = FaceOrient.Detect | FaceOrient.UpperDir
@@ -240,6 +241,13 @@ class AirfoilGeometry:
         Returns the list of inscribed circles as a numpy array of shape (N, 3) where N is the number of inscribed
         circles. The first two columns are the x and y coordinates of the circle center, and the third column is the
         radius of the circle.
+        """
+        ...
+
+    def get_t_max(self) -> Length2:
+        """
+        Get the maximum thickness dimension of the airfoil cross-section.
+        :return:
         """
         ...
 

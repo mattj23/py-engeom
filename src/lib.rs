@@ -7,6 +7,7 @@ mod geom2;
 mod geom3;
 mod mesh;
 mod svd_basis;
+mod metrology;
 
 use pyo3::prelude::*;
 
@@ -78,6 +79,14 @@ fn register_airfoil_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> 
     parent_module.add_submodule(&child)
 }
 
+fn register_metrology_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
+    let child = PyModule::new(parent_module.py(), "_metrology")?;
+    child.add_class::<metrology::Length2>()?;
+
+    parent_module.add_submodule(&child)
+}
+
+
 /// Engeom is a library for geometric operations in 2D and 3D space.
 #[pymodule(name = "engeom")]
 fn py_engeom(m: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -92,6 +101,9 @@ fn py_engeom(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // Airfoil submodule
     register_airfoil_module(m)?;
+
+    // Metrology submodule
+    register_metrology_module(m)?;
 
     // Common features and primitives
     m.add_class::<common::DeviationMode>()?;

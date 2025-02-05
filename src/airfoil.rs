@@ -1,9 +1,11 @@
+use engeom::common::points::dist;
 use crate::geom2::{Arc2, Circle2, Curve2, Point2};
 use numpy::ndarray::ArrayD;
 use numpy::{IntoPyArray, PyArrayDyn};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::IntoPyObjectExt;
+use crate::metrology::Length2;
 
 // ================================================================================================
 // Orientation Methods
@@ -325,6 +327,29 @@ impl AirfoilGeometry {
         .map_err(|e| PyValueError::new_err(e.to_string()))?;
 
         Ok(AirfoilGeometry::from_inner(result))
+    }
+
+    fn get_t_max(&self) -> PyResult<Length2> {
+        // Find the maximum thickness point
+        let c = self.inner.find_tmax();
+        let upper_n = self.inner.upper.as_ref()
+            .ok_or(PyValueError::new_err("Upper curve not computed"))?
+            .at_closest_to_point(&c.contact_neg)
+            .point();
+        let lower_n = self.inner.lower.as_ref()
+            .ok_or(PyValueError::new_err("Lower curve not computed"))?
+            .at_closest_to_point(&c.contact_neg)
+            .point();
+
+        let inner = if dist(&upper_n, &c.contact_neg) < dist(&lower_n, &c.contact_neg) {
+            // contact_neg is on the upper side
+            engeom::metrology::Length2::new(c.contact_neg, c.contact_pos, None)
+        } else {
+            // contact_neg is on the lower side
+            engeom::metrology::Length2::new(c.contact_pos, c.contact_neg, None)
+        };
+
+        Ok(Length2::from_inner(inner))
     }
 }
 

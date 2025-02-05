@@ -8,7 +8,7 @@ Transformable2 = TypeVar("Transformable2", Vector2, Point2, Iso2, SurfacePoint2)
 PointOrVec2 = TypeVar("PointOrVec2", Point2, Vector2)
 
 
-class Vector2:
+class Vector2(Iterable[float]):
     def __init__(self, x: float, y: float):
         """
 
@@ -23,9 +23,6 @@ class Vector2:
 
     @property
     def y(self) -> float:
-        ...
-
-    def __iter__(self) -> Iterable[float]:
         ...
 
     def __rmul__(self, other: float) -> Vector2:
@@ -80,7 +77,7 @@ class Vector2:
         ...
 
 
-class Point2:
+class Point2(Iterable[float]):
     def __init__(self, x: float, y: float):
         """
 
@@ -95,9 +92,6 @@ class Point2:
 
     @property
     def y(self) -> float:
-        ...
-
-    def __iter__(self) -> Iterable[float]:
         ...
 
     @property
@@ -192,6 +186,17 @@ class SurfacePoint2:
 
         :param point: the point to calculate the distance to.
         :return: the planar distance between the surface point and the point.
+        """
+        ...
+
+    def shift_orthogonal(self, distance: float) -> SurfacePoint2:
+        """
+        Shift the surface point by a distance orthogonal to the normal vector. The direction of travel is the surface
+        point's normal vector rotated 90 degrees clockwise. For instance, if the normal vector is (0, 1), a positive
+        distance will move the point to the right and a negative distance will move the point to the left.
+
+        :param distance: the distance to shift the surface point.
+        :return: a new surface point shifted by the given distance.
         """
         ...
 

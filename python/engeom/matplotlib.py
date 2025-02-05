@@ -3,6 +3,7 @@ from typing import List, Iterable
 import matplotlib.lines
 import numpy
 from .geom2 import Curve2, Circle2, Aabb2
+from .metrology import Length2
 
 try:
     from matplotlib.pyplot import Axes, Circle
@@ -32,10 +33,12 @@ else:
             self.set_under("magenta")
             self.set_over("darkred")
 
+
     GOM_CMAP = GomColorMap()
 
+
     def add_curve_plots(
-        ax: Axes, *curves: Curve2, **kwargs
+            ax: Axes, *curves: Curve2, **kwargs
     ) -> List[List[matplotlib.lines.Line2D]]:
         """
         Plot a list of curves on a Matplotlib Axes object.
@@ -50,6 +53,7 @@ else:
             a = ax.plot(points[:, 0], points[:, 1], **kwargs)
             actors.append(a)
         return actors
+
 
     def set_aspect_fill(ax: Axes):
         """
@@ -83,6 +87,7 @@ else:
             x_range = x_scale / y_scale * (x1 - x0)
             x_mid = (x0 + x1) / 2
             ax.set_xlim(x_mid - x_range / 2, x_mid + x_range / 2)
+
 
     class AxesHelper:
         def __init__(self, ax: Axes, skip_aspect=False, hide_axes=False):
@@ -127,3 +132,33 @@ else:
             :return: None
             """
             self.ax.plot(curve.points[:, 0], curve.points[:, 1], **kwargs)
+
+        def plot_length(self, length: Length2, side_shift: float = 0):
+            """
+            Plot a Length2 object on a Matplotlib Axes object.
+            :param side_shift:
+            :param length: a Length2 object
+            :return: None
+            """
+            from matplotlib.pyplot import Line2D
+
+            pad_scale = 10.0
+
+            center = length.center.shift_orthogonal(side_shift)
+            leader_a = center.projection(length.a)
+            leader_b = center.projection(length.b)
+
+            self.arrow(leader_a - length.direction * pad_scale, leader_a)
+            self.arrow(leader_b + length.direction * pad_scale, leader_b)
+
+        def arrow(self, start: Iterable[float], end: Iterable[float]):
+            """
+            Plot an arrow on a Matplotlib Axes object.
+            :param start: the start point of the arrow
+            :param end: the end point of the arrow
+            :param kwargs: keyword arguments to pass to the arrow function
+            :return: None
+            """
+            sx, sy, *_ = start
+            ex, ey, *_ = end
+            self.ax.annotate("", xy=(ex, ey), xytext=(sx, sy), arrowprops=dict(arrowstyle="->"))

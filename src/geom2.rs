@@ -281,6 +281,10 @@ impl SurfacePoint2 {
     fn planar_distance(&self, other: Point2) -> f64 {
         self.inner.planar_distance(other.get_inner())
     }
+
+    fn shift_orthogonal(&self, distance: f64) -> Self {
+        Self::from_inner(self.inner.shift_orthogonal(distance))
+    }
 }
 
 // ================================================================================================
