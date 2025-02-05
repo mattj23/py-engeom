@@ -6,8 +6,8 @@ mod conversions;
 mod geom2;
 mod geom3;
 mod mesh;
-mod svd_basis;
 mod metrology;
+mod svd_basis;
 
 use pyo3::prelude::*;
 
@@ -67,6 +67,7 @@ fn register_airfoil_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> 
     child.add_class::<airfoil::MclOrient>()?;
     child.add_class::<airfoil::FaceOrient>()?;
     child.add_class::<airfoil::EdgeFind>()?;
+    child.add_class::<airfoil::AfGage>()?;
 
     child.add_class::<airfoil::InscribedCircle>()?;
     child.add_class::<airfoil::AirfoilGeometry>()?;
@@ -85,7 +86,6 @@ fn register_metrology_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()
 
     parent_module.add_submodule(&child)
 }
-
 
 /// Engeom is a library for geometric operations in 2D and 3D space.
 #[pymodule(name = "engeom")]

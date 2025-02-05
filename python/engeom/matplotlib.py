@@ -7,10 +7,12 @@ from .metrology import Length2
 
 PlotCoords = Union[Point2, Vector2, Iterable[float]]
 
+
 class LabelPlace(Enum):
     Outside = 1
     Inside = 2
     OutsideRev = 3
+
 
 try:
     from matplotlib.pyplot import Axes, Circle
@@ -42,24 +44,6 @@ else:
 
 
     GOM_CMAP = GomColorMap()
-
-
-    def add_curve_plots(
-            ax: Axes, *curves: Curve2, **kwargs
-    ) -> List[List[matplotlib.lines.Line2D]]:
-        """
-        Plot a list of curves on a Matplotlib Axes object.
-        :param ax: a Matplotlib Axes object
-        :param curves: a list of Curve2 objects
-        :param kwargs: keyword arguments to pass to the plot function
-        :return: None
-        """
-        actors = []
-        for curve in curves:
-            points = curve.clone_points()
-            a = ax.plot(points[:, 0], points[:, 1], **kwargs)
-            actors.append(a)
-        return actors
 
 
     def set_aspect_fill(ax: Axes):
@@ -140,7 +124,7 @@ else:
             """
             self.ax.plot(curve.points[:, 0], curve.points[:, 1], **kwargs)
 
-        def plot_length(
+        def dimension(
                 self,
                 length: Length2,
                 side_shift: float = 0,
@@ -148,6 +132,7 @@ else:
                 fontsize: int = 10,
                 label_place: LabelPlace = LabelPlace.Outside,
                 label_offset: float | None = None,
+                fontname: str | None = None,
         ):
             """
             Plot a Length2 object on a Matplotlib Axes object.
@@ -182,12 +167,15 @@ else:
             self._line_if_needed(pad_scale, length.a, leader_a)
             self._line_if_needed(pad_scale, length.b, leader_b)
 
+            kwargs = {"ha": "center", "va": "center", "fontsize": fontsize}
+            if fontname is not None:
+                kwargs["fontname"] = fontname
+
             result = self.annotate_text_only(
                 format.format(value=length.value),
                 label_coords,
                 bbox=dict(boxstyle="round,pad=0.3", ec="black", fc="white"),
-                ha="center", va="center",
-                fontsize=fontsize,
+                **kwargs,
             )
 
         def _line_if_needed(self, pad: float, actual: Point2, leader_end: Point2):
@@ -196,9 +184,8 @@ else:
             if v.norm() < half_pad:
                 return
             work = SurfacePoint2(*actual, *v)
-            t0 = -half_pad
             t1 = work.scalar_projection(leader_end) + half_pad
-            self.arrow(work.at_distance(t1), work.at_distance(t0), arrow="-")
+            self.arrow(actual, work.at_distance(t1), arrow="-")
 
         def annotate_text_only(self, text: str, pos: PlotCoords, **kwargs):
             """
@@ -218,8 +205,8 @@ else:
             :param kwargs: keyword arguments to pass to the arrow function
             :return: None
             """
-            self.ax.annotate("", xy=_tuplefy(end), xytext=_tuplefy(start), arrowprops=dict(arrowstyle=arrow, fc="black"))
-
+            self.ax.annotate("", xy=_tuplefy(end), xytext=_tuplefy(start),
+                             arrowprops=dict(arrowstyle=arrow, fc="black"))
 
         def _font_height(self, font_size: int) -> float:
             """ Get the height of a font in data units. """

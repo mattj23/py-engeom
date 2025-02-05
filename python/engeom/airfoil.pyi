@@ -10,10 +10,35 @@ type MclOrientEnum = MclOrient.TmaxFwd | MclOrient.DirFwd
 type FaceOrientEnum = FaceOrient.Detect | FaceOrient.UpperDir
 type EdgeFindEnum = EdgeFind.Open | EdgeFind.OpenIntersect | EdgeFind.Intersect | EdgeFind.RansacRadius
 type EdgeTypeEnum = EdgeType | Arc2
+type AfGageEnum = AfGage.OnCamber | AfGage.Radius
 
 class EdgeType(Enum):
     Open=0
     Closed=1
+
+class AfGage:
+    """
+    A class representing a measurement for locating a position on an airfoil cross-section.
+    """
+    class OnCamber:
+        def __init__(self, d: float):
+            """
+            A gaging method that measures a distance along the mean camber line. A positive distance will be from the
+            leading edge towards the trailing edge, and a negative distance will be from the trailing edge towards the
+            leading edge.
+            :param d: the distance along the mean camber line to find the position
+            """
+            ...
+
+    class Radius:
+        def __init__(self, r: float):
+            """
+            A gaging method that measures by intersection with a circle of a given radius centered on either the
+            leading or trailing edge point.  A positive radius indicates that the circle is located on the leading edge
+            while a negative radius indicates that the circle is located on the trailing edge.
+            :param r: the radius of the circle to find the position
+            """
+            ...
 
 class FaceOrient:
     """
@@ -241,6 +266,14 @@ class AirfoilGeometry:
         Returns the list of inscribed circles as a numpy array of shape (N, 3) where N is the number of inscribed
         circles. The first two columns are the x and y coordinates of the circle center, and the third column is the
         radius of the circle.
+        """
+        ...
+
+    def get_thickness(self, gage: AfGageEnum) -> Length2:
+        """
+        Get the thickness dimension of the airfoil cross-section.
+        :param gage: the gaging method to use
+        :return:
         """
         ...
 
