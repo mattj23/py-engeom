@@ -45,6 +45,7 @@ fn register_geom3(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // Mesh, curves, other complex geometries
     child.add_class::<mesh::Mesh>()?;
+    child.add_class::<mesh::MeshTriangleFilter>()?;
     child.add_class::<geom3::Curve3>()?;
     child.add_class::<geom3::CurveStation3>()?;
 

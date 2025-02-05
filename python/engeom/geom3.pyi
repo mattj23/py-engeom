@@ -573,6 +573,77 @@ class Mesh:
         """
         ...
 
+    def filter_triangles(self) -> MeshTriangleFilter:
+        """
+        Start a filter operation on the triangles of the mesh. This will return a filter object that can be used to
+        chain together actions which reduce the list of triangles. When finished, call `collect()` to get the final
+        list of indices of the triangles that passed the filter.
+
+        :return: a filter object for the triangles of the mesh.
+        """
+        ...
+
+    def create_from_indices(self, indices: List[int]) -> Mesh:
+        """
+        Create a new mesh from a list of triangle indices. This will build a new mesh object containing only the
+        triangles (and their respective vertices) identified by the given list of indices.  Do not allow duplicate
+        indices in the list.
+        :param indices: the triangle indices to include in the new mesh
+        :return:
+        """
+        ...
+
+
+class MeshTriangleFilter:
+    def collect(self) -> List[int]:
+        """
+        Collect the final indices of the triangles that passed the filter.
+        :return:
+        """
+        ...
+
+    def create_mesh(self) -> Mesh:
+        """
+        Create a new mesh from the filtered triangles. This will build a new mesh object containing only the triangles
+        (and their respective vertices) that are still retained in the filter.
+        :return:
+        """
+        ...
+
+    def facing(self, x: float, y: float, z: float) -> MeshTriangleFilter:
+        """
+        Filter the triangles based on their facing direction.
+        :param x: the x component of the facing direction.
+        :param y: the y component of the facing direction.
+        :param z: the z component of the facing direction.
+        :return: the filter object.
+        """
+        ...
+
+    def near_mesh(self, other: Mesh, all_points: bool, distance_tol: float, planar_tol: float | None = None,
+                  angle_tol: float | None = None) -> MeshTriangleFilter:
+        """
+        Reduce the list of indices to only include triangles that are within a certain distance of
+        their closest projection onto another mesh. The distance can require that all points of the
+        triangle are within the tolerance, or just one.
+
+        There are two additional optional tolerances that can be applied.
+
+        1. A planar tolerance, which checks the distance of the vertex projected onto the plane of
+           the reference mesh triangle and looks at how far it is from the projection point. This
+           is useful to filter out triangles that go past the edge of the reference mesh.
+        2. An angle tolerance, which checks the angle between the normal of the current triangle
+           and the normal of the reference triangle. This is useful to filter out triangles that
+           are not facing the same direction as the reference mesh.
+
+        :param other: the mesh to use as a reference
+        :param all_points: if True, all points of the triangle must be within the tolerance, if False, only one point
+        :param distance_tol: the maximum distance between the triangle and its projection onto the reference mesh
+        :param planar_tol: the maximum in-plane distance between the triangle and its projection onto the reference mesh
+        :param angle_tol: the maximum angle between the normals of the triangle and the reference mesh
+        """
+        ...
+
 
 class CurveStation3:
     """
