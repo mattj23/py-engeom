@@ -244,9 +244,16 @@ class AirfoilGeometry:
         """
         ...
 
-    def get_t_max(self) -> Length2:
+    def get_tmax(self) -> Length2:
         """
         Get the maximum thickness dimension of the airfoil cross-section.
+        :return:
+        """
+        ...
+
+    def get_tmax_circle(self) -> Circle2:
+        """
+        Get the circle representing the maximum thickness dimension of the airfoil cross-section.
         :return:
         """
         ...

@@ -1,9 +1,12 @@
-from typing import List, Iterable
+from typing import List, Iterable, Tuple, Union
 
 import matplotlib.lines
 import numpy
-from .geom2 import Curve2, Circle2, Aabb2
+from .geom2 import Curve2, Circle2, Aabb2, Point2, Vector2
 from .metrology import Length2
+
+PlotCoords = Union[Point2, Vector2, Iterable[float]]
+_point = 1.0 / 72.0
 
 try:
     from matplotlib.pyplot import Axes, Circle
@@ -133,7 +136,13 @@ else:
             """
             self.ax.plot(curve.points[:, 0], curve.points[:, 1], **kwargs)
 
-        def plot_length(self, length: Length2, side_shift: float = 0):
+        def plot_length(
+                self,
+                length: Length2,
+                side_shift: float = 0,
+                format: str = "{value:.3f}",
+                fontsize: int = 10,
+        ):
             """
             Plot a Length2 object on a Matplotlib Axes object.
             :param side_shift:
@@ -142,16 +151,35 @@ else:
             """
             from matplotlib.pyplot import Line2D
 
-            pad_scale = 10.0
-
+            pad_scale = self._font_height(12) * 1.5
             center = length.center.shift_orthogonal(side_shift)
             leader_a = center.projection(length.a)
             leader_b = center.projection(length.b)
 
             self.arrow(leader_a - length.direction * pad_scale, leader_a)
+
             self.arrow(leader_b + length.direction * pad_scale, leader_b)
 
-        def arrow(self, start: Iterable[float], end: Iterable[float]):
+            result = self.annotate_text_only(
+                format.format(value=length.value),
+                leader_b + length.direction * pad_scale,
+                bbox=dict(boxstyle="round,pad=0.3", ec="black", fc="white"),
+                ha="center", va="center",
+                fontsize=fontsize,
+            )
+            print(result)
+
+        def annotate_text_only(self, text: str, pos: PlotCoords, **kwargs):
+            """
+            Annotate a Matplotlib Axes object with text only.
+            :param text: the text to annotate
+            :param pos: the position of the annotation
+            :param kwargs: keyword arguments to pass to the annotate function
+            :return: None
+            """
+            return self.ax.annotate(text, xy=_tuplefy(pos), **kwargs)
+
+        def arrow(self, start: PlotCoords, end: PlotCoords):
             """
             Plot an arrow on a Matplotlib Axes object.
             :param start: the start point of the arrow
@@ -159,6 +187,35 @@ else:
             :param kwargs: keyword arguments to pass to the arrow function
             :return: None
             """
-            sx, sy, *_ = start
-            ex, ey, *_ = end
-            self.ax.annotate("", xy=(ex, ey), xytext=(sx, sy), arrowprops=dict(arrowstyle="->"))
+            self.ax.annotate("", xy=_tuplefy(end), xytext=_tuplefy(start), arrowprops=dict(arrowstyle="-|>", fc="black"))
+
+        def _font_height(self, font_size: int) -> float:
+            """ Get the height of a font in data units. """
+            fig_dpi = self.ax.figure.dpi
+            font_height_inches = font_size * _point
+            font_height_px = font_height_inches * fig_dpi
+
+            px_per_data = self._get_scale()
+            return font_height_px / px_per_data
+
+        def _get_scale(self) -> float:
+            """ Get the scale of the plot in data units per pixel. """
+            x0, x1 = self.ax.get_xlim()
+            y0, y1 = self.ax.get_ylim()
+
+            bbox = self.ax.get_window_extent()
+            width, height = bbox.width, bbox.height
+
+            # Units are pixels per data unit
+            x_scale = width / (x1 - x0)
+            y_scale = height / (y1 - y0)
+
+            return min(x_scale, y_scale)
+
+
+    def _tuplefy(item: PlotCoords) -> Tuple[float, float]:
+        if isinstance(item, (Point2, Vector2)):
+            return item.x, item.y
+        else:
+            x, y, *_ = item
+            return x, y

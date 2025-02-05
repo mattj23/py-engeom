@@ -329,7 +329,11 @@ impl AirfoilGeometry {
         Ok(AirfoilGeometry::from_inner(result))
     }
 
-    fn get_t_max(&self) -> PyResult<Length2> {
+    fn get_tmax_circle(&self) -> Circle2 {
+        Circle2::from_inner(self.inner.find_tmax().circle)
+    }
+
+    fn get_tmax(&self) -> PyResult<Length2> {
         // Find the maximum thickness point
         let c = self.inner.find_tmax();
         let upper_n = self.inner.upper.as_ref()
