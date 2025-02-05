@@ -127,17 +127,17 @@ impl InscribedCircle {
 impl InscribedCircle {
     #[getter]
     fn circle(&self) -> Circle2 {
-        Circle2::from_inner(self.inner.circle.clone())
+        Circle2::from_inner(self.inner.circle)
     }
 
     #[getter]
     fn contact_a(&self) -> Point2 {
-        Point2::from_inner(self.inner.contact_pos.clone())
+        Point2::from_inner(self.inner.contact_pos)
     }
 
     #[getter]
     fn contact_b(&self) -> Point2 {
-        Point2::from_inner(self.inner.contact_neg.clone())
+        Point2::from_inner(self.inner.contact_neg)
     }
 }
 
@@ -145,7 +145,7 @@ impl InscribedCircle {
 // Airfoil geometry result
 // ================================================================================================
 
-#[pyclass]
+#[pyclass(eq, eq_int)]
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum EdgeType {
     Open,
@@ -271,12 +271,12 @@ impl AirfoilGeometry {
 
     #[getter]
     fn leading(&self) -> Option<EdgeResult> {
-        self.leading.as_ref().map(|l| l.clone())
+        self.leading.clone()
     }
 
     #[getter]
     fn trailing(&self) -> Option<EdgeResult> {
-        self.trailing.as_ref().map(|t| t.clone())
+        self.trailing.clone()
     }
 
     #[getter]
@@ -346,7 +346,7 @@ pub fn compute_inscribed_circles(
 
     let result = circles
         .into_iter()
-        .map(|c| InscribedCircle::from_inner(c))
+        .map(InscribedCircle::from_inner)
         .collect();
 
     Ok(result)

@@ -468,7 +468,7 @@ impl Curve3 {
     #[getter]
     fn points<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<f64>> {
         if self.points.is_none() {
-            let mut result = points_to_array3(self.inner.vertices());
+            let result = points_to_array3(self.inner.vertices());
             self.points = Some(result.into_pyarray(py).unbind())
         }
 
