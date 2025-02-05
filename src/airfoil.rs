@@ -1,6 +1,5 @@
 use crate::geom2::{Arc2, Circle2, Curve2, Point2};
 use crate::metrology::Length2;
-use engeom::common::points::dist;
 use numpy::ndarray::ArrayD;
 use numpy::{IntoPyArray, PyArrayDyn};
 use pyo3::exceptions::PyValueError;

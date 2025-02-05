@@ -1,6 +1,6 @@
 [package]
 name = "py-engeom"
-version = "0.1.2"
+version = "0.2.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -14,5 +14,5 @@ engeom = { path = "./engeom", features = ["stl"]}
 parry3d-f64 = {version= "0.18.0", features=["serde-serialize"]}
 parry2d-f64 = {version= "0.18.0", features=["serde-serialize"]}
 numpy = "0.23.0"
-rand = "0.8.4"
+rand = "0.9.0"
 
