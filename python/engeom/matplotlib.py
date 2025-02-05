@@ -1,12 +1,16 @@
 from typing import List, Iterable, Tuple, Union
-
+from enum import Enum
 import matplotlib.lines
 import numpy
-from .geom2 import Curve2, Circle2, Aabb2, Point2, Vector2
+from .geom2 import Curve2, Circle2, Aabb2, Point2, Vector2, SurfacePoint2
 from .metrology import Length2
 
 PlotCoords = Union[Point2, Vector2, Iterable[float]]
-_point = 1.0 / 72.0
+
+class LabelPlace(Enum):
+    Outside = 1
+    Inside = 2
+    OutsideRev = 3
 
 try:
     from matplotlib.pyplot import Axes, Circle
@@ -142,6 +146,8 @@ else:
                 side_shift: float = 0,
                 format: str = "{value:.3f}",
                 fontsize: int = 10,
+                label_place: LabelPlace = LabelPlace.Outside,
+                label_offset: float | None = None,
         ):
             """
             Plot a Length2 object on a Matplotlib Axes object.
@@ -156,18 +162,43 @@ else:
             leader_a = center.projection(length.a)
             leader_b = center.projection(length.b)
 
-            self.arrow(leader_a - length.direction * pad_scale, leader_a)
+            if label_place == LabelPlace.Inside:
+                label_offset = label_offset or 0.0
+                label_coords = center.at_distance(label_offset)
+                self.arrow(label_coords, leader_a)
+                self.arrow(label_coords, leader_b)
+            elif label_place == LabelPlace.Outside:
+                label_offset = label_offset or pad_scale * 3
+                label_coords = leader_b + length.direction * label_offset
+                self.arrow(leader_a - length.direction * pad_scale, leader_a)
+                self.arrow(label_coords, leader_b)
+            elif label_place == LabelPlace.OutsideRev:
+                label_offset = label_offset or pad_scale * 3
+                label_coords = leader_a - length.direction * label_offset
+                self.arrow(leader_b + length.direction * pad_scale, leader_b)
+                self.arrow(label_coords, leader_a)
 
-            self.arrow(leader_b + length.direction * pad_scale, leader_b)
+            # Do we need sideways leaders?
+            self._line_if_needed(pad_scale, length.a, leader_a)
+            self._line_if_needed(pad_scale, length.b, leader_b)
 
             result = self.annotate_text_only(
                 format.format(value=length.value),
-                leader_b + length.direction * pad_scale,
+                label_coords,
                 bbox=dict(boxstyle="round,pad=0.3", ec="black", fc="white"),
                 ha="center", va="center",
                 fontsize=fontsize,
             )
-            print(result)
+
+        def _line_if_needed(self, pad: float, actual: Point2, leader_end: Point2):
+            half_pad = pad * 0.5
+            v: Vector2 = leader_end - actual
+            if v.norm() < half_pad:
+                return
+            work = SurfacePoint2(*actual, *v)
+            t0 = -half_pad
+            t1 = work.scalar_projection(leader_end) + half_pad
+            self.arrow(work.at_distance(t1), work.at_distance(t0), arrow="-")
 
         def annotate_text_only(self, text: str, pos: PlotCoords, **kwargs):
             """
@@ -179,7 +210,7 @@ else:
             """
             return self.ax.annotate(text, xy=_tuplefy(pos), **kwargs)
 
-        def arrow(self, start: PlotCoords, end: PlotCoords):
+        def arrow(self, start: PlotCoords, end: PlotCoords, arrow="-|>"):
             """
             Plot an arrow on a Matplotlib Axes object.
             :param start: the start point of the arrow
@@ -187,12 +218,13 @@ else:
             :param kwargs: keyword arguments to pass to the arrow function
             :return: None
             """
-            self.ax.annotate("", xy=_tuplefy(end), xytext=_tuplefy(start), arrowprops=dict(arrowstyle="-|>", fc="black"))
+            self.ax.annotate("", xy=_tuplefy(end), xytext=_tuplefy(start), arrowprops=dict(arrowstyle=arrow, fc="black"))
+
 
         def _font_height(self, font_size: int) -> float:
             """ Get the height of a font in data units. """
             fig_dpi = self.ax.figure.dpi
-            font_height_inches = font_size * _point
+            font_height_inches = font_size * 1.0 / 72.0
             font_height_px = font_height_inches * fig_dpi
 
             px_per_data = self._get_scale()
