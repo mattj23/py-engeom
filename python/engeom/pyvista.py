@@ -66,9 +66,9 @@ else:
                 cmap_extremes = _cmap_extremes(kwargs["cmap"])
                 kwargs.update(cmap_extremes)
 
-            prefix = numpy.ones((mesh.triangles.shape[0], 1), dtype=mesh.triangles.dtype)
-            faces = numpy.hstack((prefix * 3, mesh.triangles))
-            data = pyvista.PolyData(mesh.points, faces)
+            prefix = numpy.ones((mesh.faces.shape[0], 1), dtype=mesh.faces.dtype)
+            faces = numpy.hstack((prefix * 3, mesh.faces))
+            data = pyvista.PolyData(mesh.vertices, faces)
             return self.plotter.add_mesh(data, **kwargs)
 
         def dimension(

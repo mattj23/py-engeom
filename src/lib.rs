@@ -110,6 +110,7 @@ fn py_engeom(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Common features and primitives
     m.add_class::<common::DeviationMode>()?;
     m.add_class::<common::Resample>()?;
+    m.add_class::<common::SelectOp>()?;
 
     Ok(())
 }

@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Tuple, Iterable, List, TypeVar
 
 import numpy
-from engeom import DeviationMode, Resample
+from engeom import DeviationMode, Resample, SelectOp
 from .metrology import Length3
 
 Transformable3 = TypeVar("Transformable3", Vector3, Point3, Plane3, Iso3, SurfacePoint3)
@@ -574,11 +574,19 @@ class Mesh:
         """
         ...
 
-    def filter_triangles(self) -> MeshTriangleFilter:
+    def face_select_none(self) -> MeshTriangleFilter:
         """
-        Start a filter operation on the triangles of the mesh. This will return a filter object that can be used to
-        chain together actions which reduce the list of triangles. When finished, call `collect()` to get the final
-        list of indices of the triangles that passed the filter.
+        Start a filter operation on the faces of the mesh beginning with no faces selected. This will return a filter
+        object that can be used to further add or remove faces from the selection.
+
+        :return: a filter object for the triangles of the mesh.
+        """
+        ...
+
+    def face_select_all(self) -> MeshTriangleFilter:
+        """
+        Start a filter operation on the faces of the mesh beginning with all faces selected. This will return a filter
+        object that can be used to further add or remove faces from the selection.
 
         :return: a filter object for the triangles of the mesh.
         """
@@ -616,6 +624,7 @@ class Mesh:
         :return:
         """
 
+
 class MeshTriangleFilter:
     def collect(self) -> List[int]:
         """
@@ -632,18 +641,27 @@ class MeshTriangleFilter:
         """
         ...
 
-    def facing(self, x: float, y: float, z: float) -> MeshTriangleFilter:
+    def facing(self, x: float, y: float, z: float, angle: float, mode: SelectOp) -> MeshTriangleFilter:
         """
-        Filter the triangles based on their facing direction.
-        :param x: the x component of the facing direction.
-        :param y: the y component of the facing direction.
-        :param z: the z component of the facing direction.
-        :return: the filter object.
+
+        :param x:
+        :param y:
+        :param z:
+        :param angle:
+        :param mode:
+        :return:
         """
         ...
 
-    def near_mesh(self, other: Mesh, all_points: bool, distance_tol: float, planar_tol: float | None = None,
-                  angle_tol: float | None = None) -> MeshTriangleFilter:
+    def near_mesh(
+            self,
+            other: Mesh,
+            all_points: bool,
+            distance_tol: float,
+            mode: SelectOp,
+            planar_tol: float | None = None,
+            angle_tol: float | None = None,
+    ) -> MeshTriangleFilter:
         """
         Reduce the list of indices to only include triangles that are within a certain distance of
         their closest projection onto another mesh. The distance can require that all points of the
@@ -661,6 +679,7 @@ class MeshTriangleFilter:
         :param other: the mesh to use as a reference
         :param all_points: if True, all points of the triangle must be within the tolerance, if False, only one point
         :param distance_tol: the maximum distance between the triangle and its projection onto the reference mesh
+        :param mode:
         :param planar_tol: the maximum in-plane distance between the triangle and its projection onto the reference mesh
         :param angle_tol: the maximum angle between the normals of the triangle and the reference mesh
         """

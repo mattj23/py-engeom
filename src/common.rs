@@ -3,6 +3,24 @@ use pyo3::prelude::*;
 
 #[pyclass(eq, eq_int)]
 #[derive(PartialEq, Copy, Clone, Debug)]
+pub enum SelectOp {
+    Add = 0,
+    Remove = 1,
+    Keep = 2,
+}
+
+impl From<SelectOp> for engeom::common::SelectOp {
+    fn from(val: SelectOp) -> Self {
+        match val {
+            SelectOp::Add => engeom::common::SelectOp::Add,
+            SelectOp::Remove => engeom::common::SelectOp::Remove,
+            SelectOp::Keep => engeom::common::SelectOp::Keep,
+        }
+    }
+}
+
+#[pyclass(eq, eq_int)]
+#[derive(PartialEq, Copy, Clone, Debug)]
 pub enum DeviationMode {
     Point,
     Plane,

@@ -24,9 +24,12 @@ impl Length2 {
     fn __repr__(&self) -> String {
         format!(
             "Length2(a=({}, {}), b=({}, {}), direction=({}, {}))",
-            self.inner.a.x, self.inner.a.y,
-            self.inner.b.x, self.inner.b.y,
-            self.inner.direction.x, self.inner.direction.y,
+            self.inner.a.x,
+            self.inner.a.y,
+            self.inner.b.x,
+            self.inner.b.y,
+            self.inner.direction.x,
+            self.inner.direction.y,
         )
     }
 
@@ -91,9 +94,15 @@ impl Length3 {
     fn __repr__(&self) -> String {
         format!(
             "Length3(a=({}, {}, {}), b=({}, {}, {}), direction=({}, {}, {}))",
-            self.inner.a.x, self.inner.a.y, self.inner.a.z,
-            self.inner.b.x, self.inner.b.y, self.inner.b.z,
-            self.inner.direction.x, self.inner.direction.y, self.inner.direction.z,
+            self.inner.a.x,
+            self.inner.a.y,
+            self.inner.a.z,
+            self.inner.b.x,
+            self.inner.b.y,
+            self.inner.b.z,
+            self.inner.direction.x,
+            self.inner.direction.y,
+            self.inner.direction.z,
         )
     }
 

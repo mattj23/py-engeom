@@ -1,10 +1,10 @@
 use crate::bounding::Aabb3;
-use crate::common::DeviationMode;
+use crate::common::{DeviationMode, SelectOp};
 use crate::conversions::{array_to_faces, array_to_points3, faces_to_array, points_to_array3};
 use crate::geom3::{Curve3, Iso3, Plane3};
 use crate::metrology::Length3;
 use engeom::common::points::dist;
-use engeom::common::SplitResult;
+use engeom::common::{Selection, SplitResult};
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::exceptions::{PyIOError, PyValueError};
@@ -97,7 +97,7 @@ impl Mesh {
     }
 
     #[getter]
-    fn points<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<f64>> {
+    fn vertices<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<f64>> {
         if self.vertices.is_none() {
             let array = points_to_array3(self.inner.vertices());
             self.vertices = Some(array.into_pyarray(py).unbind());
@@ -185,11 +185,23 @@ impl Mesh {
         Ok(results.into_iter().map(Curve3::from_inner).collect())
     }
 
-    fn filter_triangles<'py>(
+    fn face_select_all<'py>(
         slf: PyRef<Self>,
         py: Python<'py>,
     ) -> PyResult<Bound<'py, MeshTriangleFilter>> {
-        let indices = slf.inner.filter_triangles().collect();
+        let indices = slf.inner.face_select(Selection::All).collect();
+        MeshTriangleFilter {
+            mesh: slf.into(),
+            indices,
+        }
+        .into_pyobject(py)
+    }
+
+    fn face_select_none<'py>(
+        slf: PyRef<Self>,
+        py: Python<'py>,
+    ) -> PyResult<Bound<'py, MeshTriangleFilter>> {
+        let indices = slf.inner.face_select(Selection::None).collect();
         MeshTriangleFilter {
             mesh: slf.into(),
             indices,
@@ -220,26 +232,29 @@ impl MeshTriangleFilter {
         x: f64,
         y: f64,
         z: f64,
+        angle: f64,
+        mode: SelectOp,
     ) -> PyResult<Bound<'py, Self>> {
         let normal = engeom::UnitVec3::new_normalize([x, y, z].into());
         let temp = slf.mesh.bind(py).borrow();
         let i = slf.indices.clone();
         slf.indices = temp
             .inner
-            .filter_triangles_starting_with(i)
-            .facing(&normal)
+            .face_select(Selection::Indices(i))
+            .facing(&normal, angle, mode.into())
             .collect();
         slf.into_pyobject(py)
             .map_err(|e| PyValueError::new_err(e.to_string()))
     }
 
-    #[pyo3(signature=(other, all_points, distance_tol, planar_tol = None, angle_tol = None))]
+    #[pyo3(signature=(other, all_points, distance_tol, mode, planar_tol = None, angle_tol = None))]
     fn near_mesh<'py>(
         mut slf: PyRefMut<'py, Self>,
         py: Python<'py>,
         other: PyRef<Mesh>,
         all_points: bool,
         distance_tol: f64,
+        mode: SelectOp,
         planar_tol: Option<f64>,
         angle_tol: Option<f64>,
     ) -> PyResult<Bound<'py, Self>> {
@@ -247,13 +262,14 @@ impl MeshTriangleFilter {
         let i = slf.indices.clone();
         slf.indices = temp
             .inner
-            .filter_triangles_starting_with(i)
+            .face_select(Selection::Indices(i))
             .near_mesh(
                 &other.inner,
                 all_points,
                 distance_tol,
                 planar_tol,
                 angle_tol,
+                mode.into(),
             )
             .collect();
         slf.into_pyobject(py)
