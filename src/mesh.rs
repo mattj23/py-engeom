@@ -14,8 +14,8 @@ use std::path::PathBuf;
 #[pyclass]
 pub struct Mesh {
     inner: engeom::Mesh,
-    points: Option<Py<PyArrayDyn<f64>>>,
-    triangles: Option<Py<PyArrayDyn<u32>>>,
+    vertices: Option<Py<PyArrayDyn<f64>>>,
+    faces: Option<Py<PyArrayDyn<u32>>>,
 }
 
 impl Mesh {
@@ -26,8 +26,8 @@ impl Mesh {
     pub fn from_inner(inner: engeom::Mesh) -> Self {
         Self {
             inner,
-            points: None,
-            triangles: None,
+            vertices: None,
+            faces: None,
         }
     }
 }
@@ -41,18 +41,18 @@ impl Clone for Mesh {
 #[pymethods]
 impl Mesh {
     #[new]
-    #[pyo3(signature=(vertices, triangles, merge_duplicates = false, delete_degenerate = false))]
+    #[pyo3(signature=(vertices, faces, merge_duplicates = false, delete_degenerate = false))]
     fn new<'py>(
         vertices: PyReadonlyArrayDyn<'py, f64>,
-        triangles: PyReadonlyArrayDyn<'py, u32>,
+        faces: PyReadonlyArrayDyn<'py, u32>,
         merge_duplicates: bool,
         delete_degenerate: bool,
     ) -> PyResult<Self> {
         let vertices = array_to_points3(&vertices.as_array())?;
-        let triangles = array_to_faces(&triangles.as_array())?;
+        let faces = array_to_faces(&faces.as_array())?;
         let mesh = engeom::Mesh::new_with_options(
             vertices,
-            triangles,
+            faces,
             false,
             merge_duplicates,
             delete_degenerate,
@@ -65,7 +65,7 @@ impl Mesh {
 
     #[getter]
     fn aabb(&self) -> Aabb3 {
-        Aabb3::from_inner(self.inner.aabb())
+        Aabb3::from_inner(*self.inner.aabb())
     }
 
     #[staticmethod]
@@ -98,28 +98,28 @@ impl Mesh {
 
     #[getter]
     fn points<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<f64>> {
-        if self.points.is_none() {
+        if self.vertices.is_none() {
             let array = points_to_array3(self.inner.vertices());
-            self.points = Some(array.into_pyarray(py).unbind());
+            self.vertices = Some(array.into_pyarray(py).unbind());
         }
-        self.points.as_ref().unwrap().bind(py)
+        self.vertices.as_ref().unwrap().bind(py)
     }
 
     #[getter]
-    fn triangles<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<u32>> {
-        if self.triangles.is_none() {
-            let faces = faces_to_array(self.inner.triangles());
-            self.triangles = Some(faces.into_pyarray(py).unbind());
+    fn faces<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<u32>> {
+        if self.faces.is_none() {
+            let faces = faces_to_array(self.inner.faces());
+            self.faces = Some(faces.into_pyarray(py).unbind());
         }
 
-        self.triangles.as_ref().unwrap().bind(py)
+        self.faces.as_ref().unwrap().bind(py)
     }
 
     fn __repr__(&self) -> String {
         format!(
-            "<Mesh {} points, {} faces>",
+            "<Mesh {} vertices, {} faces>",
             self.inner.vertices().len(),
-            self.inner.triangles().len()
+            self.inner.faces().len()
         )
     }
 

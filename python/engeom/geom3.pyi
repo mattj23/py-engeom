@@ -435,7 +435,7 @@ class Mesh:
     def __init__(
             self,
             vertices: numpy.ndarray[float],
-            triangles: numpy.ndarray[numpy.uint32],
+            faces: numpy.ndarray[numpy.uint32],
             merge_duplicates: bool = False,
             delete_degenerate: bool = False
     ):
@@ -446,7 +446,7 @@ class Mesh:
         front/outside.
 
         :param vertices: a numpy array of shape (n, 3) containing the vertices of the mesh.
-        :param triangles: a numpy array of shape (m, 3) containing the triangles of the mesh, should be uint.
+        :param faces: a numpy array of shape (m, 3) containing the triangles of the mesh, should be uint.
         :param merge_duplicates: merge duplicate vertices and triangles
         :param delete_degenerate: delete degenerate triangles
         """
@@ -507,7 +507,7 @@ class Mesh:
         ...
 
     @property
-    def points(self) -> numpy.ndarray[float]:
+    def vertices(self) -> numpy.ndarray[float]:
         """
         Will return an immutable view of the vertices of the mesh as a numpy array of shape (n, 3).
         :return: a numpy array of shape (n, 3) containing the vertices of the mesh.
@@ -515,7 +515,7 @@ class Mesh:
         ...
 
     @property
-    def triangles(self) -> numpy.ndarray[numpy.uint32]:
+    def faces(self) -> numpy.ndarray[numpy.uint32]:
         """
         Will return an immutable view of the triangles of the mesh as a numpy array of shape (m, 3).
         :return: a numpy array of shape (m, 3) containing the triangles of the mesh.
