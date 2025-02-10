@@ -2,6 +2,7 @@ use crate::bounding::Aabb3;
 use crate::common::DeviationMode;
 use crate::conversions::{array_to_faces, array_to_points3, faces_to_array, points_to_array3};
 use crate::geom3::{Curve3, Iso3, Plane3};
+use crate::metrology::Length3;
 use engeom::common::points::dist;
 use engeom::common::SplitResult;
 use numpy::ndarray::{Array1, ArrayD};
@@ -155,6 +156,11 @@ impl Mesh {
         Ok(result.into_pyarray(py))
     }
 
+    fn measure_point_deviation(&self, x: f64, y: f64, z: f64, dist_mode: DeviationMode) -> Length3 {
+        let point = engeom::Point3::new(x, y, z);
+        Length3::from_inner(self.inner.measure_point_deviation(&point, dist_mode.into()))
+    }
+
     fn sample_poisson<'py>(&self, py: Python<'py>, radius: f64) -> Bound<'py, PyArrayDyn<f64>> {
         let sps = self.inner.sample_poisson(radius);
         let mut result = ArrayD::zeros(vec![sps.len(), 6]);
@@ -179,19 +185,22 @@ impl Mesh {
         Ok(results.into_iter().map(Curve3::from_inner).collect())
     }
 
-    fn filter_triangles<'py>(slf: PyRef<Self>, py: Python<'py>) -> PyResult<Bound<'py, MeshTriangleFilter>> {
+    fn filter_triangles<'py>(
+        slf: PyRef<Self>,
+        py: Python<'py>,
+    ) -> PyResult<Bound<'py, MeshTriangleFilter>> {
         let indices = slf.inner.filter_triangles().collect();
         MeshTriangleFilter {
             mesh: slf.into(),
             indices,
-        }.into_pyobject(py)
+        }
+        .into_pyobject(py)
     }
 
     fn create_from_indices(&self, indices: Vec<usize>) -> Self {
         Self::from_inner(self.inner.create_from_indices(&indices))
     }
 }
-
 
 #[pyclass]
 pub struct MeshTriangleFilter {
@@ -205,11 +214,21 @@ impl MeshTriangleFilter {
         format!("<MeshTriangleFilter {} triangles>", self.indices.len())
     }
 
-    fn facing<'py>(mut slf: PyRefMut<'py, Self>, py: Python<'py>, x: f64, y: f64, z: f64) -> PyResult<Bound<'py, Self>> {
+    fn facing<'py>(
+        mut slf: PyRefMut<'py, Self>,
+        py: Python<'py>,
+        x: f64,
+        y: f64,
+        z: f64,
+    ) -> PyResult<Bound<'py, Self>> {
         let normal = engeom::UnitVec3::new_normalize([x, y, z].into());
         let temp = slf.mesh.bind(py).borrow();
         let i = slf.indices.clone();
-        slf.indices = temp.inner.filter_triangles_starting_with(i).facing(&normal).collect();
+        slf.indices = temp
+            .inner
+            .filter_triangles_starting_with(i)
+            .facing(&normal)
+            .collect();
         slf.into_pyobject(py)
             .map_err(|e| PyValueError::new_err(e.to_string()))
     }
@@ -226,13 +245,17 @@ impl MeshTriangleFilter {
     ) -> PyResult<Bound<'py, Self>> {
         let temp = slf.mesh.bind(py).borrow();
         let i = slf.indices.clone();
-        slf.indices = temp.inner.filter_triangles_starting_with(i).near_mesh(
-            &other.inner,
-            all_points,
-            distance_tol,
-            planar_tol,
-            angle_tol,
-        ).collect();
+        slf.indices = temp
+            .inner
+            .filter_triangles_starting_with(i)
+            .near_mesh(
+                &other.inner,
+                all_points,
+                distance_tol,
+                planar_tol,
+                angle_tol,
+            )
+            .collect();
         slf.into_pyobject(py)
             .map_err(|e| PyValueError::new_err(e.to_string()))
     }
@@ -242,6 +265,9 @@ impl MeshTriangleFilter {
     }
 
     fn create_mesh(&self, py: Python<'_>) -> Mesh {
-        self.mesh.bind(py).borrow().create_from_indices(self.indices.clone())
+        self.mesh
+            .bind(py)
+            .borrow()
+            .create_from_indices(self.indices.clone())
     }
 }

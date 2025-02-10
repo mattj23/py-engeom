@@ -224,9 +224,9 @@ else:
 
             return min(x_scale, y_scale)
 
-    def _tuplefy(item: PlotCoords) -> Tuple[float, float]:
-        if isinstance(item, (Point2, Vector2)):
-            return item.x, item.y
-        else:
-            x, y, *_ = item
-            return x, y
+def _tuplefy(item: PlotCoords) -> Tuple[float, float]:
+    if isinstance(item, (Point2, Vector2)):
+        return item.x, item.y
+    else:
+        x, y, *_ = item
+        return x, y

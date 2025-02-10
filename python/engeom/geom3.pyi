@@ -5,6 +5,7 @@ from typing import Tuple, Iterable, List, TypeVar
 
 import numpy
 from engeom import DeviationMode, Resample
+from .metrology import Length3
 
 Transformable3 = TypeVar("Transformable3", Vector3, Point3, Plane3, Iso3, SurfacePoint3)
 PointOrVector3 = TypeVar("PointOrVector3", Vector3, Point3)
@@ -593,6 +594,27 @@ class Mesh:
         """
         ...
 
+    def measure_point_deviation(self, x: float, y: float, z: float, dist_mode: DeviationMode) -> Length3:
+        """
+        Compute the deviation of a point from this mesh's surface and return it as a measurement object.
+
+        The deviation is the distance from the point to its closest projection onto the mesh using
+        the specified distance mode.  The direction of the measurement is the direction between the
+        point and the projection, flipped into the positive half-space of the mesh surface at the
+        projection point.
+
+        If the distance is less than a very small floating point epsilon, the direction will be
+        taken directly from the mesh surface normal.
+
+        The first point `.a` of the measurement is the reference point, and the second point `.b`
+        is the test point.
+
+        :param x: the x component of the point to measure
+        :param y: the y component of the point to measure
+        :param z: the z component of the point to measure
+        :param dist_mode: the deviation mode to use
+        :return:
+        """
 
 class MeshTriangleFilter:
     def collect(self) -> List[int]:
