@@ -125,20 +125,12 @@ else:
             self,
             length: Length2,
             side_shift: float = 0,
-            format: str = "{value:.3f}",
+            template: str = "{value:.3f}",
             fontsize: int = 10,
             label_place: LabelPlace = LabelPlace.Outside,
             label_offset: float | None = None,
             fontname: str | None = None,
         ):
-            """
-            Plot a Length2 object on a Matplotlib Axes object.
-            :param side_shift:
-            :param length: a Length2 object
-            :return: None
-            """
-            from matplotlib.pyplot import Line2D
-
             pad_scale = self._font_height(12) * 1.5
             center = length.center.shift_orthogonal(side_shift)
             leader_a = center.projection(length.a)
@@ -169,7 +161,7 @@ else:
                 kwargs["fontname"] = fontname
 
             result = self.annotate_text_only(
-                format.format(value=length.value),
+                template.format(value=length.value),
                 label_coords,
                 bbox=dict(boxstyle="round,pad=0.3", ec="black", fc="white"),
                 **kwargs,
