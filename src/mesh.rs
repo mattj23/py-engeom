@@ -161,6 +161,25 @@ impl Mesh {
         Length3::from_inner(self.inner.measure_point_deviation(&point, dist_mode.into()))
     }
 
+    fn boundary_first_flatten<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyArrayDyn<f64>>> {
+        let edges = self
+            .inner
+            .calc_edges()
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+
+        let values = edges
+            .boundary_first_flatten()
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+
+        let mut result = ArrayD::zeros(vec![values.len(), 2]);
+        for (i, p) in values.iter().enumerate() {
+            result[[i, 0]] = p.x;
+            result[[i, 1]] = p.y;
+        }
+
+        Ok(result.into_pyarray(py))
+    }
+
     fn sample_poisson<'py>(&self, py: Python<'py>, radius: f64) -> Bound<'py, PyArrayDyn<f64>> {
         let sps = self.inner.sample_poisson(radius);
         let mut result = ArrayD::zeros(vec![sps.len(), 6]);
@@ -211,6 +230,14 @@ impl Mesh {
 
     fn create_from_indices(&self, indices: Vec<usize>) -> Self {
         Self::from_inner(self.inner.create_from_indices(&indices))
+    }
+
+    fn separate_patches(&self) -> Vec<Self> {
+        let patch_groups = self.inner.get_patches();
+        patch_groups
+            .into_iter()
+            .map(|indices| self.create_from_indices(indices))
+            .collect()
     }
 }
 

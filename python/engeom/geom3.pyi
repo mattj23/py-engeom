@@ -592,6 +592,14 @@ class Mesh:
         """
         ...
 
+    def separate_patches(self) -> List[Mesh]:
+        """
+        Separate the mesh into connected patches. This will return a list of new mesh objects, each containing one
+        connected patch of the original mesh. These objects will be clones of the original mesh, so modifying them will
+        have no effect on the original mesh.
+        :return:
+        """
+
     def create_from_indices(self, indices: List[int]) -> Mesh:
         """
         Create a new mesh from a list of triangle indices. This will build a new mesh object containing only the
@@ -621,6 +629,12 @@ class Mesh:
         :param y: the y component of the point to measure
         :param z: the z component of the point to measure
         :param dist_mode: the deviation mode to use
+        :return:
+        """
+
+    def boundary_first_flatten(self) -> numpy.ndarray[float]:
+        """
+
         :return:
         """
 

@@ -4,7 +4,7 @@ This module contains helper functions for working with PyVista.
 
 from __future__ import annotations
 
-from typing import List, Any, Dict, Union, Iterable
+from typing import List, Any, Dict, Union, Iterable, Tuple
 
 import numpy
 from pyvista import ColorLike
