@@ -9,7 +9,7 @@ from typing import List, Any, Dict, Union, Iterable, Tuple
 import numpy
 from pyvista import ColorLike
 
-from .geom3 import Mesh, Curve3, Vector3, Point3
+from .geom3 import Mesh, Curve3, Vector3, Point3, Iso3
 from .metrology import Length3
 from .matplotlib import LabelPlace
 
@@ -108,6 +108,18 @@ else:
 
             value = length.value * scale_value
             label = pyvista.Label(text=template.format(value=value), position=lines[-1], size=text_size)
+            self.plotter.add_actor(label)
+
+        def coordinate_frame(self, iso: Iso3, size: float = 1.0):
+            points = numpy.array([[0, 0, 0], [size, 0, 0], [0, size, 0], [0, 0, size]], dtype=numpy.float64)
+            points = iso.transform_points(points)
+
+            self.plotter.add_lines(points[[0, 1]], color="red", width=5.0)
+            self.plotter.add_lines(points[[0, 2]], color="green", width=5.0)
+            self.plotter.add_lines(points[[0, 3]], color="blue", width=5.0)
+
+        def label(self, point: PlotCoords, text: str, **kwargs):
+            label = pyvista.Label(text=text, position=_tuplefy(point), **kwargs)
             self.plotter.add_actor(label)
 
         def arrow(self, start: PlotCoords, direction: PlotCoords,

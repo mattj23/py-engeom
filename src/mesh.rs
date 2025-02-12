@@ -1,7 +1,7 @@
 use crate::bounding::Aabb3;
 use crate::common::{DeviationMode, SelectOp};
 use crate::conversions::{array_to_faces, array_to_points3, faces_to_array, points_to_array3};
-use crate::geom3::{Curve3, Iso3, Plane3};
+use crate::geom3::{Curve3, Iso3, Plane3, SurfacePoint3};
 use crate::metrology::Length3;
 use engeom::common::points::dist;
 use engeom::common::{Selection, SplitResult};
@@ -79,6 +79,11 @@ impl Mesh {
 
     fn transform_by(&mut self, iso: &Iso3) {
         self.inner.transform(iso.get_inner());
+    }
+
+    fn surface_closest_to(&self, x: f64, y: f64, z: f64) -> SurfacePoint3 {
+        let p = engeom::Point3::new(x, y, z);
+        SurfacePoint3::from_inner(self.inner.surf_closest_to(&p))
     }
 
     fn append(&mut self, other: &Mesh) -> PyResult<()> {
