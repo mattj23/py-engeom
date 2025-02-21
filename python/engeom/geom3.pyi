@@ -51,6 +51,9 @@ class Vector3:
     def __mul__(self, x: float) -> Vector3:
         ...
 
+    def __truediv__(self, x: float) -> Vector3:
+        ...
+
     def as_numpy(self) -> numpy.ndarray[float]:
         """
         Create a numpy array of shape (3,) from the vector.
@@ -131,6 +134,15 @@ class Point3:
         ...
 
     def __add__(self, other: Vector3) -> Vector3:
+        ...
+
+    def __neg__(self) -> Point3:
+        ...
+
+    def __mul__(self, x: float) -> Point3:
+        ...
+
+    def __truediv__(self, x: float) -> Point3:
         ...
 
     def as_numpy(self) -> numpy.ndarray[float]:

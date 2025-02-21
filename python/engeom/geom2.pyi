@@ -1,7 +1,8 @@
 from __future__ import annotations
-import numpy
-from typing import Iterable, Tuple, Type, TypeVar
 
+from typing import Iterable, Tuple, TypeVar, Iterator
+
+import numpy
 from engeom.engeom import Resample
 
 Transformable2 = TypeVar("Transformable2", Vector2, Point2, Iso2, SurfacePoint2)
@@ -9,6 +10,9 @@ PointOrVec2 = TypeVar("PointOrVec2", Point2, Vector2)
 
 
 class Vector2(Iterable[float]):
+    def __iter__(self) -> Iterator[float]:
+        pass
+
     def __init__(self, x: float, y: float):
         """
 
@@ -38,6 +42,9 @@ class Vector2(Iterable[float]):
         ...
 
     def __mul__(self, x: float) -> Vector2:
+        ...
+
+    def __truediv__(self, x: float) -> Vector2:
         ...
 
     def as_numpy(self) -> numpy.ndarray[float]:
@@ -78,6 +85,9 @@ class Vector2(Iterable[float]):
 
 
 class Point2(Iterable[float]):
+    def __iter__(self) -> Iterator[float]:
+        pass
+
     def __init__(self, x: float, y: float):
         """
 
@@ -106,6 +116,18 @@ class Point2(Iterable[float]):
         ...
 
     def __add__(self, other: Vector2) -> Vector2:
+        ...
+
+    def __mul__(self, other) -> Point2:
+        ...
+
+    def __truediv__(self, other) -> Point2:
+        ...
+
+    def __rmul__(self, other) -> Point2:
+        ...
+
+    def __neg__(self) -> Point2:
         ...
 
     def as_numpy(self) -> numpy.ndarray[float]:
@@ -197,6 +219,39 @@ class SurfacePoint2:
 
         :param distance: the distance to shift the surface point.
         :return: a new surface point shifted by the given distance.
+        """
+        ...
+
+    def __mul__(self, other: float) -> SurfacePoint2:
+        """
+        Multiply the position of the surface point by a scalar value. The normal vector is not affected unless the
+        scalar is negative, in which case the normal vector is inverted.
+        :param other:
+        :return:
+        """
+        ...
+
+    def __rmul__(self, other: float) -> SurfacePoint2:
+        """
+        Multiply the position of the surface point by a scalar value. The normal vector is not affected unless the
+        scalar is negative, in which case the normal vector is inverted.
+        :param other:
+        :return:
+        """
+        ...
+
+    def __truediv__(self, other: float) -> SurfacePoint2:
+        """
+        Divide the position of the surface point by a scalar value. The normal vector is not affected unless the
+        scalar is negative, in which case the normal vector is inverted.
+        :param other:
+        :return:
+        """
+        ...
+
+    def __neg__(self) -> SurfacePoint2:
+        """
+        Invert both the position AND the normal vector of the surface point.
         """
         ...
 
@@ -533,7 +588,6 @@ class Circle2:
         """
         ...
 
-
     @property
     def center(self) -> Point2:
         """
@@ -657,6 +711,7 @@ class Arc2:
         :return: the end point of the arc.
         """
         ...
+
 
 class Aabb2:
     def __init__(self, x_min: float, x_max: float, y_min: float, y_max: float):

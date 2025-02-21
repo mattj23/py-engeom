@@ -84,6 +84,12 @@ impl Vector2 {
         }
     }
 
+    fn __truediv__(&self, other: f64) -> Self {
+        Self {
+            inner: self.inner / other,
+        }
+    }
+
     fn __add__<'py>(&self, py: Python<'py>, other: Vector2OrPoint2) -> PyResult<Bound<'py, PyAny>> {
         match other {
             Vector2OrPoint2::Vector(other) => {
@@ -205,6 +211,28 @@ impl Point2 {
         }
     }
 
+    fn __mul__(&self, other: f64) -> Self {
+        Self {
+            inner: self.inner * other,
+        }
+    }
+
+    fn __rmul__(&self, other: f64) -> Self {
+        Self {
+            inner: self.inner * other,
+        }
+    }
+
+    fn __truediv__(&self, other: f64) -> Self {
+        Self {
+            inner: self.inner / other,
+        }
+    }
+
+    fn __neg__(&self) -> Self {
+        Self { inner: -self.inner }
+    }
+
     fn __repr__(&self) -> String {
         format!("Point2({}, {})", self.inner.x, self.inner.y)
     }
@@ -269,6 +297,34 @@ impl SurfacePoint2 {
 
     fn transformed(&self, iso: Iso2) -> Self {
         Self::from_inner(self.inner.transformed(iso.get_inner()))
+    }
+
+    fn __mul__(&self, other: f64) -> Self {
+        Self::from_inner(engeom::SurfacePoint2::new_normalize(
+            self.inner.point * other,
+            self.inner.normal.into_inner() * other.signum(),
+        ))
+    }
+
+    fn __rmul__(&self, other: f64) -> Self {
+        Self::from_inner(engeom::SurfacePoint2::new_normalize(
+            self.inner.point * other,
+            self.inner.normal.into_inner() * other.signum(),
+        ))
+    }
+
+    fn __truediv__(&self, other: f64) -> Self {
+        Self::from_inner(engeom::SurfacePoint2::new_normalize(
+            self.inner.point / other,
+            self.inner.normal.into_inner() / other.signum(),
+        ))
+    }
+
+    fn __neg__(&self) -> Self {
+        Self::from_inner(engeom::SurfacePoint2::new_normalize(
+            -self.inner.point,
+            -self.inner.normal.into_inner(),
+        ))
     }
 
     fn __repr__(&self) -> String {

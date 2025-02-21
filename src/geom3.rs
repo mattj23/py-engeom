@@ -83,6 +83,12 @@ impl Vector3 {
         }
     }
 
+    fn __truediv__(&self, other: f64) -> Self {
+        Self {
+            inner: self.inner / other,
+        }
+    }
+
     fn __rmul__(&self, other: f64) -> Self {
         Self {
             inner: self.inner * other,
@@ -213,6 +219,28 @@ impl Point3 {
         }
     }
 
+    fn __neg__(&self) -> Self {
+        Self { inner: -self.inner }
+    }
+
+    fn __mul__(&self, other: f64) -> Self {
+        Self {
+            inner: self.inner * other,
+        }
+    }
+
+    fn __truediv__(&self, other: f64) -> Self {
+        Self {
+            inner: self.inner / other,
+        }
+    }
+
+    fn __rmul__(&self, other: f64) -> Self {
+        Self {
+            inner: self.inner * other,
+        }
+    }
+
     fn __repr__(&self) -> String {
         format!(
             "Point3({}, {}, {})",
@@ -296,6 +324,34 @@ impl SurfacePoint3 {
 
     fn planar_distance(&self, other: Point3) -> f64 {
         self.inner.planar_distance(other.get_inner())
+    }
+
+    fn __mul__(&self, other: f64) -> Self {
+        Self::from_inner(engeom::SurfacePoint3::new_normalize(
+            self.inner.point * other,
+            self.inner.normal.into_inner() * other.signum(),
+        ))
+    }
+
+    fn __rmul__(&self, other: f64) -> Self {
+        Self::from_inner(engeom::SurfacePoint3::new_normalize(
+            self.inner.point * other,
+            self.inner.normal.into_inner() * other.signum(),
+        ))
+    }
+
+    fn __truediv__(&self, other: f64) -> Self {
+        Self::from_inner(engeom::SurfacePoint3::new_normalize(
+            self.inner.point / other,
+            self.inner.normal.into_inner() / other.signum(),
+        ))
+    }
+
+    fn __neg__(&self) -> Self {
+        Self::from_inner(engeom::SurfacePoint3::new_normalize(
+            -self.inner.point,
+            -self.inner.normal.into_inner(),
+        ))
     }
 
     fn get_plane(&self) -> Plane3 {

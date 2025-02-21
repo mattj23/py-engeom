@@ -6,6 +6,61 @@ import numpy
 from engeom.geom2 import Vector2, Point2, SurfacePoint2, Iso2
 
 
+def test_vector_mul_scalar():
+    v = Vector2(1, 2)
+    result = v * 3
+    assert abs(result.x - 3) < 1e-6
+    assert abs(result.y - 6) < 1e-6
+
+
+def test_vector_div_scalar():
+    v = Vector2(3, 6)
+    result = v / 3
+    assert abs(result.x - 1) < 1e-6
+    assert abs(result.y - 2) < 1e-6
+
+
+def test_point_mul_scalar():
+    p = Point2(1, 2)
+    result = p * 3
+    assert abs(result.x - 3) < 1e-6
+    assert abs(result.y - 6) < 1e-6
+
+
+def test_point_div_scalar():
+    p = Point2(3, 6)
+    result = p / 3
+    assert abs(result.x - 1) < 1e-6
+    assert abs(result.y - 2) < 1e-6
+
+
+def test_sp_mul_scalar_pos():
+    sp = SurfacePoint2(1, 2, 1, 0)
+    result = sp * 3
+    assert abs(result.point.x - 3) < 1e-6
+    assert abs(result.point.y - 6) < 1e-6
+    assert abs(result.normal.x - 1) < 1e-6
+    assert abs(result.normal.y) < 1e-6
+
+
+def test_sp_mul_scalar_neg():
+    sp = SurfacePoint2(1, 2, 1, 0)
+    result = sp * -3
+    assert abs(result.point.x + 3) < 1e-6
+    assert abs(result.point.y + 6) < 1e-6
+    assert abs(result.normal.x + 1) < 1e-6
+    assert abs(result.normal.y) < 1e-6
+
+
+def test_sp_div_scalar():
+    sp = SurfacePoint2(3, 6, 1, 0)
+    result = sp / 3
+    assert abs(result.point.x - 1) < 1e-6
+    assert abs(result.point.y - 2) < 1e-6
+    assert abs(result.normal.x - 1) < 1e-6
+    assert abs(result.normal.y) < 1e-6
+
+
 # Test that a vector plus a vector is a vector.
 def test_vector_plus_vector():
     v1 = Vector2(1, 2)
