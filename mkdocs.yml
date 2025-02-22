@@ -8,12 +8,14 @@ nav:
   - Geometric Primitives:
       - Points and Vectors: points_vectors.md
       - Surface Points: surf_points.md
-      - Isometries: isometries.md
       - Planes, Circles, Lines: planes_circles_lines.md
+  - Isometries: isometries.md
   - SVD Basis: svd_basis.md
   - Bounding Volumes: bounding_volumes.md
   - Curves/Polylines: curves.md
   - Meshes: meshes.md
+  - Airfoils:
+      - Introduction: airfoils/intro.md
 
 markdown_extensions:
   - pymdownx.arithmatex:

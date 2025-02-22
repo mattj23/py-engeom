@@ -57,6 +57,22 @@ i2 = Iso3.from_translation(1, 2, 3)
 i3 = Iso3.from_rotation(pi / 4, 1, 0, 0)
 ```
 
+## Inverting Isometries
+
+Isometries can, by definition, be inverted. The inverse of an isometry is an isometry that, when applied to the result
+of the original isometry, returns the original input. An isometry multiplied by its inverse is the identity isometry.
+
+```python
+from math import pi
+from engeom.geom3 import Iso3
+
+i = Iso3.from_rotation(pi / 4, 1, 0, 0)
+
+# Invert the isometry
+i_inv = i.inverse()
+```
+
+
 ## Composition
 
 Isometries can be composed together by multiplying them together. The order of multiplication is important, as

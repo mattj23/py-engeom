@@ -365,8 +365,8 @@ class SvdBasis3:
 
     def __init__(
             self,
-            points: numpy.ndarray[float],
-            weights: numpy.ndarray[float] | None = None
+            points: numpy.ndarray,
+            weights: numpy.ndarray | None = None
     ):
         """
         Create a basis from a set of points. The basis will be calculated using a singular value decomposition of the
@@ -388,17 +388,17 @@ class SvdBasis3:
         """
         ...
 
-    def largest(self) -> numpy.ndarray[float]:
+    def largest(self) -> Vector3:
         """
         Return the largest normalized basis vector.
-        :return: a numpy array of shape (3,) containing the largest basis vector.
+        :return: a Vector3 object containing the largest basis vector.
         """
         ...
 
-    def smallest(self) -> numpy.ndarray[float]:
+    def smallest(self) -> Vector3:
         """
         Return the smallest normalized basis vector.
-        :return: a numpy array of shape (3,) containing the smallest basis vector.
+        :return: a Vector3 object containing the smallest basis vector.
         """
         ...
 

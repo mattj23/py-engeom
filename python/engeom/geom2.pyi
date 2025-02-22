@@ -319,15 +319,78 @@ class SvdBasis2:
 
     def __init__(
             self,
-            points: numpy.ndarray[float],
-            weights: numpy.ndarray[float] | None = None
+            points: numpy.ndarray,
+            weights: numpy.ndarray | None = None
     ):
         """
+        Create a basis from a set of points. The basis will be calculated using a singular value decomposition of the
+        points.
 
-        :param points:
-        :param weights:
+        :param points: a numpy array of shape (n, 2) containing the points to calculate the basis from.
+        :param weights: a numpy array of shape (n,) containing the weights of the points. If None, all points will be
+        weighted equally.
         """
         ...
+
+    def rank(self, tol: float) -> int:
+        """
+        Retrieve the rank of the decomposition by counting the number of singular values that are
+        greater than the provided tolerance.  A rank of 0 indicates that all singular values are
+        less than the tolerance, and thus the point set is essentially a single point. A rank of 1
+        indicates that the point set is essentially a line. A rank of 2 indicates that the point
+        set exists roughly in a plane.
+
+        The singular values do not directly have a clear physical meaning. They are square roots of
+        the variance multiplied by the number of points used to compute the basis.  Thus, they can
+        be interpreted in relation to each other, and when they are very small.
+
+        This method should be used either when you know roughly what a cutoff tolerance for the
+        problem you're working on should be, or when you know the cutoff value should be very
+        small.  Otherwise, consider examining the standard deviations of the basis vectors
+        instead, as they will be easier to interpret (`basis_stdevs()`).
+        :param tol: the tolerance to use when determining the rank.
+        :return: the rank of the decomposition.
+        """
+        ...
+
+    def largest(self) -> Vector2:
+        """
+        Get the largest singular vector of the basis.
+        :return: the largest singular vector.
+        """
+        ...
+
+    def smallest(self) -> Vector2:
+        """
+        Get the smallest singular vector of the basis.
+        :return: the smallest singular vector.
+        """
+        ...
+
+    def basis_variances(self) -> numpy.ndarray[float]:
+        """
+        Get the variance of the points along the singular vectors.
+        :return: a numpy array of the variance of the points along the singular vectors.
+        """
+        ...
+
+    def basis_stdevs(self) -> numpy.ndarray[float]:
+        """
+        Get the standard deviation of the points along the singular vectors.
+        :return: a numpy array of the standard deviation of the points along the singular vectors.
+        """
+        ...
+
+    def to_iso2(self) -> Iso2:
+        """
+        Produce an isometry which will transform from the world space to the basis space.
+
+        For example, if the basis is created from a set of points that lie roughly on an arbitrary line, multiplying
+        original points by this isometry will move the points such that all points are aligned with the x-axis.
+        :return: the isometry that transforms from the world space to the basis space.
+        """
+        ...
+
 
 
 class CurveStation2:
