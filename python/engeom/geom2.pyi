@@ -222,6 +222,16 @@ class SurfacePoint2:
         """
         ...
 
+    def rot_normal(self, angle: float) -> SurfacePoint2:
+        """
+        Rotate the normal vector of the surface point by a given angle in radians and return a new surface point. The
+        position of the surface point is not affected. The angle is positive for counter-clockwise rotation and negative
+        for clockwise rotation.
+
+        :param angle: the angle to rotate the normal vector by.
+        :return:
+        """
+
     def __mul__(self, other: float) -> SurfacePoint2:
         """
         Multiply the position of the surface point by a scalar value. The normal vector is not affected unless the

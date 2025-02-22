@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Tuple, Iterable, List, TypeVar
+from typing import Tuple, Iterable, List, TypeVar, Iterator
 
 import numpy
 from engeom import DeviationMode, Resample, SelectOp
@@ -11,13 +11,13 @@ Transformable3 = TypeVar("Transformable3", Vector3, Point3, Plane3, Iso3, Surfac
 PointOrVector3 = TypeVar("PointOrVector3", Vector3, Point3)
 
 
-class Vector3:
+class Vector3(Iterable[float]):
     def __init__(self, x: float, y: float, z: float):
         """
-
-        :param x:
-        :param y:
-        :param z:
+        Create a vector in 3D space by specifying the x, y, and z components.
+        :param x: the x component of the vector
+        :param y: the y component of the vector
+        :param z: the z component of the vector
         """
         ...
 
@@ -33,7 +33,7 @@ class Vector3:
     def z(self) -> float:
         ...
 
-    def __iter__(self) -> Iterable[float]:
+    def __iter__(self) -> Iterator[float]:
         ...
 
     def __rmul__(self, other: float) -> Vector3:
@@ -97,13 +97,14 @@ class Vector3:
         ...
 
 
-class Point3:
+class Point3(Iterable[float]):
     def __init__(self, x: float, y: float, z: float):
         """
+        Create a point in 3D space by specifying the x, y, and z coordinates.
 
-        :param x:
-        :param y:
-        :param z:
+        :param x: the x coordinate of the point
+        :param y: the y coordinate of the point
+        :param z: the z coordinate of the point
         """
         ...
 
@@ -119,7 +120,7 @@ class Point3:
     def z(self) -> float:
         ...
 
-    def __iter__(self) -> Iterable[float]:
+    def __iter__(self) -> Iterator[float]:
         ...
 
     @property
@@ -142,6 +143,9 @@ class Point3:
     def __mul__(self, x: float) -> Point3:
         ...
 
+    def __rmul__(self, x: float) -> Point3:
+        ...
+
     def __truediv__(self, x: float) -> Point3:
         ...
 
@@ -155,13 +159,16 @@ class Point3:
 class SurfacePoint3:
     def __init__(self, x: float, y: float, z: float, nx: float, ny: float, nz: float):
         """
+        Create a surface point in 3D space by specifying the x, y, and z coordinates of the point, as well as the x, y,
+        and z components of the normal vector.  The normal components will be normalized before being stored, so they
+        do not need to be scaled to unit length before being passed to this constructor.
 
-        :param x:
-        :param y:
-        :param z:
-        :param nx:
-        :param ny:
-        :param nz:
+        :param x: the x coordinate of the point
+        :param y: the y coordinate of the point
+        :param z: the z coordinate of the point
+        :param nx: the x component of the normal vector (will be normalized after construction)
+        :param ny: the y component of the normal vector (will be normalized after construction)
+        :param nz: the z component of the normal vector (will be normalized after construction)
         """
         ...
 
@@ -234,6 +241,40 @@ class SurfacePoint3:
         :return: the plane defined by the surface point.
         """
         ...
+
+    def __mul__(self, other: float) -> SurfacePoint3:
+        """
+        Multiply the position of the surface point by a scalar value. The normal vector is not affected unless the
+        scalar is negative, in which case the normal vector is inverted.
+        :param other:
+        :return:
+        """
+        ...
+
+    def __rmul__(self, other: float) -> SurfacePoint3:
+        """
+        Multiply the position of the surface point by a scalar value. The normal vector is not affected unless the
+        scalar is negative, in which case the normal vector is inverted.
+        :param other:
+        :return:
+        """
+        ...
+
+    def __truediv__(self, other: float) -> SurfacePoint3:
+        """
+        Divide the position of the surface point by a scalar value. The normal vector is not affected unless the
+        scalar is negative, in which case the normal vector is inverted.
+        :param other:
+        :return:
+        """
+        ...
+
+    def __neg__(self) -> SurfacePoint3:
+        """
+        Invert both the position AND the normal vector of the surface point.
+        """
+        ...
+
 
 
 class Iso3:

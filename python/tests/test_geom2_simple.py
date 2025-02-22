@@ -61,6 +61,17 @@ def test_sp_div_scalar():
     assert abs(result.normal.y) < 1e-6
 
 
+def test_sp_rotate():
+    from math import pi
+    a = SurfacePoint2(0, 0, 0, 1)
+    b = a.rot_normal(pi / 2)
+
+    assert abs(b.point.x) < 1e-6
+    assert abs(b.point.y) < 1e-6
+    assert abs(b.normal.x + 1) < 1e-6
+    assert abs(b.normal.y) < 1e-6
+
+
 # Test that a vector plus a vector is a vector.
 def test_vector_plus_vector():
     v1 = Vector2(1, 2)

@@ -6,6 +6,24 @@ import numpy
 from engeom.geom3 import Vector3, Point3, SurfacePoint3, Iso3
 
 
+def test_unpacking():
+    def some_function(a: float, b: float, c: float) -> float:
+        return a + b + c
+
+    p = Point3(1, 2, 3)
+
+    x, y, z = p
+    assert x == 1
+    assert y == 2
+    assert z == 3
+
+    coords = list(p)
+    assert coords == [1, 2, 3]
+
+    value = some_function(*p)
+    assert value == 6
+
+
 def test_vector_mul_scalar():
     v = Vector3(1, 2, 3)
     result = v * 3
