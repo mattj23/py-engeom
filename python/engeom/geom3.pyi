@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Tuple, Iterable, List, TypeVar, Iterator
+from typing import Tuple, Iterable, List, TypeVar, Iterator, Any
 
 import numpy
 from engeom import DeviationMode, Resample, SelectOp
@@ -280,7 +280,7 @@ class SurfacePoint3:
 class Iso3:
     """ An isometry (rigid body transformation) in 3D space. """
 
-    def __init__(self, matrix: numpy.ndarray[float]):
+    def __init__(self, matrix: numpy.ndarray):
         """ Create an isometry from a 4x4 matrix. """
         ...
 
@@ -319,7 +319,7 @@ class Iso3:
         """ Return the inverse of the isometry. """
         ...
 
-    def transform_points(self, points: numpy.ndarray[float]) -> numpy.ndarray[float]:
+    def transform_points(self, points: numpy.ndarray[Any, numpy.dtype]) -> numpy.ndarray[float]:
         """ Transform a set of points by the isometry. This will transform the points by the rotation and translation
         of the isometry.
 
@@ -328,7 +328,7 @@ class Iso3:
         """
         ...
 
-    def transform_vectors(self, vector: numpy.ndarray[float]) -> numpy.ndarray[float]:
+    def transform_vectors(self, vector: numpy.ndarray[Any, numpy.dtype]) -> numpy.ndarray[float]:
         """ Transform a set of vectors by the isometry. This will only transform the direction of the vectors, not
         their magnitude.
 

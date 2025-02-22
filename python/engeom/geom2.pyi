@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, Tuple, TypeVar, Iterator
+from typing import Iterable, Tuple, TypeVar, Iterator, Any
 
 import numpy
 from engeom.engeom import Resample
@@ -298,7 +298,7 @@ class Iso2:
         """
         ...
 
-    def transform_points(self, points: numpy.ndarray[float]) -> numpy.ndarray[float]:
+    def transform_points(self, points: numpy.ndarray[Any, numpy.dtype]) -> numpy.ndarray[float]:
         """
         Transform an array of points using the isometry.
         :param points: a numpy array of shape (N, 2)
@@ -306,7 +306,7 @@ class Iso2:
         """
         ...
 
-    def transform_vectors(self, vectors: numpy.ndarray[float]) -> numpy.ndarray[float]:
+    def transform_vectors(self, vectors: numpy.ndarray[Any, numpy.dtype]) -> numpy.ndarray[float]:
         """
         Transform an array of vectors using the isometry. The translation part of the isometry is ignored.
         :param vectors:
