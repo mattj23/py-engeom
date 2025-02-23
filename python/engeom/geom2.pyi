@@ -392,7 +392,6 @@ class SvdBasis2:
         ...
 
 
-
 class CurveStation2:
     """
     A class representing a station along a curve in 3D space. The station is represented by a point on the curve, a
@@ -787,13 +786,14 @@ class Arc2:
 
 
 class Aabb2:
-    def __init__(self, x_min: float, x_max: float, y_min: float, y_max: float):
+    def __init__(self, x_min: float, y_min: float, x_max: float, y_max: float):
         """
+        Create an axis-aligned bounding box from the given bounds.
 
-        :param x_min:
-        :param x_max:
-        :param y_min:
-        :param y_max:
+        :param x_min: the minimum x-coordinate of the AABB
+        :param y_min: the minimum y-coordinate of the AABB
+        :param x_max: the maximum x-coordinate of the AABB
+        :param y_max: the maximum y-coordinate of the AABB
         """
         ...
 
@@ -806,6 +806,16 @@ class Aabb2:
         :param w: the width of the AABB.
         :param h: the height of the AABB. If not provided, the AABB will be square.
         :return: a new AABB object.
+        """
+        ...
+
+    @staticmethod
+    def from_points(points: numpy.ndarray) -> Aabb2:
+        """
+        Create an AABB that bounds a set of points. If the point array is empty or the wrong shape, an error will be
+        thrown.
+        :param points: a numpy array of shape (N, 2) containing the points to bound
+        :return: a new AABB object
         """
         ...
 

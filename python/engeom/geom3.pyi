@@ -953,3 +953,47 @@ class Aabb3:
     def extent(self) -> Vector3:
         """ The extent of the box. """
         ...
+
+    @staticmethod
+    def at_point(x: float, y: float, z: float, w: float, h: float | None = None, l: float | None = None) -> Aabb3:
+        """
+        Create an AABB centered at a point with a given width and height.
+        :param x: the x-coordinate of the center of the AABB.
+        :param y: the y-coordinate of the center of the AABB.
+        :param z: the z-coordinate of the center of the AABB.
+        :param w: the width of the AABB.
+        :param h: the height of the AABB. If not provided, the AABB will be square.
+        :param l: the length of the AABB. If not provided, the AABB will be square.
+        :return: a new AABB object.
+        """
+        ...
+
+    @staticmethod
+    def from_points(points: numpy.ndarray) -> Aabb3:
+        """
+        Create an AABB that bounds a set of points. If the point array is empty or the wrong shape, an error will be
+        thrown.
+        :param points: a numpy array of shape (N, 2) containing the points to bound
+        :return: a new AABB object
+        """
+        ...
+
+    def expand(self, d: float) -> Aabb3:
+        """
+        Expand the AABB by a given distance in all directions. The resulting height and
+        width will be increased by 2 * d.
+
+        :param d: the distance to expand the AABB by.
+        :return: a new AABB object with the expanded bounds.
+        """
+        ...
+
+    def shrink(self, d: float) -> Aabb3:
+        """
+        Shrink the AABB by a given distance in all directions. The resulting height and
+        width will be decreased by 2 * d.
+
+        :param d: the distance to shrink the AABB by.
+        :return: a new AABB object with the shrunk bounds.
+        """
+        ...
