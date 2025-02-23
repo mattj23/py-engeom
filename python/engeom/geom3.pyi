@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Tuple, Iterable, List, TypeVar, Iterator, Any
 
 import numpy
+from numpy.typing import NDArray
 from engeom import DeviationMode, Resample, SelectOp
 from .metrology import Length3
 
@@ -54,7 +55,7 @@ class Vector3(Iterable[float]):
     def __truediv__(self, x: float) -> Vector3:
         ...
 
-    def as_numpy(self) -> numpy.ndarray[float]:
+    def as_numpy(self) -> NDArray[float]:
         """
         Create a numpy array of shape (3,) from the vector.
         """
@@ -149,7 +150,7 @@ class Point3(Iterable[float]):
     def __truediv__(self, x: float) -> Point3:
         ...
 
-    def as_numpy(self) -> numpy.ndarray[float]:
+    def as_numpy(self) -> NDArray[float]:
         """
         Create a numpy array of shape (2,) from the point.
         """
@@ -276,11 +277,10 @@ class SurfacePoint3:
         ...
 
 
-
 class Iso3:
     """ An isometry (rigid body transformation) in 3D space. """
 
-    def __init__(self, matrix: numpy.ndarray):
+    def __init__(self, matrix: NDArray[float]):
         """ Create an isometry from a 4x4 matrix. """
         ...
 
@@ -319,7 +319,7 @@ class Iso3:
         """ Return the inverse of the isometry. """
         ...
 
-    def transform_points(self, points: numpy.ndarray[Any, numpy.dtype]) -> numpy.ndarray[float]:
+    def transform_points(self, points: NDArray[float]) -> NDArray[float]:
         """ Transform a set of points by the isometry. This will transform the points by the rotation and translation
         of the isometry.
 
@@ -328,7 +328,7 @@ class Iso3:
         """
         ...
 
-    def transform_vectors(self, vector: numpy.ndarray[Any, numpy.dtype]) -> numpy.ndarray[float]:
+    def transform_vectors(self, vector: NDArray[float]) -> NDArray[float]:
         """ Transform a set of vectors by the isometry. This will only transform the direction of the vectors, not
         their magnitude.
 
@@ -337,7 +337,7 @@ class Iso3:
         """
         ...
 
-    def as_numpy(self) -> numpy.ndarray[float]:
+    def as_numpy(self) -> NDArray[float]:
         """ Return a copy of the 4x4 matrix representation of the isometry. This is a copy operation. """
         ...
 
@@ -363,11 +363,7 @@ class SvdBasis3:
     fitting basis for the points using a singular value decomposition.
     """
 
-    def __init__(
-            self,
-            points: numpy.ndarray,
-            weights: numpy.ndarray | None = None
-    ):
+    def __init__(self, points: NDArray[float], weights: NDArray[float] | None = None):
         """
         Create a basis from a set of points. The basis will be calculated using a singular value decomposition of the
         points.
@@ -402,14 +398,14 @@ class SvdBasis3:
         """
         ...
 
-    def basis_variances(self) -> numpy.ndarray[float]:
+    def basis_variances(self) -> NDArray[float]:
         """
         Return the variances of the basis vectors.
         :return: a numpy array of shape (3,) containing the variances of the basis vectors.
         """
         ...
 
-    def basis_stdevs(self) -> numpy.ndarray[float]:
+    def basis_stdevs(self) -> NDArray[float]:
         """
         Return the standard deviations of the basis vectors.
         :return: a numpy array of shape (3,) containing the standard deviations of the basis vectors.
@@ -487,8 +483,8 @@ class Mesh:
 
     def __init__(
             self,
-            vertices: numpy.ndarray[float],
-            faces: numpy.ndarray[numpy.uint32],
+            vertices: NDArray[float],
+            faces: NDArray[numpy.uint32],
             merge_duplicates: bool = False,
             delete_degenerate: bool = False
     ):
@@ -560,7 +556,7 @@ class Mesh:
         ...
 
     @property
-    def vertices(self) -> numpy.ndarray[float]:
+    def vertices(self) -> NDArray[float]:
         """
         Will return an immutable view of the vertices of the mesh as a numpy array of shape (n, 3).
         :return: a numpy array of shape (n, 3) containing the vertices of the mesh.
@@ -568,7 +564,7 @@ class Mesh:
         ...
 
     @property
-    def faces(self) -> numpy.ndarray[numpy.uint32]:
+    def faces(self) -> NDArray[numpy.uint32]:
         """
         Will return an immutable view of the triangles of the mesh as a numpy array of shape (m, 3).
         :return: a numpy array of shape (m, 3) containing the triangles of the mesh.
@@ -587,7 +583,7 @@ class Mesh:
         """
         ...
 
-    def deviation(self, points: numpy.ndarray[float], mode: DeviationMode) -> numpy.ndarray[float]:
+    def deviation(self, points: NDArray[float], mode: DeviationMode) -> NDArray[float]:
         """
         Calculate the deviation between a set of points and their respective closest points on the mesh surface. The
         deviation can be calculated in two modes: absolute and normal. In the absolute mode, the deviation is the
@@ -601,7 +597,7 @@ class Mesh:
         """
         ...
 
-    def sample_poisson(self, radius: float) -> numpy.ndarray[float]:
+    def sample_poisson(self, radius: float) -> NDArray[float]:
         """
         Sample the surface of the mesh using a Poisson disk sampling algorithm. This will return a numpy array of points
         and their normals that are approximately evenly distributed across the surface of the mesh. The radius parameter
@@ -685,7 +681,7 @@ class Mesh:
         :return:
         """
 
-    def boundary_first_flatten(self) -> numpy.ndarray[float]:
+    def boundary_first_flatten(self) -> NDArray[float]:
         """
 
         :return:
@@ -804,7 +800,7 @@ class Curve3:
     between them.
     """
 
-    def __init__(self, vertices: numpy.ndarray, tol: float = 1.0e-6):
+    def __init__(self, vertices: NDArray[float], tol: float = 1.0e-6):
         """
         Create a curve from a set of vertices. The vertices should be a numpy array of shape (n, 3).
 
@@ -831,7 +827,7 @@ class Curve3:
         ...
 
     @property
-    def points(self) -> numpy.ndarray[float]:
+    def points(self) -> NDArray[float]:
         """
         Will return an immutable view of the vertices of the mesh as a numpy array of shape (n, 3).
         :return: a numpy array of shape (n, 3) containing the vertices of the mesh.
@@ -969,7 +965,7 @@ class Aabb3:
         ...
 
     @staticmethod
-    def from_points(points: numpy.ndarray) -> Aabb3:
+    def from_points(points: NDArray[float]) -> Aabb3:
         """
         Create an AABB that bounds a set of points. If the point array is empty or the wrong shape, an error will be
         thrown.
