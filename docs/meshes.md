@@ -310,3 +310,10 @@ values = mesh.deviation(points, DeviationMode.Plane)
 
 
 ## Face Selection and Filtering
+
+Face selection and filtering allow for the selection/de-selection of faces on the mesh based on certain chained 
+criteria.  Ultimately, the selection process will produce a list of face indices which can be used for other algorithms,
+or to extract a new `Mesh` object constructed from copies of the selected faces.
+
+!!! note
+    This documentation is in progress.
