@@ -16,6 +16,7 @@ nav:
   - Meshes: meshes.md
   - Airfoils:
       - Introduction: airfoils/intro.md
+  - Metrology: metrology.md
 
 markdown_extensions:
   - pymdownx.arithmatex:

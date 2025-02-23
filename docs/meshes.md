@@ -244,10 +244,37 @@ p = Point3(1, 2, 3)
 cl = mesh.surface_closest_to(*p)
 ```
 
-### Point Deviation
+### Surface Deviation at a Single Point
 
+Deviation from a surface is a common concept in metrology.  A test point is projected onto the closest face of a mesh,
+and the "deviation" is measured as the distance between the test point and its projection.  The distance is signed so
+that it is positive if the point lies in the direction of the face normal at the closest point, and negative 
+otherwise.
 
-### Bulk Deviation
+The `measure_point_deviation` method calculates the deviation at the location of a single test point. The method returns
+a `Length3` object, which is a metrology entity that represents a scalar distance measured between two positions in 3D 
+along a specified direction.
+
+There are two possible modes of computing the distance, specified using the `DeviationMode` enum.  The two modes are
+essentially the same except for how they treat points which are beyond the edge of the closest face.
+
+- `DeviationMode.Point`: The deviation is calculated as the direct distance from the test point to the closest point on
+  the face.
+
+- `DeviationMode.Plane`: The deviation is calculated as the distance from the test point to the plane of the face on
+  which the closest point lies. This allows for points that are slightly beyond the edge of the closest face to have a
+  deviation which would be the same as if the edge of the face extended to beyond the test point.
+
+```python
+from engeom import DeviationMode
+from engeom.geom3 import Mesh
+
+mesh = Mesh.load_stl("path/to/file.stl")
+
+result = mesh.measure_point_deviation(1, 2, 3, DeviationMode.Point)
+```
+
+### Surface Deviation at Multiple Points
 
 To calculate the deviation of a large number of points at once, use the `deviation` method, which will return a `numpy`
 array with one scalar value of deviation for each test point. Each value will be positive if the test point is in the 
@@ -268,7 +295,7 @@ points which are slightly beyond the edge of the closest face.
 ```python
 import numpy
 from engeom import DeviationMode
-from engeom.geom3 import Mesh, Point3
+from engeom.geom3 import Mesh 
 
 mesh = Mesh.load_stl("path/to/file.stl")
 
