@@ -17,6 +17,13 @@ nav:
   - Airfoils:
       - Introduction: airfoils/intro.md
   - Metrology: metrology.md
+  - API Reference:
+      - Common: api/engeom.md
+      - Geom2: api/geom2.md
+      - Geom3: api/geom3.md
+      - Metrology: api/metrology.md
+      - Airfoil: api/airfoil.md
+      - Plot: api/plot.md
 
 markdown_extensions:
   - pymdownx.arithmatex:
@@ -33,6 +40,14 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.superfences
   - admonition
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: sphinx
+          paths: [python]
 
 extra_javascript:
   - javascripts/mathjax.js

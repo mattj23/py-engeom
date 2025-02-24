@@ -2,7 +2,7 @@ use crate::bounding::Aabb3;
 use crate::common::{DeviationMode, SelectOp};
 use crate::conversions::{array_to_faces, array_to_points3, faces_to_array, points_to_array3};
 use crate::geom3::{Curve3, Iso3, Plane3, SurfacePoint3};
-use crate::metrology::Length3;
+use crate::metrology::Distance3;
 use engeom::common::points::dist;
 use engeom::common::{Selection, SplitResult};
 use numpy::ndarray::{Array1, ArrayD};
@@ -161,9 +161,9 @@ impl Mesh {
         Ok(result.into_pyarray(py))
     }
 
-    fn measure_point_deviation(&self, x: f64, y: f64, z: f64, dist_mode: DeviationMode) -> Length3 {
+    fn measure_point_deviation(&self, x: f64, y: f64, z: f64, dist_mode: DeviationMode) -> Distance3 {
         let point = engeom::Point3::new(x, y, z);
-        Length3::from_inner(self.inner.measure_point_deviation(&point, dist_mode.into()))
+        Distance3::from_inner(self.inner.measure_point_deviation(&point, dist_mode.into()))
     }
 
     fn boundary_first_flatten<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyArrayDyn<f64>>> {
@@ -212,9 +212,9 @@ impl Mesh {
     fn face_select_all<'py>(
         slf: PyRef<Self>,
         py: Python<'py>,
-    ) -> PyResult<Bound<'py, MeshTriangleFilter>> {
+    ) -> PyResult<Bound<'py, FaceFilterHandle>> {
         let indices = slf.inner.face_select(Selection::All).collect();
-        MeshTriangleFilter {
+        FaceFilterHandle {
             mesh: slf.into(),
             indices,
         }
@@ -224,9 +224,9 @@ impl Mesh {
     fn face_select_none<'py>(
         slf: PyRef<Self>,
         py: Python<'py>,
-    ) -> PyResult<Bound<'py, MeshTriangleFilter>> {
+    ) -> PyResult<Bound<'py, FaceFilterHandle>> {
         let indices = slf.inner.face_select(Selection::None).collect();
-        MeshTriangleFilter {
+        FaceFilterHandle {
             mesh: slf.into(),
             indices,
         }
@@ -247,15 +247,15 @@ impl Mesh {
 }
 
 #[pyclass]
-pub struct MeshTriangleFilter {
+pub struct FaceFilterHandle {
     mesh: Py<Mesh>,
     indices: Vec<usize>,
 }
 
 #[pymethods]
-impl MeshTriangleFilter {
+impl FaceFilterHandle {
     fn __repr__(&self) -> String {
-        format!("<MeshTriangleFilter {} triangles>", self.indices.len())
+        format!("<FaceFilterHandle {} triangles>", self.indices.len())
     }
 
     fn facing<'py>(

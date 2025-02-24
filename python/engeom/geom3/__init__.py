@@ -1,3 +1,8 @@
+"""
+This module provides a number of classes and functions for working with 3D geometry. These range from fundamental
+primitives like points and vectors up to complex items like meshes.
+"""
+
 from ..engeom import _geom3
 
 # Global import of all functions

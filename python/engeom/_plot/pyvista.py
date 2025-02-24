@@ -9,9 +9,9 @@ from typing import List, Any, Dict, Union, Iterable, Tuple
 import numpy
 from pyvista import ColorLike
 
-from .geom3 import Mesh, Curve3, Vector3, Point3, Iso3
-from .metrology import Length3
-from .matplotlib import LabelPlace
+from engeom.geom3 import Mesh, Curve3, Vector3, Point3, Iso3
+from engeom.metrology import Distance3
+from .common import LabelPlace
 
 PlotCoords = Union[Point3, Vector3, Iterable[float]]
 
@@ -21,7 +21,7 @@ except ImportError:
     pass
 else:
 
-    class PlotterHelper:
+    class PyvistaPlotterHelper:
         def __init__(self, plotter: pyvista.Plotter):
             self.plotter = plotter
 
@@ -73,7 +73,7 @@ else:
 
         def dimension(
                 self,
-                length: Length3,
+                length: Distance3,
                 template: str = "{value:.3f}",
                 label_place: LabelPlace = LabelPlace.Outside,
                 label_offset: float | None = None,

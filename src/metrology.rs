@@ -5,25 +5,25 @@ use engeom::UnitVec2;
 use pyo3::prelude::*;
 
 #[pyclass]
-pub struct Length2 {
-    inner: engeom::metrology::Length2,
+pub struct Distance2 {
+    inner: engeom::metrology::Distance2,
 }
 
-impl Length2 {
-    pub fn get_inner(&self) -> &engeom::metrology::Length2 {
+impl Distance2 {
+    pub fn get_inner(&self) -> &engeom::metrology::Distance2 {
         &self.inner
     }
 
-    pub fn from_inner(inner: engeom::metrology::Length2) -> Self {
+    pub fn from_inner(inner: engeom::metrology::Distance2) -> Self {
         Self { inner }
     }
 }
 
 #[pymethods]
-impl Length2 {
+impl Distance2 {
     fn __repr__(&self) -> String {
         format!(
-            "Length2(a=({}, {}), b=({}, {}), direction=({}, {}))",
+            "Distance2(a=({}, {}), b=({}, {}), direction=({}, {}))",
             self.inner.a.x,
             self.inner.a.y,
             self.inner.b.x,
@@ -37,7 +37,7 @@ impl Length2 {
     #[pyo3(signature=(a, b, direction = None))]
     pub fn new(a: Point2, b: Point2, direction: Option<Vector2>) -> Self {
         let d = direction.map(|v| UnitVec2::new_normalize(*v.get_inner()));
-        Self::from_inner(engeom::metrology::Length2::new(
+        Self::from_inner(engeom::metrology::Distance2::new(
             *a.get_inner(),
             *b.get_inner(),
             d,
@@ -75,25 +75,25 @@ impl Length2 {
 }
 
 #[pyclass]
-pub struct Length3 {
-    inner: engeom::metrology::Length3,
+pub struct Distance3 {
+    inner: engeom::metrology::Distance3,
 }
 
-impl Length3 {
-    pub fn get_inner(&self) -> &engeom::metrology::Length3 {
+impl Distance3 {
+    pub fn get_inner(&self) -> &engeom::metrology::Distance3 {
         &self.inner
     }
 
-    pub fn from_inner(inner: engeom::metrology::Length3) -> Self {
+    pub fn from_inner(inner: engeom::metrology::Distance3) -> Self {
         Self { inner }
     }
 }
 
 #[pymethods]
-impl Length3 {
+impl Distance3 {
     fn __repr__(&self) -> String {
         format!(
-            "Length3(a=({}, {}, {}), b=({}, {}, {}), direction=({}, {}, {}))",
+            "Distance3(a=({}, {}, {}), b=({}, {}, {}), direction=({}, {}, {}))",
             self.inner.a.x,
             self.inner.a.y,
             self.inner.a.z,
@@ -110,7 +110,7 @@ impl Length3 {
     #[pyo3(signature=(a, b, direction = None))]
     pub fn new(a: Point3, b: Point3, direction: Option<Vector3>) -> Self {
         let d = direction.map(|v| engeom::UnitVec3::new_normalize(*v.get_inner()));
-        Self::from_inner(engeom::metrology::Length3::new(
+        Self::from_inner(engeom::metrology::Distance3::new(
             *a.get_inner(),
             *b.get_inner(),
             d,

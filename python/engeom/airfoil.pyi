@@ -1,44 +1,69 @@
 from typing import List
 
-import numpy
+from numpy.typing import NDArray
 from enum import Enum
 
-from .geom2 import Circle2, Curve2, Point2, SurfacePoint2, Arc2
-from .metrology import Length2
+import geom2
+import metrology
 
 type MclOrientEnum = MclOrient.TmaxFwd | MclOrient.DirFwd
 type FaceOrientEnum = FaceOrient.Detect | FaceOrient.UpperDir
 type EdgeFindEnum = EdgeFind.Open | EdgeFind.OpenIntersect | EdgeFind.Intersect | EdgeFind.RansacRadius
-type EdgeTypeEnum = EdgeType | Arc2
+type EdgeTypeEnum = EdgeType | geom2.Arc2
 type AfGageEnum = AfGage.OnCamber | AfGage.Radius
 
+
 class EdgeType(Enum):
-    Open=0
-    Closed=1
+    """
+    An enumeration of the possible non-geometric types of edges that can be detected on an airfoil cross-section as the
+    result of an edge finding operation. When one of these types is returned, it means that the edge finding algorithm
+    could not provide more detailed geometric information about the edge.
+    """
+
+    Open = 0
+    """ Represents an open edge, where the airfoil cross-section is incomplete and/or not closed. """
+
+    Closed = 1
+    """ Represents an edge that is closed, where the airfoil cross-section has contiguous vertices through the edge. """
+
 
 class AfGage:
     """
-    A class representing a measurement for locating a position on an airfoil cross-section.
+    An enumeration class used to specify a method for locating a gage points on an airfoil cross-section.
     """
+
     class OnCamber:
+        """
+        A gaging method that measures a distance along the mean camber line. A positive distance will be from the
+        leading edge towards the trailing edge, and a negative distance will be from the trailing edge towards the
+        leading edge.
+        """
+
         def __init__(self, d: float):
             """
-            A gaging method that measures a distance along the mean camber line. A positive distance will be from the
-            leading edge towards the trailing edge, and a negative distance will be from the trailing edge towards the
-            leading edge.
+            Create a specification for a gage point that is a distance `d` along the mean camber line. A positive
+            distance will be from the leading edge towards the trailing edge, and a negative distance will be from the
+            trailing edge towards the leading edge.
             :param d: the distance along the mean camber line to find the position
             """
             ...
 
     class Radius:
+        """
+        A gaging method that measures by intersection with a circle of a given radius centered on either the
+        leading or trailing edge point.  A positive radius indicates that the circle is located on the leading edge
+        while a negative radius indicates that the circle is located on the trailing edge.
+        """
+
         def __init__(self, r: float):
             """
-            A gaging method that measures by intersection with a circle of a given radius centered on either the
-            leading or trailing edge point.  A positive radius indicates that the circle is located on the leading edge
-            while a negative radius indicates that the circle is located on the trailing edge.
+            Create a specification for a gage point that is located at the intersection of a circle of radius `r` with
+            the airfoil cross-section. A positive radius indicates that the circle is located on the leading edge while
+            a negative radius indicates that the circle is located on the trailing edge.
             :param r: the radius of the circle to find the position
             """
             ...
+
 
 class FaceOrient:
     """
@@ -51,7 +76,12 @@ class FaceOrient:
         In an airfoil with an MCL that exhibits curvature, this will attempt to detect which direction the camber line
         curves and thus identify convex/concave. This will fail if the MCL is straight.
         """
-        ...
+        def __init__(self):
+            """
+            Create a new face orientation parameter that will attempt to detect the orientation of the faces based on
+            the curvature of the mean camber line.
+            """
+            ...
 
     class UpperDir:
         """
@@ -83,7 +113,14 @@ class MclOrient:
         This method will take advantage of the fact that for most typical subsonic airfoils the maximum thickness point
         is closer to the leading edge than the trailing edge.
         """
-        ...
+
+        def __init__(self):
+            """
+            Create a specification for orienting the mean camber line based on which side the maximum thickness point is
+            closer to. This method will assume that the maximum thickness point is closer to the leading edge than the
+            trailing edge.
+            """
+            ...
 
     class DirFwd:
         """
@@ -116,9 +153,25 @@ class EdgeFind:
         as they are. Use this if you know that the airfoil cross-section is open/incomplete on this side, and you don't
         care to extend the MCL any further.
         """
-        ...
+
+        def __init__(self):
+            """
+            Create a specification which assumes that the airfoil cross-section is open/incomplete on this side, and
+            makes no attempt to find the edge geometry beyond the unambiguous inscribed circles.
+            """
+            ...
 
     class OpenIntersect:
+        """
+        This algorithm is also for an open edge, but unlike `Open` it will attempt to refine the end of the MCL and
+        extend it to intersect the line segment which spans the open gap where the edge should be. This is useful on
+        partial cross-sections where you would still like to extend the MCL as much as possible.
+
+        It works by intersecting the end of the inscribed circles camber curve with the open gap in the airfoil
+        cross-section, filling and refining more inscribed circles between the last circle and the intersection point,
+        and repeating until the location of the end converges to within 1/100th of the general refinement tolerance.
+        """
+
         def __init__(self, max_iter: int):
             """
             This algorithm will attempt to find the edge geometry by intersecting the end of the inscribed circles
@@ -137,21 +190,37 @@ class EdgeFind:
         This algorithm will simply intersect the end of the inscribed circles camber curve with the airfoil
         cross-section. This is the fastest method with the least amount of assumptions, and makes sense for airfoil
         edges where you know the mean camber line has very low curvature in the vicinity of the edge.
+
+        Do not use this method if you know that the airfoil cross-section is open/incomplete on this side, as it will
+        throw an error if the MCL does not intersect the cross-section.
         """
-        ...
+
+        def __init__(self):
+            """
+            Create a specification which will attempt to find the edge geometry by intersecting the end of the inscribed
+            circles camber curve with the airfoil cross-section.  Use on known closed airfoil cross-sections with low
+            curvature near the edge.
+            """
+            ...
 
     class RansacRadius:
+        """
+        This technique uses RANSAC (Random Sample Consensus) to find a constant radius leading/trailing edge circle
+        that fits the greatest number of points leftover at the edge within the tolerance `in_tol`.
+
+        The method will try `n` different combinations of three points picked at random from the remaining points
+        at the edge, construct a circle, and then count the number of points within `in_tol` distance of the circle
+        perimeter. The circle with the most points within tolerance will be considered the last inscribed circle.
+
+        The MCL will be extended to this final circle, and then intersected with the airfoil cross-section to find
+        the final edge point.
+        """
+
         def __init__(self, in_tol: float, n: int = 500):
             """
-            This algorithm uses RANSAC (Random Sample Consensus) to find a constant radius leading edge circle that
-            fits the greatest number of points leftover at the edge within the tolerance `in_tol`.
-
-            The method will try `n` different combinations of three points picked at random from the remaining points
-            at the edge, construct a circle, and then count the number of points within `in_tol` distance of the circle
-            perimeter. The circle with the most points within tolerance will be considered the last inscribed circle.
-
-            The MCL will be extended to this final circle, and then intersected with the airfoil cross-section to find
-            the final edge point.
+            Create a specification which will attempt to find the edge geometry by Random Sample Consensus of a constant
+            radius at the edge of the airfoil cross-section. This is useful for airfoils known to have a constant radius
+            edge and on section data which is relatively clean and has low noise.
 
             :param in_tol: the max distance from the circle perimeter for a point to be considered a RANSAC inlier
             :param n: The number of RANSAC iterations to perform
@@ -160,139 +229,215 @@ class EdgeFind:
 
 
 class InscribedCircle:
-    @property
-    def circle(self) -> Circle2: ...
+    """
+    Represents an inscribed circle in an airfoil cross-section. The circle is contained within the airfoil cross-section
+    and is tangent to the airfoil section at two points.
+    """
 
     @property
-    def contact_a(self) -> Point2:
+    def circle(self) -> geom2.Circle2:
         """
-        A contact point of the inscribed circle with one side of the airfoil cross-section. Inscribed circles computed
-        together will have a consistent meaning of `a` and `b` sides, but which is the upper or lower surface will
-        depend on the ordering of the circles and the coordinate system of the airfoil.
+        Gets the circle object associated with this inscribed circle.
+        :return: The circle entity for the inscribed circle
         """
         ...
 
     @property
-    def contact_b(self) -> Point2:
+    def contact_a(self) -> geom2.Point2:
         """
-        The other contact point of the inscribed circle with the airfoil cross-section. Inscribed circles computed
+        Get a contact point of the inscribed circle with one side of the airfoil cross-section. Inscribed circles
+        computed together will have a consistent meaning of `a` and `b` sides, but which is the upper or lower surface
+        will depend on the ordering of the circles and the coordinate system of the airfoil.
+
+        :return: The first contact point of the inscribed circle with the airfoil cross-section
+        """
+        ...
+
+    @property
+    def contact_b(self) -> geom2.Point2:
+        """
+        Get the other contact point of the inscribed circle with the airfoil cross-section. Inscribed circles computed
         together will have a consistent meaning of `a` and `b` sides, but which is the upper or lower surface will
         depend on the ordering of the circles and the coordinate system of the airfoil.
+
+        :return: The second contact point of the inscribed circle with the airfoil cross-section
         """
         ...
 
 
 class EdgeResult:
     """
-    Represents the results of an edge detection algorithm
+    Represents the results of an airfoil edge detection operation, containing both a point on the airfoil cross-section
+    that was detected as the edge, and optional geometric information about the edge depending on the method used.
     """
 
     @property
-    def point(self) -> Point2:
+    def point(self) -> geom2.Point2:
         """
-        The point on the airfoil cross-section that was detected as the edge.
+        Gets the point on the airfoil cross-section that was detected as the edge.
+        :return: The point on the airfoil cross-section that was detected as the edge
         """
         ...
 
     @property
-    def geometry(self):
+    def geometry(self) -> EdgeTypeEnum:
+        """
+        Gets the geometric information about the edge that was detected.
+
+        * This will be an instance of `EdgeType` if the algorithm could not provide more detailed geometric information
+        about the edge beyond open/closed.
+
+        * This will be an instance of `Arc2` in the case of constant radius edge detection.
+
+        :return: The geometric information about the edge that was detected
+        """
         ...
 
 
 class AirfoilGeometry:
     """
-    The result of an airfoil geometry computation.
+    This class produces and contains the result of the geometric analysis of an airfoil cross-section. It contains:
+
+    1. The mean camber line
+
+    2. The segregated geometry of the upper (suction, convex) and lower (pressure, concave) faces
+
+    3. The detected position and geometry of the leading and trailing edges
+
+    4. The array of inscribed circles identified during the analysis
+
+    From this information, thicknesses and other measurements can be made on the airfoil.
+
+    See the `from_analyze` method for how to perform the analysis creating an instance of this class.
     """
 
     @staticmethod
     def from_analyze(
-            section: Curve2,
+            section: geom2.Curve2,
             refine_tol: float,
             camber_orient: MclOrientEnum,
             leading: EdgeFindEnum,
             trailing: EdgeFindEnum,
             face_orient: FaceOrientEnum,
     ) -> AirfoilGeometry:
+        """
+        This method attempts to extract the airfoil geometry from the given airfoil cross-section using only the
+        geometric information embedded in the section. It is suitable for airfoil cross-sections with clean, low-noise
+        or noise-free data, such as those which come from nominal CAD data or from very clean scans/samples of airfoils
+        with smooth, continuous surfaces with little to no defects.
+
+        The cross-section data must also be *only* the outer surface of the airfoil, with no internal features or
+        points. The vertices should be ordered in a counter-clockwise direction, but the section may be open on one
+        side and no particular orientation or position in the XY plane is required.
+
+        Internally, this operation will attempt to:
+
+        1. Extract the unambiguous inscribed circles from the cross-section using an iterative stepping/refinement
+        method (see `compute_inscribed_circles` for more detail).
+
+        2. Orient the mean camber line (determine which side is the leading edge and which side is the trailing edge)
+        based on the method specified in `camber_orient`.
+
+        3. Extract the exact position (and optionally, the geometry) of the leading and trailing edges based on the
+        methods specified in `leading` and `trailing`, respectively.
+
+        4. Identify and extract the upper (suction, convex) and lower (pressure, concave) faces of the airfoil based on
+        the method specified in `face_orient`.
+
+        If successful in all of these steps, the method will return an instance of `AirfoilGeometry` containing the
+        results of the analysis. If any of the steps fail, the method will raise an error.
+
+        :param section: The curve representing the airfoil cross-section
+        :param refine_tol: A general tolerance used in the analysis, typically used to refine results until the error
+        or difference between two values is less than this value. It is also used in certain methods as a common
+        reference tolerance, where the method will use a fraction of this value as a threshold for convergence or error.
+        :param camber_orient: The method to use to orient the mean camber line of the airfoil.
+        :param leading: The method to use to detect the leading edge of the airfoil.
+        :param trailing: The method to use to detect the trailing edge of the airfoil.
+        :param face_orient: The method to identify the upper and lower faces of the airfoil.
+        :return: An instance of `AirfoilGeometry` containing the results of the analysis.
+        """
         ...
 
     @property
     def leading(self) -> EdgeResult | None:
         """
-        The result of the leading edge detection algorithm.
+        Gets the result of the leading edge detection algorithm.
         """
         ...
 
     @property
     def trailing(self) -> EdgeResult | None:
         """
-        The result of the trailing edge detection algorithm.
+        Gets the result of the trailing edge detection algorithm.
         """
         ...
 
     @property
-    def camber(self) -> Curve2:
+    def camber(self) -> geom2.Curve2:
         """
-        The mean camber line of the airfoil cross-section. The curve will be oriented so that the first point is at
+        Gets the mean camber line of the airfoil cross-section. The curve will be oriented so that the first point is at
         the leading edge of the airfoil and the last point is at the trailing edge.
-        :return:
+        :return: The mean camber line of the airfoil cross-section as a `Curve2` object.
         """
         ...
 
     @property
-    def upper(self) -> Curve2 | None:
+    def upper(self) -> geom2.Curve2 | None:
         """
         The curve representing the upper (suction, convex) side of the airfoil cross-section. The curve will be oriented
         in the same winding direction as the original section, so the first point may be at either the leading or
         trailing edge based on the airfoil geometry and the coordinate system.
 
-        :return: A Curve2, or None if there was an issue detecting the leading or trailing edge.
+        :return: A `Curve2`, or None if there was an issue detecting the leading or trailing edge.
         """
         ...
 
     @property
-    def lower(self) -> Curve2 | None:
+    def lower(self) -> geom2.Curve2 | None:
         """
         The curve representing the lower (pressure, concave) side of the airfoil cross-section. The curve will be
         oriented in the same winding direction as the original section, so the first point may be at either the leading
         or trailing edge based on the airfoil geometry and the coordinate system.
 
-        :return: A Curve2, or None if there was an issue detecting the leading or trailing edge.
+        :return: A `Curve2`, or None if there was an issue detecting the leading or trailing edge.
         """
         ...
 
     @property
-    def circle_array(self) -> numpy.ndarray[float]:
+    def circle_array(self) -> NDArray[float]:
         """
         Returns the list of inscribed circles as a numpy array of shape (N, 3) where N is the number of inscribed
         circles. The first two columns are the x and y coordinates of the circle center, and the third column is the
         radius of the circle.
+        :return: A numpy array of shape (N, 3) containing the inscribed circles
         """
         ...
 
-    def get_thickness(self, gage: AfGageEnum) -> Length2:
+    def get_thickness(self, gage: AfGageEnum) -> metrology.Distance2:
         """
         Get the thickness dimension of the airfoil cross-section.
         :param gage: the gaging method to use
-        :return:
+        :return: a `Distance2` object representing the thickness dimension at the specified gage points
         """
         ...
 
-    def get_tmax(self) -> Length2:
+    def get_tmax(self) -> metrology.Distance2:
         """
         Get the maximum thickness dimension of the airfoil cross-section.
-        :return:
+        :return: a `Distance2` object representing the maximum thickness dimension
         """
         ...
 
-    def get_tmax_circle(self) -> Circle2:
+    def get_tmax_circle(self) -> geom2.Circle2:
         """
         Get the circle representing the maximum thickness dimension of the airfoil cross-section.
-        :return:
+        :return: a `Circle2` object representing the maximum thickness circle
         """
         ...
 
 
-def compute_inscribed_circles(section: Curve2, refine_tol: float) -> List[InscribedCircle]:
+def compute_inscribed_circles(section: geom2.Curve2, refine_tol: float) -> List[InscribedCircle]:
     """
     Compute the unambiguous inscribed circles of an airfoil cross-section.
 

@@ -1,3 +1,7 @@
+"""
+This module contains a number of tools to help analyze airfoil geometries in 2D.
+"""
+
 from ..engeom import _airfoil
 
 # Global import of all functions

@@ -2,149 +2,260 @@ from __future__ import annotations
 
 from typing import Iterable, Tuple, TypeVar, Iterator, Any
 
-import numpy
-from engeom.engeom import Resample
+from numpy.typing import NDArray
+from numpy import dtype
+from engeom.engeom import ResampleEnum
 
 Transformable2 = TypeVar("Transformable2", Vector2, Point2, Iso2, SurfacePoint2)
 PointOrVec2 = TypeVar("PointOrVec2", Point2, Vector2)
 
 
 class Vector2(Iterable[float]):
+    """
+    A class representing a vector in 2D space. The vector contains an x and y component.  It is iterable and will
+    yield the x and y components in order, allowing the Python unpacking operator `*` to be used to compensate for the
+    lack of function overloading through some other parts of the library.
+
+    A vector has different semantics than a point when it comes to transformations and some mathematical operations.
+    """
+
     def __iter__(self) -> Iterator[float]:
         pass
 
     def __init__(self, x: float, y: float):
         """
-
-        :param x:
-        :param y:
+        Create a 2D vector from the given x and y components.
+        :param x: the x component of the vector.
+        :param y: the y component of the vector.
         """
         ...
 
     @property
     def x(self) -> float:
+        """
+        Access the x component of the vector as a floating point value.
+        """
         ...
 
     @property
     def y(self) -> float:
+        """
+        Access the y component of the vector as a floating point value.
+        """
         ...
 
     def __rmul__(self, other: float) -> Vector2:
+        """
+        Multiply the vector by a scalar value. This allows the scalar to be on the left side of the multiplication
+        operator.
+        :param other: a scalar value to multiply the vector by.
+        :return: a new vector that is the result of the multiplication.
+        """
+        ...
+
+    def __mul__(self, other: float) -> Vector2:
+        """
+        Multiply the vector by a scalar value.
+        :param other:  a scalar value to multiply the vector by.
+        :return: a new vector that is the result of the multiplication.
+        """
         ...
 
     def __add__(self, other: PointOrVec2) -> PointOrVec2:
+        """
+        Add a vector to a point or another vector. Adding a vector to a point will return a new point, while
+        adding a vector to a vector will return a new vector.
+        :param other: a point or vector to add to the vector.
+        :return: a new point or vector that is the result of the addition.
+        """
         ...
 
     def __sub__(self, other: Vector2) -> Vector2:
+        """
+        Subtract a vector from this vector.
+        :param other: the vector to subtract from this vector.
+        :return: a new vector that is the result of the subtraction.
+        """
         ...
 
     def __neg__(self) -> Vector2:
-        ...
-
-    def __mul__(self, x: float) -> Vector2:
-        ...
-
-    def __truediv__(self, x: float) -> Vector2:
-        ...
-
-    def as_numpy(self) -> numpy.ndarray[float]:
         """
-        Create a numpy array of shape (2,) from the vector.
+        Invert the vector by negating the x and y components.
+        :return: a new vector in which the x and y components are negated.
+        """
+        ...
+
+    def __truediv__(self, other: float) -> Vector2:
+        """
+        Divide the vector by a scalar value.
+        :param other: a scalar value to divide the vector by.
+        :return: a new vector that is the result of the division.
+        """
+        ...
+
+    def as_numpy(self) -> NDArray[float]:
+        """
+        Create a numpy array of shape (2, ) from the vector.
         """
         ...
 
     def dot(self, other: Vector2) -> float:
         """
-        Compute the dot product of two vectors.
+        Compute the dot product of two vectors. The result is a scalar value.
+        :param other: the vector to compute the dot product with.
+        :return: the scalar dot product of the two vectors.
         """
         ...
 
     def cross(self, other: Vector2) -> float:
         """
         Compute the cross product of two vectors.
+        :param other: the vector to compute the cross product with.
+        :return: the scalar cross product of the two vectors.
         """
         ...
 
     def norm(self) -> float:
         """
-        Compute the norm of the vector.
+        Compute the Euclidian norm (aka magnitude, length) of the vector.
         """
         ...
 
     def normalized(self) -> Vector2:
         """
-        Return a normalized version of the vector.
+        Return a normalized version of the vector. The normalized vector will have the same direction as the original
+        vector, but with a magnitude of 1.
         """
         ...
 
     def angle_to(self, other: Vector2) -> float:
         """
         Compute the smallest angle between two vectors and return it in radians.
+
+        :param other: the vector to compute the angle to.
+        :return: the angle between the two vectors in radians.
         """
         ...
 
 
 class Point2(Iterable[float]):
+    """
+    A class representing a point in 2D space. The point contains an x and y component. It is iterable and will yield
+    the x and y components in order, allowing the Python unpacking operator `*` to be used to compensate for the lack
+    of function overloading through some other parts of the library.
+
+    A point has different semantics than a vector when it comes to transformations and some mathematical operations.
+    """
+
     def __iter__(self) -> Iterator[float]:
         pass
 
     def __init__(self, x: float, y: float):
         """
-
-        :param x:
-        :param y:
+        Create a 2D point from the given x and y components.
+        :param x: the x component of the point.
+        :param y: the y component of the point.
         """
         ...
 
     @property
     def x(self) -> float:
+        """
+        Access the x component of the point as a floating point value.
+        """
         ...
 
     @property
     def y(self) -> float:
+        """
+        Access the y component of the point as a floating point value.
+        """
         ...
 
     @property
     def coords(self) -> Vector2:
         """
-        Get the coordinates of the point as a Vector2 object.
-        :return: a Vector2 object
+        Get the coordinates of the point as a `Vector2` object.
+        :return: a `Vector2` object with the same x and y components as the point.
         """
         ...
 
     def __sub__(self, other: PointOrVec2) -> PointOrVec2:
+        """
+        Subtract a point or vector from this point. Subtracting a point from a point will return a new vector, while
+        subtracting a vector from a point will return a new point.
+        :param other: a point or vector to subtract from the point.
+        :return: a new point or vector that is the result of the subtraction.
+        """
         ...
 
     def __add__(self, other: Vector2) -> Vector2:
+        """
+        Add a vector to this point.
+        :param other: the vector to add to the point.
+        :return: a new point that is the result of the addition.
+        """
         ...
 
-    def __mul__(self, other) -> Point2:
+    def __mul__(self, other: float) -> Point2:
+        """
+        Multiply the point's x and y components by a scalar value, returning a new point.
+        :param other: the scalar value to multiply the point by.
+        :return: a new point that is the result of the multiplication.
+        """
         ...
 
     def __truediv__(self, other) -> Point2:
+        """
+        Divide the point's x and y components by a scalar value, returning a new point.
+        :param other: the scalar value to divide the point by.
+        :return: a new point that is the result of the division.
+        """
         ...
 
     def __rmul__(self, other) -> Point2:
+        """
+        Multiply the point's x and y components by a scalar value, returning a new point. This allows the scalar to be
+        on the left side of the multiplication.
+        :param other: the scalar value to multiply the point by.
+        :return: a new point that is the result of the multiplication.
+        """
         ...
 
     def __neg__(self) -> Point2:
+        """
+        Invert the point by negating the x and y components.
+        :return: a new point in which the x and y components are negated.
+        """
         ...
 
-    def as_numpy(self) -> numpy.ndarray[float]:
+    def as_numpy(self) -> NDArray[float]:
         """
-        Create a numpy array of shape (2,) from the point.
+        Create a numpy array of shape (2, ) from the point.
         """
         ...
 
 
 class SurfacePoint2:
+    """
+    This class is used to represent a surface point in 2D space.
+
+    Surface points are a composite structure that consist of a point in space and a normal direction. Conceptually, they
+    come from metrology as a means of representing a point on the surface of an object along with the normal direction
+    of the surface at that point. However, they are also isomorphic with the concept of a ray or a parameterized line
+    with a direction of unit length, and can be used in that way as well.
+    """
+
     def __init__(self, x: float, y: float, nx: float, ny: float):
         """
+        Create a surface point from the given x and y components and the normal vector components. The normal vector
+        components will be normalized automatically upon creation.  If the normal vector is the zero vector, an
+        exception will be thrown.
 
-        :param x:
-        :param y:
-        :param nx:
-        :param ny:
+        :param x: the x component of the point.
+        :param y: the y component of the point.
+        :param nx: the x component of the normal vector.
+        :param ny: the y component of the normal vector.
         """
         ...
 
@@ -229,15 +340,15 @@ class SurfacePoint2:
         for clockwise rotation.
 
         :param angle: the angle to rotate the normal vector by.
-        :return:
+        :return: a new surface point with the rotated normal vector.
         """
 
     def __mul__(self, other: float) -> SurfacePoint2:
         """
         Multiply the position of the surface point by a scalar value. The normal vector is not affected unless the
         scalar is negative, in which case the normal vector is inverted.
-        :param other:
-        :return:
+        :param other: the scalar value to multiply the position by.
+        :return: a new surface point with the position multiplied by the scalar.
         """
         ...
 
@@ -245,8 +356,8 @@ class SurfacePoint2:
         """
         Multiply the position of the surface point by a scalar value. The normal vector is not affected unless the
         scalar is negative, in which case the normal vector is inverted.
-        :param other:
-        :return:
+        :param other: the scalar value to multiply the position by.
+        :return: a new surface point with the position multiplied by the scalar.
         """
         ...
 
@@ -254,8 +365,8 @@ class SurfacePoint2:
         """
         Divide the position of the surface point by a scalar value. The normal vector is not affected unless the
         scalar is negative, in which case the normal vector is inverted.
-        :param other:
-        :return:
+        :param other: the scalar value to divide the position by.
+        :return: a new surface point with the position divided by the scalar.
         """
         ...
 
@@ -267,12 +378,27 @@ class SurfacePoint2:
 
 
 class Iso2:
+    """
+    A class representing an isometry in 2D space. An isometry is a transformation that preserves distances and angles,
+    also sometimes known as a rigid body transformation. It is composed of a translation and a rotation.
+
+    `Iso2` objects can be used to transform points, vectors, surface points, other isometries, and a number of other
+    2D geometric constructs.
+    """
+
     def __init__(self, tx: float, ty: float, r: float):
         """
+        Create an isometry from a translation and a rotation. The translation is represented by the x and y components
+        of the translation vector. The rotation is represented by the angle in radians, and will be a rotation around
+        the origin of the coordinate system.
 
-        :param tx:
-        :param ty:
-        :param r:
+        In convention with typical transformation matrices, transforming by an isometry constructed this way is the
+        equivalent of first rotating by the angle `r` and then translating by the vector `(tx, ty)`.
+
+        :param tx: the x component of the translation vector.
+        :param ty: the y component of the translation vector.
+        :param r: the angle of rotation in radians around the origin, where a positive value is a counter-clockwise
+        rotation.
         """
         ...
 
@@ -284,43 +410,81 @@ class Iso2:
         ...
 
     def __matmul__(self, other: Transformable2) -> Transformable2:
+        """
+        Transform a point, vector, or other transformable object by the isometry using the matrix multiplication
+        operator. The transform must be on the right side of the operator, and the object being transformed must be on
+        the left side. This is the equivalent of multiplying the object by the isometry matrix.
+
+        When composing multiple isometries together, remember that the order of operations is reversed. For example, if
+        you have isometries A, B, and C, and you want to compose them together such that they are the equivalent of
+        first applying A, then B, then C, you would write `D = C @ B @ A`.
+
+        :param other: the object to transform.
+        :return: an object of the same type as the input, transformed by the isometry.
+        """
         ...
 
     def inverse(self) -> Iso2:
         """
-        Get the inverse of the isometry.
+        Get the inverse of the isometry, which is the isometry that undoes the transformation of the original isometry,
+        or the isometry that when composed with the original isometry produces the identity isometry.
         """
         ...
 
-    def as_numpy(self) -> numpy.ndarray[float]:
+    def as_numpy(self) -> NDArray[float]:
         """
         Create a numpy array of shape (3, 3) from the isometry.
         """
         ...
 
-    def transform_points(self, points: numpy.ndarray[Any, numpy.dtype]) -> numpy.ndarray[float]:
+    def transform_points(self, points: NDArray[dtype]) -> NDArray[float]:
         """
-        Transform an array of points using the isometry.
+        Transform an array of points using the isometry. The semantics of transforming points are such that the full
+        matrix is applied, first rotating the point around the origin and then translating it by the translation vector.
+
+        To transform vectors, use the `transform_vectors` method instead.
+
+        This is an efficient way to transform a large number of points at once, rather than using the `@` operator
+        individually on a large number of `Point2` objects.
+
         :param points: a numpy array of shape (N, 2)
-        :return: a numpy array of shape (N, 2)
+        :return: a numpy array of shape (N, 2) containing the transformed points in the same order as the input.
         """
         ...
 
-    def transform_vectors(self, vectors: numpy.ndarray[Any, numpy.dtype]) -> numpy.ndarray[float]:
+    def transform_vectors(self, vectors: NDArray[dtype]) -> NDArray[float]:
         """
-        Transform an array of vectors using the isometry. The translation part of the isometry is ignored.
-        :param vectors:
-        :return:
+        Transform an array of vectors using the isometry. The semantics of transforming vectors are such that only the
+        rotation matrix is applied, and the translation vector is not used. The vectors retain their original
+        magnitude, but their direction is rotated by the isometry.
+
+        To transform points, use the `transform_points` method instead.
+
+        This is an efficient way to transform a large number of vectors at once, rather than using the `@` operator
+        individually on a large number of `Vector2` objects.
+
+        :param vectors: a numpy array of shape (N, 2)
+        :return: a numpy array of shape (N, 2) containing the transformed vectors in the same order as the input.
         """
         ...
 
 
 class SvdBasis2:
+    """
+    A class which creates a set of orthonormal basis vectors from a set of points in 2D space. The basis is created
+    using a singular value decomposition of the points, and is very similar to the statistical concept of principal
+    component analysis.
+
+    The basis can be used to determine the rank of the point set, the variance of the points along the basis vectors,
+    and to extract an isometry that will transform points from the world space to the basis space.  It is useful for
+    orienting unknown point sets in a consistent way, for finding best-fit lines or planes, and for other similar
+    tasks.
+    """
 
     def __init__(
             self,
-            points: numpy.ndarray,
-            weights: numpy.ndarray | None = None
+            points: NDArray[dtype],
+            weights: NDArray[dtype] | None = None
     ):
         """
         Create a basis from a set of points. The basis will be calculated using a singular value decomposition of the
@@ -367,14 +531,14 @@ class SvdBasis2:
         """
         ...
 
-    def basis_variances(self) -> numpy.ndarray[float]:
+    def basis_variances(self) -> NDArray[float]:
         """
         Get the variance of the points along the singular vectors.
         :return: a numpy array of the variance of the points along the singular vectors.
         """
         ...
 
-    def basis_stdevs(self) -> numpy.ndarray[float]:
+    def basis_stdevs(self) -> NDArray[float]:
         """
         Get the standard deviation of the points along the singular vectors.
         :return: a numpy array of the standard deviation of the points along the singular vectors.
@@ -394,61 +558,92 @@ class SvdBasis2:
 
 class CurveStation2:
     """
-    A class representing a station along a curve in 3D space. The station is represented by a point on the curve, a
+    A class representing a station along a curve in 2D space. The station is represented by a point on the curve, a
     tangent (direction) vector, and a length along the curve.
+
+    These are created as the result of position finding operations on `Curve2` objects.
     """
 
     @property
     def point(self) -> Point2:
-        """ The 2d position in space on the curve. """
+        """
+        Get the point in 2D world space where the station is located.
+        :return: the point in 2D world space.
+        """
         ...
 
     @property
     def direction(self) -> Vector2:
-        """ The tangent (direction) vector of the curve at the station. """
+        """
+        Get the direction vector of the curve at the location of the station. This is the tangent vector of the curve,
+        and is typically the direction from the previous vertex to the next vertex.
+        :return: the direction vector of the curve at the station.
+        """
         ...
 
     @property
     def normal(self) -> Vector2:
-        """ The normal vector of the curve at the station. """
+        """
+        Get the normal vector of the curve at the location of the station. This is the vector that is orthogonal to the
+        direction vector, and is the direction vector at the station rotated by -90 degrees. When the curve represents
+        a manifold surface, this vector represents the direction of the surface normal.
+        :return: the surface normal vector of the curve at the station.
+        """
         ...
 
     @property
     def direction_point(self) -> SurfacePoint2:
         """
-        A `SurfacePoint2` object representing the point on the curve and the curve's tangent/direction vector.
+        Get the combined point and direction vector of the curve at the location of the station, returned as a
+        `SurfacePoint2` object.
+        :return: the combined point and direction vector of the curve at the station.
         """
         ...
 
     @property
     def surface_point(self) -> SurfacePoint2:
         """
-        A `SurfacePoint2` object representing the point on the curve and the curve's normal vector.
+        Get the combined point and normal vector of the curve at the location of the station, returned as a
+        `SurfacePoint2` object.
+        :return: the combined point and normal vector of the curve at the station.
         """
         ...
 
     @property
     def index(self) -> int:
-        """ The index of the previous vertex on the curve, at or before the station. """
+        """
+        Get the index of the previous vertex on the curve, at or before the station.
+        :return: the index of the previous vertex on the curve.
+        """
         ...
 
     @property
     def length_along(self) -> float:
-        """ The length along the curve from the start of the curve to the station. """
+        """
+        Get the length along the curve to the station, starting at the first vertex of the curve.
+        :return: the length along the curve to the station.
+        """
         ...
 
 
 class Curve2:
     """
     A class representing a curve in 2D space. The curve is defined by a set of vertices and the line segments between
-    them. In two dimensions, the curve also has the concepts of closed/open, surface direction, and hull.
+    them (also known as a polyline).
 
+    Because the curve is in 2D space, it also has a concept of a surface normal direction, which is orthogonal to the
+    tangent direction of the curve at any point. This normal direction allows a `Curve2` to represent a 2D manifold
+    surface boundary, defining the concepts of inside and outside.  It is commonly used to represent the surface of a
+    solid body in a 2D cross-section.
+
+    Additionally, the `Curve2` object can be used to represent closed regions by connecting the first and last vertices
+    and allowing the curve to be treated as a closed loop. This lets the `Curve2` also represent closed polygons.
     """
 
     def __init__(
             self,
-            vertices: numpy.ndarray,
-            normals: numpy.ndarray | None = None,
+            vertices: NDArray[dtype],
+            normals: NDArray[dtype] | None = None,
             tol: float = 1e-6,
             force_closed: bool = False,
             hull_ccw: bool = False,
@@ -461,11 +656,14 @@ class Curve2:
         to model a manifold surface.
 
         There are three ways to specify the winding order of the vertices:
+
         1. Control it manually by passing the vertices array with the rows already organized so that an exterior surface
         is counter-clockwise.
+
         2. If the vertices represent an exterior shape, pass `hull_ccw=True` to have the constructor automatically
         check the winding order and reverse it if point ordering in the convex hull does not match ordering in the
         original array.
+
         3. Pass a `normals` array the same size as the `vertices` array, where the normals are non-zero vectors pointed
         in the "outside" direction at each point. The constructor will reverse the winding if the majority of normals
         do not point in the same direction as the winding.
@@ -485,7 +683,7 @@ class Curve2:
 
     def length(self) -> float:
         """
-        Get the length of the curve.
+        Get the total length of the curve as a scalar value.
         :return: the length of the curve.
         """
         ...
@@ -589,7 +787,7 @@ class Curve2:
         """
         ...
 
-    def make_hull(self) -> numpy.ndarray[float]:
+    def make_hull(self) -> NDArray[int]:
         """
         Get the vertices of a convex hull of the curve, in counter-clockwise order.
         :return: a numpy array of shape (N, 2) representing the convex hull of the curve.
@@ -613,7 +811,7 @@ class Curve2:
         ...
 
     @property
-    def points(self) -> numpy.ndarray[float]:
+    def points(self) -> NDArray[float]:
         """
         Get the points of the curve.
         :return: a numpy array of shape (N, 2) representing the points of the curve.
@@ -628,7 +826,7 @@ class Curve2:
         """
         ...
 
-    def resample(self, resample: Resample) -> Curve2:
+    def resample(self, resample: ResampleEnum) -> Curve2:
         """
         Resample the curve using the given resampling method. The resampling method can be one of the following:
 
@@ -651,19 +849,23 @@ class Curve2:
 
 
 class Circle2:
+    """
+    A class representing a circle in 2D space. The circle is defined by a center point and a radius.
+    """
+
     def __init__(self, x: float, y: float, r: float):
         """
-
-        :param x:
-        :param y:
-        :param r:
+        Create a circle from the given center point and radius.
+        :param x: the x-coordinate of the center of the circle.
+        :param y: the y-coordinate of the center of the circle.
+        :param r: the radius of the circle.
         """
         ...
 
     @property
     def center(self) -> Point2:
         """
-        Get the center of the circle.
+        Get the `Point2` at the center of the circle.
         :return: the center of the circle.
         """
         ...
@@ -702,20 +904,36 @@ class Circle2:
 
 
 class Arc2:
+    """
+    An arc in 2D space. The arc is defined by a center point, a radius, a start angle, and a sweep angle.
+
+    * The center point and the radius define the circle of which the arc is part.
+
+    * The start angle is the angle in radians from the positive x-axis to the point where the arc begins. A positive
+      value is a counter-clockwise rotation, so a start angle of $\\pi / 2$ would start the arc at the top $y=r$ of the
+      circle.
+
+    * The sweep angle is the angle in radians that the arc covers, beginning at the starting point. A positive value is
+      a counter-clockwise rotation, a negative value is clockwise.
+    """
+
     def __init__(self, x: float, y: float, r: float, start_radians: float, sweep_radians: float):
         """
+        Create an arc from the given center point, radius, start angle, and sweep angle.
 
-        :param x:
-        :param y:
-        :param r:
-        :param start_radians:
-        :param sweep_radians:
+        :param x: the x-coordinate of the center of the arc.
+        :param y: the y-coordinate of the center of the arc.
+        :param r: the radius of the arc.
+        :param start_radians: the start angle of the arc in radians, which is the angle from the positive x-axis to the
+        starting point of the arc. A positive value is a counter-clockwise rotation.
+        :param sweep_radians: the sweep angle of the arc in radians, which is the angle that the arc covers, beginning
+        at the starting point. A positive value is a counter-clockwise rotation, a negative value is clockwise.
         """
 
     @property
     def center(self) -> Point2:
         """
-        Get the center of the arc.
+        Get the center point of the arc.
         :return: the center of the arc.
         """
         ...
@@ -723,31 +941,31 @@ class Arc2:
     @property
     def x(self) -> float:
         """
-        Get the x-coordinate of the arc.
-        :return: the x-coordinate of the arc.
+        Get the x-coordinate of the center of the arc.
+        :return: the x-coordinate of the arc center.
         """
         ...
 
     @property
     def y(self) -> float:
         """
-        Get the y-coordinate of the arc.
-        :return: the y-coordinate of the arc.
+        Get the y-coordinate of the center of the arc.
+        :return: the y-coordinate of the arc center
         """
         ...
 
     @property
     def r(self) -> float:
         """
-        Get the radius of the arc.
-        :return: the radius of the arc.
+        Get the radius of the arc
+        :return: the radius of the arc
         """
         ...
 
     @property
     def start(self) -> float:
         """
-        Get the start angle of the arc in radians.
+        Get the start angle of the arc, in radians.
         :return: the start angle of the arc in radians.
         """
         ...
@@ -755,7 +973,7 @@ class Arc2:
     @property
     def sweep(self) -> float:
         """
-        Get the sweep angle of the arc in radians.
+        Get the sweep angle of the arc, in radians.
         :return: the sweep angle of the arc in radians.
         """
         ...
@@ -786,9 +1004,21 @@ class Arc2:
 
 
 class Aabb2:
+    """
+    A class representing an axis-aligned bounding box in 2D space. The bounding box is defined by a minimum point and a
+    maximum point, which are the lower-left and upper-right corners of the box, respectively.
+
+    Bounding boxes are typically used for accelerating intersection and distance queries and are used internally inside
+    the Rust language `engeom` library for this purpose.  However, they have other useful applications and so are
+    exposed here in the Python API.
+
+    Typically, `Aabb2` objects will be retrieved from other `engeom` objects which use them internally, such as curves,
+    circles, arcs, etc.  However, they can also be created and manipulated directly.
+    """
+
     def __init__(self, x_min: float, y_min: float, x_max: float, y_max: float):
         """
-        Create an axis-aligned bounding box from the given bounds.
+        Create an axis-aligned bounding box from the minimum and maximum coordinates.
 
         :param x_min: the minimum x-coordinate of the AABB
         :param y_min: the minimum y-coordinate of the AABB
@@ -810,7 +1040,7 @@ class Aabb2:
         ...
 
     @staticmethod
-    def from_points(points: numpy.ndarray) -> Aabb2:
+    def from_points(points: NDArray[dtype]) -> Aabb2:
         """
         Create an AABB that bounds a set of points. If the point array is empty or the wrong shape, an error will be
         thrown.

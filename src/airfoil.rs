@@ -1,5 +1,5 @@
 use crate::geom2::{Arc2, Circle2, Curve2, Point2};
-use crate::metrology::Length2;
+use crate::metrology::Distance2;
 use numpy::ndarray::ArrayD;
 use numpy::{IntoPyArray, PyArrayDyn};
 use pyo3::exceptions::PyValueError;
@@ -358,16 +358,16 @@ impl AirfoilGeometry {
         Circle2::from_inner(self.inner.find_tmax().circle)
     }
 
-    fn get_thickness(&self, gage: AfGage) -> PyResult<Length2> {
-        Ok(Length2::from_inner(
+    fn get_thickness(&self, gage: AfGage) -> PyResult<Distance2> {
+        Ok(Distance2::from_inner(
             self.inner
                 .get_thickness(gage.into())
                 .map_err(|e| PyValueError::new_err(e.to_string()))?,
         ))
     }
 
-    fn get_tmax(&self) -> PyResult<Length2> {
-        Ok(Length2::from_inner(
+    fn get_tmax(&self) -> PyResult<Distance2> {
+        Ok(Distance2::from_inner(
             self.inner
                 .get_thickness_max()
                 .map_err(|e| PyValueError::new_err(e.to_string()))?,

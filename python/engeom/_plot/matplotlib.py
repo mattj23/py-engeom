@@ -1,17 +1,10 @@
 from typing import List, Iterable, Tuple, Union
-from enum import Enum
-import matplotlib.lines
 import numpy
-from .geom2 import Curve2, Circle2, Aabb2, Point2, Vector2, SurfacePoint2
-from .metrology import Length2
+from .common import LabelPlace
+from engeom.geom2 import Curve2, Circle2, Aabb2, Point2, Vector2, SurfacePoint2
+from engeom.metrology import Distance2
 
 PlotCoords = Union[Point2, Vector2, Iterable[float]]
-
-
-class LabelPlace(Enum):
-    Outside = 1
-    Inside = 2
-    OutsideRev = 3
 
 
 try:
@@ -77,7 +70,7 @@ else:
             x_mid = (x0 + x1) / 2
             ax.set_xlim(x_mid - x_range / 2, x_mid + x_range / 2)
 
-    class AxesHelper:
+    class MatplotlibAxesHelper:
         def __init__(self, ax: Axes, skip_aspect=False, hide_axes=False):
             self.ax = ax
             if not skip_aspect:
@@ -123,7 +116,7 @@ else:
 
         def dimension(
             self,
-            length: Length2,
+            length: Distance2,
             side_shift: float = 0,
             template: str = "{value:.3f}",
             fontsize: int = 10,

@@ -45,7 +45,7 @@ fn register_geom3(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // Mesh, curves, other complex geometries
     child.add_class::<mesh::Mesh>()?;
-    child.add_class::<mesh::MeshTriangleFilter>()?;
+    child.add_class::<mesh::FaceFilterHandle>()?;
     child.add_class::<geom3::Curve3>()?;
     child.add_class::<geom3::CurveStation3>()?;
 
@@ -83,8 +83,8 @@ fn register_airfoil_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> 
 
 fn register_metrology_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     let child = PyModule::new(parent_module.py(), "_metrology")?;
-    child.add_class::<metrology::Length2>()?;
-    child.add_class::<metrology::Length3>()?;
+    child.add_class::<metrology::Distance2>()?;
+    child.add_class::<metrology::Distance3>()?;
 
     parent_module.add_submodule(&child)
 }

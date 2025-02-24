@@ -2,7 +2,7 @@ from .geom2 import Point2, Vector2, SurfacePoint2
 from .geom3 import Point3, Vector3, SurfacePoint3
 
 
-class Length2:
+class Distance2:
     def __init__(self, a: Point2, b: Point2, direction: Vector2 | None = None):
         """
 
@@ -33,7 +33,7 @@ class Length2:
         ...
 
 
-class Length3:
+class Distance3:
     def __init__(self, a: Point3, b: Point3, direction: Vector3 | None = None):
         """
 
