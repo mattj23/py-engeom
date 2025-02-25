@@ -6,7 +6,6 @@ from engeom.metrology import Distance2
 
 PlotCoords = Union[Point2, Vector2, Iterable[float]]
 
-
 try:
     from matplotlib.pyplot import Axes, Circle
     from matplotlib.colors import ListedColormap
@@ -15,6 +14,12 @@ except ImportError:
 else:
 
     class GomColorMap(ListedColormap):
+        """
+        A color map similar to the 8 discrete colors in the GOM/Zeiss Inspect software.
+
+        You can use this to instantiate a color map, or you can use the `GOM_CMAP` object directly.
+        """
+
         def __init__(self):
             colors = numpy.array(
                 [
@@ -35,7 +40,13 @@ else:
             self.set_under("magenta")
             self.set_over("darkred")
 
+
     GOM_CMAP = GomColorMap()
+    """
+    A color map similar to the 8 discrete colors in the GOM/Zeiss Inspect software, already instantiated and
+    available in the module.
+    """
+
 
     def set_aspect_fill(ax: Axes):
         """
@@ -70,8 +81,30 @@ else:
             x_mid = (x0 + x1) / 2
             ax.set_xlim(x_mid - x_range / 2, x_mid + x_range / 2)
 
+
     class MatplotlibAxesHelper:
+        """
+        A helper class for working with Matplotlib. It wraps around a Matplotlib `Axes` object and provides direct
+        methods for plotting some `engeom` entities.  It also enforces the aspect ratio to be 1:1 and expands the
+        subplot to fill its available space.
+
+        !!! example
+            ```python
+            from matplotlib.pyplot import figure
+            fig = figure()
+            ax = fig.subplots()
+            helper = MatplotlibAxesHelper(ax)
+            ```
+        """
+
         def __init__(self, ax: Axes, skip_aspect=False, hide_axes=False):
+            """
+            Initialize the helper with a Matplotlib `Axes` object.
+            :param ax: The Matplotlib `Axes` object to wrap around.
+            :param skip_aspect: Set this to true to skip enforcing the aspect ratio to be 1:1.
+            :param hide_axes: Set this to true to hide the axes.
+            """
+
             self.ax = ax
             if not skip_aspect:
                 ax.set_aspect("equal", adjustable="datalim")
@@ -83,7 +116,6 @@ else:
             """
             Set the bounds of a Matplotlib Axes object.
             :param box: an Aabb2 object
-            :return: None
             """
             self.ax.set_xlim(box.min.x, box.max.x)
             self.ax.set_ylim(box.min.y, box.max.y)
@@ -93,7 +125,6 @@ else:
             Plot a circle on a Matplotlib Axes object.
             :param circle: a Circle2 object
             :param kwargs: keyword arguments to pass to the plot function
-            :return: None
             """
             from matplotlib.pyplot import Circle
 
@@ -110,24 +141,45 @@ else:
             Plot a curve on a Matplotlib Axes object.
             :param curve: a Curve2 object
             :param kwargs: keyword arguments to pass to the plot function
-            :return: None
             """
             self.ax.plot(curve.points[:, 0], curve.points[:, 1], **kwargs)
 
-        def dimension(
-            self,
-            length: Distance2,
-            side_shift: float = 0,
-            template: str = "{value:.3f}",
-            fontsize: int = 10,
-            label_place: LabelPlace = LabelPlace.Outside,
-            label_offset: float | None = None,
-            fontname: str | None = None,
+        def distance(
+                self,
+                distance: Distance2,
+                side_shift: float = 0,
+                template: str = "{value:.3f}",
+                fontsize: int = 10,
+                label_place: LabelPlace = LabelPlace.Outside,
+                label_offset: float | None = None,
+                fontname: str | None = None,
+                scale_value: float = 1.0,
         ):
+            """
+            Plot a `Distance2` object on a Matplotlib Axes, drawing the leader lines and adding a text label with the
+            distance value.
+            :param distance: The `Distance2` object to plot.
+            :param side_shift: Shift the ends of the leader lines by this amount of data units. The direction of the
+            shift is orthogonal to the distance direction, with positive values shifting to the right.
+            :param template: The format string to use for the distance label. The default is "{value:.3f}".
+            :param fontsize: The font size to use for the label.
+            :param label_place: The placement of the label.
+            :param label_offset: The distance offset to use for the label. Will have different meanings depending on
+            the `label_place` parameter.
+            :param fontname: The name of the font to use for the label.
+            :param scale_value: A scaling factor to apply to the value before displaying it in the label. Use this to
+            convert between different units of measurement without having to modify the actual value or the coordinate
+            system.
+            """
             pad_scale = self._font_height(12) * 1.5
-            center = length.center.shift_orthogonal(side_shift)
-            leader_a = center.projection(length.a)
-            leader_b = center.projection(length.b)
+
+            # The offset_dir is the direction from `a` to `b` projected so that it's parallel to the measurement
+            # direction.
+            offset_dir = distance.direction if distance.value >= 0 else -distance.direction
+            center = SurfacePoint2(*distance.center.point, *offset_dir)
+            center = center.shift_orthogonal(side_shift)
+            leader_a = center.projection(distance.a)
+            leader_b = center.projection(distance.b)
 
             if label_place == LabelPlace.Inside:
                 label_offset = label_offset or 0.0
@@ -136,29 +188,26 @@ else:
                 self.arrow(label_coords, leader_b)
             elif label_place == LabelPlace.Outside:
                 label_offset = label_offset or pad_scale * 3
-                label_coords = leader_b + length.direction * label_offset
-                self.arrow(leader_a - length.direction * pad_scale, leader_a)
+                label_coords = leader_b + offset_dir * label_offset
+                self.arrow(leader_a - offset_dir * pad_scale, leader_a)
                 self.arrow(label_coords, leader_b)
             elif label_place == LabelPlace.OutsideRev:
                 label_offset = label_offset or pad_scale * 3
-                label_coords = leader_a - length.direction * label_offset
-                self.arrow(leader_b + length.direction * pad_scale, leader_b)
+                label_coords = leader_a - offset_dir * label_offset
+                self.arrow(leader_b + offset_dir * pad_scale, leader_b)
                 self.arrow(label_coords, leader_a)
 
             # Do we need sideways leaders?
-            self._line_if_needed(pad_scale, length.a, leader_a)
-            self._line_if_needed(pad_scale, length.b, leader_b)
+            self._line_if_needed(pad_scale, distance.a, leader_a)
+            self._line_if_needed(pad_scale, distance.b, leader_b)
 
             kwargs = {"ha": "center", "va": "center", "fontsize": fontsize}
             if fontname is not None:
                 kwargs["fontname"] = fontname
 
-            result = self.annotate_text_only(
-                template.format(value=length.value),
-                label_coords,
-                bbox=dict(boxstyle="round,pad=0.3", ec="black", fc="white"),
-                **kwargs,
-            )
+            value = distance.value * scale_value
+            box_style = dict(boxstyle="round,pad=0.3", ec="black", fc="white")
+            self.annotate_text_only(template.format(value=value), label_coords, bbox=box_style, **kwargs)
 
         def _line_if_needed(self, pad: float, actual: Point2, leader_end: Point2):
             half_pad = pad * 0.5
@@ -175,7 +224,7 @@ else:
             :param text: the text to annotate
             :param pos: the position of the annotation
             :param kwargs: keyword arguments to pass to the annotate function
-            :return: None
+            :return: the annotation object
             """
             return self.ax.annotate(text, xy=_tuplefy(pos), **kwargs)
 
@@ -184,10 +233,10 @@ else:
             Plot an arrow on a Matplotlib Axes object.
             :param start: the start point of the arrow
             :param end: the end point of the arrow
-            :param kwargs: keyword arguments to pass to the arrow function
-            :return: None
+            :param arrow: the style of arrow to use
+            :return: the annotation object
             """
-            self.ax.annotate(
+            return self.ax.annotate(
                 "",
                 xy=_tuplefy(end),
                 xytext=_tuplefy(start),
@@ -195,7 +244,7 @@ else:
             )
 
         def _font_height(self, font_size: int) -> float:
-            """Get the height of a font in data units."""
+            # Get the height of a font in data units
             fig_dpi = self.ax.figure.dpi
             font_height_inches = font_size * 1.0 / 72.0
             font_height_px = font_height_inches * fig_dpi
@@ -204,7 +253,7 @@ else:
             return font_height_px / px_per_data
 
         def _get_scale(self) -> float:
-            """Get the scale of the plot in data units per pixel."""
+            # Get the scale of the plot in data units per pixel.
             x0, x1 = self.ax.get_xlim()
             y0, y1 = self.ax.get_ylim()
 
@@ -216,6 +265,7 @@ else:
             y_scale = height / (y1 - y0)
 
             return min(x_scale, y_scale)
+
 
 def _tuplefy(item: PlotCoords) -> Tuple[float, float]:
     if isinstance(item, (Point2, Vector2)):

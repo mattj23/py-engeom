@@ -7,9 +7,8 @@ from __future__ import annotations
 from typing import List, Any, Dict, Union, Iterable, Tuple
 
 import numpy
-from pyvista import ColorLike
 
-from engeom.geom3 import Mesh, Curve3, Vector3, Point3, Iso3
+from engeom.geom3 import Mesh, Curve3, Vector3, Point3, Iso3, SurfacePoint3
 from engeom.metrology import Distance3
 from .common import LabelPlace
 
@@ -20,47 +19,69 @@ try:
 except ImportError:
     pass
 else:
-
     class PyvistaPlotterHelper:
+        """
+        A helper class for working with PyVista. It wraps around a PyVista `Plotter` object and provides direct methods
+        for plotting some `engeom` entities.
+
+        !!! example
+            ```python
+            import pyvista
+            plotter = pyvista.Plotter()
+            helper = PyvistaPlotterHelper(plotter)
+            ```
+        """
+
         def __init__(self, plotter: pyvista.Plotter):
+            """
+            Initialize the helper with a PyVista `Plotter` object.
+
+            :param plotter: The PyVista `Plotter` object to wrap around.
+            """
             self.plotter = plotter
 
         def add_curves(
                 self,
                 *curves: Curve3,
-                color: ColorLike = "w",
-                width: float = 5.0,
+                color: pyvista.ColorLike = "w",
+                width: float = 3.0,
                 label: str | None = None,
                 name: str | None = None,
-        ) -> List[pyvista.vtkActor]:
+        ) -> pyvista.vtkActor:
             """
-
-            :param curves:
-            :param color:
-            :param width:
-            :param label:
-            :param name:
-            :return:
+            Add one or more curves to be plotted.
+            :param curves: The curves to add.
+            :param color: The color to use for the curve(s).
+            :param width: The line width to use for the curve(s).
+            :param label: The label to use for the curve(s) if a legend is present.
+            :param name: The name to use for the actor in the scene.
+            :return: The PyVista actor that was added to the plotter.
             """
-            result_list = []
+            curve_vertices = []
             for curve in curves:
-                added = self.plotter.add_lines(
-                    curve.points,
-                    connected=True,
-                    color=color,
-                    width=width,
-                    label=label,
-                    name=name,
-                )
-                result_list.append(added)
+                b = curve.points[1:-1]
+                c = numpy.zeros((len(curve.points) + len(b), 3), dtype=curve.points.dtype)
+                c[0::2, :] = curve.points[0:-1]
+                c[1:-1:2, :] = b
+                c[-1] = curve.points[-1]
+                curve_vertices.append(c)
 
-            return result_list
+            vertices = numpy.concatenate(curve_vertices, axis=0)
+            return self.plotter.add_lines(
+                vertices,
+                color=color,
+                width=width,
+                label=label,
+                name=name,
+            )
 
         def add_mesh(self, mesh: Mesh, **kwargs) -> pyvista.vtkActor:
             """
+            Add an `engeom` mesh to be plotted. Additional keyword arguments will be passed directly to the PyVista
+            `Plotter.add_mesh` method, allowing for customization of the mesh appearance.
 
-            :param mesh:
-            :return:
+            :param mesh: The mesh object to add to the plotter scene
+            :return: The PyVista actor that was added to the plotter.
             """
             if "cmap" in kwargs:
                 cmap_extremes = _cmap_extremes(kwargs["cmap"])
@@ -71,46 +92,86 @@ else:
             data = pyvista.PolyData(mesh.vertices, faces)
             return self.plotter.add_mesh(data, **kwargs)
 
-        def dimension(
+        def distance(
                 self,
-                length: Distance3,
+                distance: Distance3,
                 template: str = "{value:.3f}",
                 label_place: LabelPlace = LabelPlace.Outside,
                 label_offset: float | None = None,
                 text_size: int = 16,
                 scale_value: float = 1.0,
         ):
-            label_offset = label_offset or max(abs(length.value), 1.0) * 3
+            """
+            Add a distance entity to the plotter.
+            :param distance: The distance entity to add.
+            :param template: A format string to use for the label. The `value` key will be replaced with the actual
+            value read from the measurement.
+            :param label_place: The placement of the label relative to the distance entity's anchor points.
+            :param label_offset: The distance offset to use for the label. Will have different meanings depending on
+            the `label_place` parameter.
+            :param text_size: The size of the text to use for the label.
+            :param scale_value: A scaling factor to apply to the value before displaying it in the label. Use this to
+            convert between different units of measurement without having to modify the actual value or the coordinate
+            system.
+            """
+            label_offset = label_offset or max(abs(distance.value), 1.0) * 3
 
-            t_a = length.center.scalar_projection(length.a)
-            t_b = length.center.scalar_projection(length.b)
+            # The offset_dir is the direction from `a` to `b` projected so that it's parallel to the measurement
+            # direction.
+            offset_dir = distance.direction if distance.value >= 0 else -distance.direction
 
-            outside = length.center.at_distance(max(t_a, t_b))
-            inside = length.center.at_distance(min(t_a, t_b))
-
-            circles = []
+            # Rather than arrows, we'll use spheres to indicate the anchor points at the end of the leader lines
+            spheres = [distance.a, distance.b]
             builder = LineBuilder()
 
-            builder.add(inside - length.direction * label_offset * 0.25)
-            builder.add(inside)
-            circles.append(inside)
-            builder.skip()
+            if label_place == LabelPlace.Inside:
+                c = SurfacePoint3(*distance.center.point, *offset_dir)
+                label_coords = c.at_distance(label_offset)
 
-            circles.append(outside)
-            builder.add(outside)
-            builder.add(outside + length.direction * label_offset)
+                builder.add(distance.a)
+                builder.add(distance.a - offset_dir * label_offset * 0.25)
+                builder.skip()
 
-            points = numpy.array([_tuplefy(p) for p in circles], dtype=numpy.float64)
+                builder.add(distance.b)
+                builder.add(distance.b + offset_dir * label_offset * 0.25)
+
+            elif label_place == LabelPlace.Outside:
+                label_coords = distance.b + offset_dir * label_offset
+
+                builder.add(distance.a)
+                builder.add(distance.a - offset_dir * label_offset * 0.25)
+                builder.skip()
+
+                builder.add(distance.b)
+                builder.add(label_coords)
+
+            elif label_place == LabelPlace.OutsideRev:
+                label_coords = distance.a - offset_dir * label_offset
+
+                builder.add(distance.b)
+                builder.add(distance.b + offset_dir * label_offset * 0.25)
+                builder.skip()
+
+                builder.add(distance.a)
+                builder.add(label_coords)
+
+            points = numpy.array([_tuplefy(p) for p in spheres], dtype=numpy.float64)
             self.plotter.add_points(points, color="black", point_size=4, render_points_as_spheres=True)
 
             lines = builder.build()
             self.plotter.add_lines(lines, color="black", width=1.5)
 
-            value = length.value * scale_value
-            label = pyvista.Label(text=template.format(value=value), position=lines[-1], size=text_size)
+            value = distance.value * scale_value
+            label = pyvista.Label(text=template.format(value=value), position=_tuplefy(label_coords), size=text_size)
             self.plotter.add_actor(label)
 
         def coordinate_frame(self, iso: Iso3, size: float = 1.0):
+            """
+            Add a coordinate frame to the plotter.  This will appear as three lines, with X in red, Y in green,
+            and Z in blue.  The length of each line is determined by the `size` parameter.
+            :param iso: The isometry to use as the origin and orientation of the coordinate frame.
+            :param size: The length of each line in the coordinate frame.
+            """
             points = numpy.array([[0, 0, 0], [size, 0, 0], [0, size, 0], [0, 0, size]], dtype=numpy.float64)
             points = iso.transform_points(points)
 
@@ -119,6 +180,12 @@ else:
             self.plotter.add_lines(points[[0, 3]], color="blue", width=5.0)
 
         def label(self, point: PlotCoords, text: str, **kwargs):
+            """
+            Add a text label to the plotter.
+            :param point: The position of the label in 3D space.
+            :param text: The text to display in the label.
+            :param kwargs: Additional keyword arguments to pass to the `pyvista.Label` constructor.
+            """
             label = pyvista.Label(text=text, position=_tuplefy(point), **kwargs)
             self.plotter.add_actor(label)
 
@@ -132,7 +199,7 @@ else:
             self.plotter.add_mesh(pd, **kwargs, color="black")
 
 
-    def _cmap_extremes(item: Any) -> Dict[str, ColorLike]:
+    def _cmap_extremes(item: Any) -> Dict[str, pyvista.ColorLike]:
         working = {}
         try:
             from matplotlib.colors import Colormap

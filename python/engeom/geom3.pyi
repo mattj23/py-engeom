@@ -818,7 +818,7 @@ class Mesh:
         """
         ...
 
-    def face_select_none(self) -> MeshTriangleFilter:
+    def face_select_none(self) -> FaceFilterHandle:
         """
         Start a filter operation on the faces of the mesh beginning with no faces selected. This will return a filter
         object that can be used to further add or remove faces from the selection.
@@ -827,7 +827,7 @@ class Mesh:
         """
         ...
 
-    def face_select_all(self) -> MeshTriangleFilter:
+    def face_select_all(self) -> FaceFilterHandle:
         """
         Start a filter operation on the faces of the mesh beginning with all faces selected. This will return a filter
         object that can be used to further add or remove faces from the selection.
@@ -861,12 +861,13 @@ class Mesh:
 
         The deviation is the distance from the point to its closest projection onto the mesh using the specified
         distance mode.  The direction of the measurement is the direction between the point and the projection,
-        flipped into the positive half-space of the mesh surface at the projection point.
+        flipped so that it points in the same direction as the mesh surface normal.
 
         If the distance is less than a very small floating point epsilon, the direction will be taken directly from the
         mesh surface normal.
 
-        The first point `.a` of the measurement is the reference point, and the second point `.b` is the test point.
+        The first point `.a` of the measurement is the point on the mesh, and the second point `.b` is the test point
+        that was given as an argument.
 
         There are two possible modes of computing the distance, specified using the `DeviationMode` enum.  The two
         modes are essentially the same except for how they treat points which are beyond the edge of the closest face.
