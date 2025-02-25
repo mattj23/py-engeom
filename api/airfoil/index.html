@@ -1,0 +1,4094 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../metrology/">
+      
+      
+        <link rel="next" href="../plot/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
+    
+    
+      
+        <title>Airfoil - Engeom (Python)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8608ea7d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#airfoil-module" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Engeom (Python)" class="md-header__button md-logo" aria-label="Engeom (Python)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Engeom (Python)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Airfoil
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Engeom (Python)" class="md-nav__button md-logo" aria-label="Engeom (Python)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Engeom (Python)
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../numpy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Use of Numpy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Geometric Primitives
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Geometric Primitives
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../points_vectors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Points and Vectors
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../surf_points/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Surface Points
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../planes_circles_lines/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Planes, Circles, Lines
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../isometries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Isometries
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../svd_basis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SVD Basis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bounding_volumes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bounding Volumes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../curves/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Curves/Polylines
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meshes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Meshes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Airfoils
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            Airfoils
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../airfoils/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metrology
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engeom/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Common
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geom2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Geom2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geom3/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Geom3
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metrology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metrology
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Airfoil
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Airfoil
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil" class="md-nav__link">
+    <span class="md-ellipsis">
+      airfoil
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.AfGage" class="md-nav__link">
+    <span class="md-ellipsis">
+      AfGage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AfGage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AfGage.OnCamber" class="md-nav__link">
+    <span class="md-ellipsis">
+      OnCamber
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OnCamber">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AfGage.OnCamber.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AfGage.Radius" class="md-nav__link">
+    <span class="md-ellipsis">
+      Radius
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Radius">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AfGage.Radius.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      AirfoilGeometry
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AirfoilGeometry">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.camber" class="md-nav__link">
+    <span class="md-ellipsis">
+      camber
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.circle_array" class="md-nav__link">
+    <span class="md-ellipsis">
+      circle_array
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.leading" class="md-nav__link">
+    <span class="md-ellipsis">
+      leading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.lower" class="md-nav__link">
+    <span class="md-ellipsis">
+      lower
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.trailing" class="md-nav__link">
+    <span class="md-ellipsis">
+      trailing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.upper" class="md-nav__link">
+    <span class="md-ellipsis">
+      upper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.from_analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      from_analyze
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.get_thickness" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_thickness
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.get_tmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_tmax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.get_tmax_circle" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_tmax_circle
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind" class="md-nav__link">
+    <span class="md-ellipsis">
+      EdgeFind
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EdgeFind">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.Intersect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Intersect
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Intersect">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.Intersect.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.Open" class="md-nav__link">
+    <span class="md-ellipsis">
+      Open
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Open">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.Open.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.OpenIntersect" class="md-nav__link">
+    <span class="md-ellipsis">
+      OpenIntersect
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OpenIntersect">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.OpenIntersect.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.RansacRadius" class="md-nav__link">
+    <span class="md-ellipsis">
+      RansacRadius
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RansacRadius">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.RansacRadius.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeResult" class="md-nav__link">
+    <span class="md-ellipsis">
+      EdgeResult
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EdgeResult">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeResult.geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      geometry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeResult.point" class="md-nav__link">
+    <span class="md-ellipsis">
+      point
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeType" class="md-nav__link">
+    <span class="md-ellipsis">
+      EdgeType
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EdgeType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeType.Closed" class="md-nav__link">
+    <span class="md-ellipsis">
+      Closed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeType.Open" class="md-nav__link">
+    <span class="md-ellipsis">
+      Open
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.FaceOrient" class="md-nav__link">
+    <span class="md-ellipsis">
+      FaceOrient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FaceOrient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.FaceOrient.Detect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detect
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detect">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.FaceOrient.Detect.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.FaceOrient.UpperDir" class="md-nav__link">
+    <span class="md-ellipsis">
+      UpperDir
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="UpperDir">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.FaceOrient.UpperDir.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.InscribedCircle" class="md-nav__link">
+    <span class="md-ellipsis">
+      InscribedCircle
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="InscribedCircle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.InscribedCircle.circle" class="md-nav__link">
+    <span class="md-ellipsis">
+      circle
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.InscribedCircle.contact_a" class="md-nav__link">
+    <span class="md-ellipsis">
+      contact_a
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.InscribedCircle.contact_b" class="md-nav__link">
+    <span class="md-ellipsis">
+      contact_b
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.MclOrient" class="md-nav__link">
+    <span class="md-ellipsis">
+      MclOrient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MclOrient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.MclOrient.DirFwd" class="md-nav__link">
+    <span class="md-ellipsis">
+      DirFwd
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DirFwd">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.MclOrient.DirFwd.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.MclOrient.TmaxFwd" class="md-nav__link">
+    <span class="md-ellipsis">
+      TmaxFwd
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TmaxFwd">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.MclOrient.TmaxFwd.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.compute_inscribed_circles" class="md-nav__link">
+    <span class="md-ellipsis">
+      compute_inscribed_circles
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Plot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil" class="md-nav__link">
+    <span class="md-ellipsis">
+      airfoil
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.AfGage" class="md-nav__link">
+    <span class="md-ellipsis">
+      AfGage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AfGage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AfGage.OnCamber" class="md-nav__link">
+    <span class="md-ellipsis">
+      OnCamber
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OnCamber">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AfGage.OnCamber.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AfGage.Radius" class="md-nav__link">
+    <span class="md-ellipsis">
+      Radius
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Radius">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AfGage.Radius.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      AirfoilGeometry
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AirfoilGeometry">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.camber" class="md-nav__link">
+    <span class="md-ellipsis">
+      camber
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.circle_array" class="md-nav__link">
+    <span class="md-ellipsis">
+      circle_array
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.leading" class="md-nav__link">
+    <span class="md-ellipsis">
+      leading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.lower" class="md-nav__link">
+    <span class="md-ellipsis">
+      lower
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.trailing" class="md-nav__link">
+    <span class="md-ellipsis">
+      trailing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.upper" class="md-nav__link">
+    <span class="md-ellipsis">
+      upper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.from_analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      from_analyze
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.get_thickness" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_thickness
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.get_tmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_tmax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.AirfoilGeometry.get_tmax_circle" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_tmax_circle
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind" class="md-nav__link">
+    <span class="md-ellipsis">
+      EdgeFind
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EdgeFind">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.Intersect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Intersect
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Intersect">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.Intersect.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.Open" class="md-nav__link">
+    <span class="md-ellipsis">
+      Open
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Open">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.Open.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.OpenIntersect" class="md-nav__link">
+    <span class="md-ellipsis">
+      OpenIntersect
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OpenIntersect">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.OpenIntersect.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.RansacRadius" class="md-nav__link">
+    <span class="md-ellipsis">
+      RansacRadius
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RansacRadius">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeFind.RansacRadius.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeResult" class="md-nav__link">
+    <span class="md-ellipsis">
+      EdgeResult
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EdgeResult">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeResult.geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      geometry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeResult.point" class="md-nav__link">
+    <span class="md-ellipsis">
+      point
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeType" class="md-nav__link">
+    <span class="md-ellipsis">
+      EdgeType
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EdgeType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeType.Closed" class="md-nav__link">
+    <span class="md-ellipsis">
+      Closed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.EdgeType.Open" class="md-nav__link">
+    <span class="md-ellipsis">
+      Open
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.FaceOrient" class="md-nav__link">
+    <span class="md-ellipsis">
+      FaceOrient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FaceOrient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.FaceOrient.Detect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detect
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detect">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.FaceOrient.Detect.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.FaceOrient.UpperDir" class="md-nav__link">
+    <span class="md-ellipsis">
+      UpperDir
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="UpperDir">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.FaceOrient.UpperDir.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.InscribedCircle" class="md-nav__link">
+    <span class="md-ellipsis">
+      InscribedCircle
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="InscribedCircle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.InscribedCircle.circle" class="md-nav__link">
+    <span class="md-ellipsis">
+      circle
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.InscribedCircle.contact_a" class="md-nav__link">
+    <span class="md-ellipsis">
+      contact_a
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.InscribedCircle.contact_b" class="md-nav__link">
+    <span class="md-ellipsis">
+      contact_b
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.MclOrient" class="md-nav__link">
+    <span class="md-ellipsis">
+      MclOrient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MclOrient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.MclOrient.DirFwd" class="md-nav__link">
+    <span class="md-ellipsis">
+      DirFwd
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DirFwd">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.MclOrient.DirFwd.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.MclOrient.TmaxFwd" class="md-nav__link">
+    <span class="md-ellipsis">
+      TmaxFwd
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TmaxFwd">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.airfoil.MclOrient.TmaxFwd.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.airfoil.compute_inscribed_circles" class="md-nav__link">
+    <span class="md-ellipsis">
+      compute_inscribed_circles
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="airfoil-module">Airfoil Module</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="engeom.airfoil"></a>
+    <div class="doc doc-contents first">
+
+        <p>This module contains a number of tools to help analyze airfoil geometries in 2D.</p>
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.airfoil.AfGage" class="doc doc-heading">
+            <code>AfGage</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>An enumeration class used to specify a method for locating a gage points on an airfoil cross-section.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="engeom.airfoil.AfGage.OnCamber" class="doc doc-heading">
+            <code>OnCamber</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>A gaging method that measures a distance along the mean camber line. A positive distance will be from the
+leading edge towards the trailing edge, and a negative distance will be from the trailing edge towards the
+leading edge.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="engeom.airfoil.AfGage.OnCamber.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a specification for a gage point that is a distance <code>d</code> along the mean camber line. A positive
+distance will be from the leading edge towards the trailing edge, and a negative distance will be from the
+trailing edge towards the leading edge.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>d</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the distance along the mean camber line to find the position</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="engeom.airfoil.AfGage.Radius" class="doc doc-heading">
+            <code>Radius</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>A gaging method that measures by intersection with a circle of a given radius centered on either the
+leading or trailing edge point.  A positive radius indicates that the circle is located on the leading edge
+while a negative radius indicates that the circle is located on the trailing edge.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="engeom.airfoil.AfGage.Radius.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a specification for a gage point that is located at the intersection of a circle of radius <code>r</code> with
+the airfoil cross-section. A positive radius indicates that the circle is located on the leading edge while
+a negative radius indicates that the circle is located on the trailing edge.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>r</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the radius of the circle to find the position</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.airfoil.AirfoilGeometry" class="doc doc-heading">
+            <code>AirfoilGeometry</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>This class produces and contains the result of the geometric analysis of an airfoil cross-section. It contains:</p>
+<ol>
+<li>
+<p>The mean camber line</p>
+</li>
+<li>
+<p>The segregated geometry of the upper (suction, convex) and lower (pressure, concave) faces</p>
+</li>
+<li>
+<p>The detected position and geometry of the leading and trailing edges</p>
+</li>
+<li>
+<p>The array of inscribed circles identified during the analysis</p>
+</li>
+</ol>
+<p>From this information, thicknesses and other measurements can be made on the airfoil.</p>
+<p>See the <code>from_analyze</code> method for how to perform the analysis creating an instance of this class.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.AirfoilGeometry.camber" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">camber</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gets the mean camber line of the airfoil cross-section. The curve will be oriented so that the first point is at
+the leading edge of the airfoil and the last point is at the trailing edge.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Curve2" href="../geom2/#engeom.geom2.Curve2">Curve2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The mean camber line of the airfoil cross-section as a <code>Curve2</code> object.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.AirfoilGeometry.circle_array" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">circle_array</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Returns the list of inscribed circles as a numpy array of shape (N, 3) where N is the number of inscribed
+circles. The first two columns are the x and y coordinates of the circle center, and the third column is the
+radius of the circle.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="float">float</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A numpy array of shape (N, 3) containing the inscribed circles</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.AirfoilGeometry.leading" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">leading</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gets the result of the leading edge detection algorithm.</p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.AirfoilGeometry.lower" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">lower</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The curve representing the lower (pressure, concave) side of the airfoil cross-section. The curve will be
+oriented in the same winding direction as the original section, so the first point may be at either the leading
+or trailing edge based on the airfoil geometry and the coordinate system.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Curve2" href="../geom2/#engeom.geom2.Curve2">Curve2</a> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A <code>Curve2</code>, or None if there was an issue detecting the leading or trailing edge.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.AirfoilGeometry.trailing" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">trailing</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gets the result of the trailing edge detection algorithm.</p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.AirfoilGeometry.upper" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">upper</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The curve representing the upper (suction, convex) side of the airfoil cross-section. The curve will be oriented
+in the same winding direction as the original section, so the first point may be at either the leading or
+trailing edge based on the airfoil geometry and the coordinate system.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Curve2" href="../geom2/#engeom.geom2.Curve2">Curve2</a> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A <code>Curve2</code>, or None if there was an issue detecting the leading or trailing edge.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+    </div>
+
+</div>
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.airfoil.AirfoilGeometry.from_analyze" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">from_analyze</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">refine_tol</span><span class="p">,</span> <span class="n">camber_orient</span><span class="p">,</span> <span class="n">leading</span><span class="p">,</span> <span class="n">trailing</span><span class="p">,</span> <span class="n">face_orient</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>This method attempts to extract the airfoil geometry from the given airfoil cross-section using only the
+geometric information embedded in the section. It is suitable for airfoil cross-sections with clean, low-noise
+or noise-free data, such as those which come from nominal CAD data or from very clean scans/samples of airfoils
+with smooth, continuous surfaces with little to no defects.</p>
+<p>The cross-section data must also be <em>only</em> the outer surface of the airfoil, with no internal features or
+points. The vertices should be ordered in a counter-clockwise direction, but the section may be open on one
+side and no particular orientation or position in the XY plane is required.</p>
+<p>Internally, this operation will attempt to:</p>
+<ol>
+<li>
+<p>Extract the unambiguous inscribed circles from the cross-section using an iterative stepping/refinement
+method (see <code>compute_inscribed_circles</code> for more detail).</p>
+</li>
+<li>
+<p>Orient the mean camber line (determine which side is the leading edge and which side is the trailing edge)
+based on the method specified in <code>camber_orient</code>.</p>
+</li>
+<li>
+<p>Extract the exact position (and optionally, the geometry) of the leading and trailing edges based on the
+methods specified in <code>leading</code> and <code>trailing</code>, respectively.</p>
+</li>
+<li>
+<p>Identify and extract the upper (suction, convex) and lower (pressure, concave) faces of the airfoil based on
+the method specified in <code>face_orient</code>.</p>
+</li>
+</ol>
+<p>If successful in all of these steps, the method will return an instance of <code>AirfoilGeometry</code> containing the
+results of the analysis. If any of the steps fail, the method will raise an error.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>section</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Curve2" href="../geom2/#engeom.geom2.Curve2">Curve2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The curve representing the airfoil cross-section</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>refine_tol</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A general tolerance used in the analysis, typically used to refine results until the error or difference between two values is less than this value. It is also used in certain methods as a common reference tolerance, where the method will use a fraction of this value as a threshold for convergence or error.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>camber_orient</code>
+            </td>
+            <td>
+                  <code><span title="MclOrientEnum">MclOrientEnum</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The method to use to orient the mean camber line of the airfoil.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>leading</code>
+            </td>
+            <td>
+                  <code><span title="EdgeFindEnum">EdgeFindEnum</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The method to use to detect the leading edge of the airfoil.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>trailing</code>
+            </td>
+            <td>
+                  <code><span title="EdgeFindEnum">EdgeFindEnum</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The method to use to detect the trailing edge of the airfoil.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>face_orient</code>
+            </td>
+            <td>
+                  <code><span title="FaceOrientEnum">FaceOrientEnum</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The method to identify the upper and lower faces of the airfoil.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.airfoil.AirfoilGeometry" href="#engeom.airfoil.AirfoilGeometry">AirfoilGeometry</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An instance of <code>AirfoilGeometry</code> containing the results of the analysis.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.airfoil.AirfoilGeometry.get_thickness" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_thickness</span><span class="p">(</span><span class="n">gage</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the thickness dimension of the airfoil cross-section. The 'a' point of the distance will be on the lower
+surface of the airfoil, and the 'b' point will be on the upper surface.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>gage</code>
+            </td>
+            <td>
+                  <code><span title="AfGageEnum">AfGageEnum</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the gaging method to use</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.metrology.Distance2" href="../metrology/#engeom.metrology.Distance2">Distance2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>a <code>Distance2</code> object representing the thickness dimension at the specified gage points</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.airfoil.AirfoilGeometry.get_tmax" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_tmax</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the maximum thickness dimension of the airfoil cross-section. The 'a' point of the distance will be on the
+lower surface of the airfoil, and the 'b' point will be on the upper surface.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.metrology.Distance2" href="../metrology/#engeom.metrology.Distance2">Distance2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>a <code>Distance2</code> object representing the maximum thickness dimension</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.airfoil.AirfoilGeometry.get_tmax_circle" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_tmax_circle</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the circle representing the maximum thickness dimension of the airfoil cross-section.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Circle2" href="../geom2/#engeom.geom2.Circle2">Circle2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>a <code>Circle2</code> object representing the maximum thickness circle</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.airfoil.EdgeFind" class="doc doc-heading">
+            <code>EdgeFind</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>An enumeration of the possible techniques to find the leading and/or trailing edge geometry of an airfoil.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="engeom.airfoil.EdgeFind.Intersect" class="doc doc-heading">
+            <code>Intersect</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>This algorithm will simply intersect the end of the inscribed circles camber curve with the airfoil
+cross-section. This is the fastest method with the least amount of assumptions, and makes sense for airfoil
+edges where you know the mean camber line has very low curvature in the vicinity of the edge.</p>
+<p>Do not use this method if you know that the airfoil cross-section is open/incomplete on this side, as it will
+throw an error if the MCL does not intersect the cross-section.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="engeom.airfoil.EdgeFind.Intersect.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a specification which will attempt to find the edge geometry by intersecting the end of the inscribed
+circles camber curve with the airfoil cross-section.  Use on known closed airfoil cross-sections with low
+curvature near the edge.</p>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="engeom.airfoil.EdgeFind.Open" class="doc doc-heading">
+            <code>Open</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>This algorithm will not attempt to find edge geometry, and will simply leave the inscribed circles for the side
+as they are. Use this if you know that the airfoil cross-section is open/incomplete on this side, and you don't
+care to extend the MCL any further.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="engeom.airfoil.EdgeFind.Open.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a specification which assumes that the airfoil cross-section is open/incomplete on this side, and
+makes no attempt to find the edge geometry beyond the unambiguous inscribed circles.</p>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="engeom.airfoil.EdgeFind.OpenIntersect" class="doc doc-heading">
+            <code>OpenIntersect</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>This algorithm is also for an open edge, but unlike <code>Open</code> it will attempt to refine the end of the MCL and
+extend it to intersect the line segment which spans the open gap where the edge should be. This is useful on
+partial cross-sections where you would still like to extend the MCL as much as possible.</p>
+<p>It works by intersecting the end of the inscribed circles camber curve with the open gap in the airfoil
+cross-section, filling and refining more inscribed circles between the last circle and the intersection point,
+and repeating until the location of the end converges to within 1/100th of the general refinement tolerance.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="engeom.airfoil.EdgeFind.OpenIntersect.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">max_iter</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>This algorithm will attempt to find the edge geometry by intersecting the end of the inscribed circles
+camber curve with the open gap in the airfoil cross-section, then refining the end of the MCL with more
+inscribed circles until the location of the end converges to within 1/100th of the general refinement
+tolerance.</p>
+<p>If the maximum number of iterations is reached before convergence, the method will throw an error instead.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>max_iter</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the maximum number of iterations to attempt to find the edge geometry</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="engeom.airfoil.EdgeFind.RansacRadius" class="doc doc-heading">
+            <code>RansacRadius</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>This technique uses RANSAC (Random Sample Consensus) to find a constant radius leading/trailing edge circle
+that fits the greatest number of points leftover at the edge within the tolerance <code>in_tol</code>.</p>
+<p>The method will try <code>n</code> different combinations of three points picked at random from the remaining points
+at the edge, construct a circle, and then count the number of points within <code>in_tol</code> distance of the circle
+perimeter. The circle with the most points within tolerance will be considered the last inscribed circle.</p>
+<p>The MCL will be extended to this final circle, and then intersected with the airfoil cross-section to find
+the final edge point.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="engeom.airfoil.EdgeFind.RansacRadius.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">in_tol</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a specification which will attempt to find the edge geometry by Random Sample Consensus of a constant
+radius at the edge of the airfoil cross-section. This is useful for airfoils known to have a constant radius
+edge and on section data which is relatively clean and has low noise.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>in_tol</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the max distance from the circle perimeter for a point to be considered a RANSAC inlier</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>n</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The number of RANSAC iterations to perform</p>
+              </div>
+            </td>
+            <td>
+                  <code>500</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.airfoil.EdgeResult" class="doc doc-heading">
+            <code>EdgeResult</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Represents the results of an airfoil edge detection operation, containing both a point on the airfoil cross-section
+that was detected as the edge, and optional geometric information about the edge depending on the method used.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.EdgeResult.geometry" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">geometry</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gets the geometric information about the edge that was detected.</p>
+<ul>
+<li>
+<p>This will be an instance of <code>EdgeType</code> if the algorithm could not provide more detailed geometric information
+about the edge beyond open/closed.</p>
+</li>
+<li>
+<p>This will be an instance of <code>Arc2</code> in the case of constant radius edge detection.</p>
+</li>
+</ul>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.airfoil.EdgeType" href="#engeom.airfoil.EdgeType">EdgeType</a> | <a class="autorefs autorefs-internal" title="engeom.geom2.Arc2" href="../geom2/#engeom.geom2.Arc2">Arc2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The geometric information about the edge that was detected</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.EdgeResult.point" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">point</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gets the point on the airfoil cross-section that was detected as the edge.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Point2" href="../geom2/#engeom.geom2.Point2">Point2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The point on the airfoil cross-section that was detected as the edge</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.airfoil.EdgeType" class="doc doc-heading">
+            <code>EdgeType</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+        <p>An enumeration of the possible non-geometric types of edges that can be detected on an airfoil cross-section as the
+result of an edge finding operation. When one of these types is returned, it means that the edge finding algorithm
+could not provide more detailed geometric information about the edge.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.EdgeType.Closed" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">Closed</span> <span class="o">=</span> <span class="mi">1</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Represents an edge that is closed, where the airfoil cross-section has contiguous vertices through the edge.</p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.EdgeType.Open" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">Open</span> <span class="o">=</span> <span class="mi">0</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Represents an open edge, where the airfoil cross-section is incomplete and/or not closed.</p>
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.airfoil.FaceOrient" class="doc doc-heading">
+            <code>FaceOrient</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>An enumeration of the possible ways to orient the upper/lower (suction/pressure, convex/concave) faces of an
+airfoil cross-section.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="engeom.airfoil.FaceOrient.Detect" class="doc doc-heading">
+            <code>Detect</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>In an airfoil with an MCL that exhibits curvature, this will attempt to detect which direction the camber line
+curves and thus identify convex/concave. This will fail if the MCL is straight.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="engeom.airfoil.FaceOrient.Detect.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a new face orientation parameter that will attempt to detect the orientation of the faces based on
+the curvature of the mean camber line.</p>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="engeom.airfoil.FaceOrient.UpperDir" class="doc doc-heading">
+            <code>UpperDir</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>This method will orient the faces based on a vector direction provided by the user.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="engeom.airfoil.FaceOrient.UpperDir.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a new upper direction parameter. The x and y arguments are components of a direction vector which
+should distinguish the upper (pressure side, convex) face of the airfoil. At the center of the mean camber
+line, an intersection in this direction will be taken with each of the two faces. The intersection that
+is further in the direction of this vector will be considered the upper face of the airfoil, and the other
+will be considered the lower face.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>x</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the x component of the upper direction vector</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>y</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the y component of the upper direction vector</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.airfoil.InscribedCircle" class="doc doc-heading">
+            <code>InscribedCircle</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Represents an inscribed circle in an airfoil cross-section. The circle is contained within the airfoil cross-section
+and is tangent to the airfoil section at two points.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.InscribedCircle.circle" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">circle</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gets the circle object associated with this inscribed circle.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Circle2" href="../geom2/#engeom.geom2.Circle2">Circle2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The circle entity for the inscribed circle</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.InscribedCircle.contact_a" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">contact_a</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get a contact point of the inscribed circle with one side of the airfoil cross-section. Inscribed circles
+computed together will have a consistent meaning of <code>a</code> and <code>b</code> sides, but which is the upper or lower surface
+will depend on the ordering of the circles and the coordinate system of the airfoil.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Point2" href="../geom2/#engeom.geom2.Point2">Point2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The first contact point of the inscribed circle with the airfoil cross-section</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.airfoil.InscribedCircle.contact_b" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">contact_b</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the other contact point of the inscribed circle with the airfoil cross-section. Inscribed circles computed
+together will have a consistent meaning of <code>a</code> and <code>b</code> sides, but which is the upper or lower surface will
+depend on the ordering of the circles and the coordinate system of the airfoil.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Point2" href="../geom2/#engeom.geom2.Point2">Point2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The second contact point of the inscribed circle with the airfoil cross-section</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.airfoil.MclOrient" class="doc doc-heading">
+            <code>MclOrient</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>An enumeration of the possible ways to orient (to identify which side is the leading edge and which side is the
+trailing edge) the mean camber line of an airfoil.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="engeom.airfoil.MclOrient.DirFwd" class="doc doc-heading">
+            <code>DirFwd</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>This method will orient the airfoil based on a vector direction provided by the user.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="engeom.airfoil.MclOrient.DirFwd.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a new forward direction parameter. The x and y arguments are components of a direction vector which
+should distinguish the forward (leading edge) direction of the airfoil. The position of the first and last
+inscribed circle will be projected onto this vector, and the larger result (the one that is more in the
+direction of this vector) will be considered the leading edge of the airfoil.</p>
+<p>For instance, if you know that the airfoil is oriented so that the leading edge will have a smaller x value
+than the trailing edge, <code>DirFwd(-1, 0)</code> will correctly orient the airfoil.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>x</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the x component of the forward direction vector</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>y</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the y component of the forward direction vector</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="engeom.airfoil.MclOrient.TmaxFwd" class="doc doc-heading">
+            <code>TmaxFwd</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>This method will take advantage of the fact that for most typical subsonic airfoils the maximum thickness point
+is closer to the leading edge than the trailing edge.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="engeom.airfoil.MclOrient.TmaxFwd.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a specification for orienting the mean camber line based on which side the maximum thickness point is
+closer to. This method will assume that the maximum thickness point is closer to the leading edge than the
+trailing edge.</p>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="engeom.airfoil.compute_inscribed_circles" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">compute_inscribed_circles</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">refine_tol</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Compute the unambiguous inscribed circles of an airfoil cross-section.</p>
+<p>The cross-section is represented by a curve in the x-y plane. The curve does not need to be closed, but the points
+should be oriented in a counter-clockwise direction and should only contain data from the outer surface of the
+airfoil (internal features/points should not be part of the data).</p>
+<p>The method used to compute these circles is:</p>
+<ol>
+<li>We calculate the convex hull of the points in the section and find the longest distance between any two points.</li>
+<li>At the center of the longest distance line, we draw a perpendicular line and look for exactly two intersections
+   with the section. We assume that one of these is on the upper surface of the airfoil and the other is on the
+   lower, though it does not matter which is which.</li>
+<li>We fit the maximum inscribed circle whose center is constrained to the line between these two points. The
+   location and radius of this circle is refined until it converges to within 1/100th of <code>refine_tol</code>.</li>
+<li>The inscribed circle has two contact points with the section. The line between these contact points is a good
+   approximation of the direction orthogonal to the mean camber line near the circle.  We create a parallel line
+   to this one, advancing from the circle center by 1/4 of the circle radius, and looking for exactly two
+   intersections with the section.  If we fail, we try again with a slightly less aggressive advancement until we
+   either succeed or give up.</li>
+<li>We fit the maximum inscribed circle whose center is constrained to the new line, and refine it as in step 3.</li>
+<li>We recursively fit inscribed circles between this new circle and the previous one until the error between the
+   position and radius of any circle is less than <code>refine_tol</code> from the linear interpolation between its next and
+   previous neighbors.</li>
+<li>We repeat the process from step 4 until the distance between the center of the most recent circle and the
+   farthest point in the direction of the next advancement is less than 1/4 of the radius of the most recent
+   circle. This terminates the process before we get too close to the leading or trailing edge of the airfoil.</li>
+<li>We repeat the process from step 3, but this time in the opposite direction from the first circle. This will
+   give us the inscribed circles on the other side of the airfoil.</li>
+</ol>
+<p>When finished, we have a list of inscribed circles from the unambiguous regions (not too close to the leading or
+trailing edges) of the airfoil cross-section. The circles are ordered from one side of the airfoil to the other,
+but the order may be <em>either</em> from the leading to the trailing edge <em>or</em> vice versa.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>section</code>
+            </td>
+            <td>
+                  <code><span title="geom2.Curve2">Curve2</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the curve representing the airfoil cross-section.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>refine_tol</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>a tolerance used when refining the inscribed circles, see description for details.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="engeom.airfoil.InscribedCircle" href="#engeom.airfoil.InscribedCircle">InscribedCircle</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>a list of inscribed circle objects whose order is contiguous but may be in either direction</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

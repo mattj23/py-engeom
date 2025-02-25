@@ -1,0 +1,2731 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../airfoil/">
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
+    
+    
+      
+        <title>Plot - Engeom (Python)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8608ea7d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#plot-module" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Engeom (Python)" class="md-header__button md-logo" aria-label="Engeom (Python)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Engeom (Python)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Plot
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Engeom (Python)" class="md-nav__button md-logo" aria-label="Engeom (Python)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Engeom (Python)
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../numpy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Use of Numpy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Geometric Primitives
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Geometric Primitives
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../points_vectors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Points and Vectors
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../surf_points/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Surface Points
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../planes_circles_lines/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Planes, Circles, Lines
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../isometries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Isometries
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../svd_basis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SVD Basis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bounding_volumes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bounding Volumes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../curves/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Curves/Polylines
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../meshes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Meshes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Airfoils
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            Airfoils
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../airfoils/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metrology
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engeom/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Common
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geom2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Geom2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geom3/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Geom3
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metrology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metrology
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../airfoil/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Airfoil
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Plot
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Plot
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot" class="md-nav__link">
+    <span class="md-ellipsis">
+      plot
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot.GOM_CMAP" class="md-nav__link">
+    <span class="md-ellipsis">
+      GOM_CMAP
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot.LabelPlace" class="md-nav__link">
+    <span class="md-ellipsis">
+      LabelPlace
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LabelPlace">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.LabelPlace.Inside" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inside
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.LabelPlace.Outside" class="md-nav__link">
+    <span class="md-ellipsis">
+      Outside
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.LabelPlace.OutsideRev" class="md-nav__link">
+    <span class="md-ellipsis">
+      OutsideRev
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      PyvistaPlotterHelper
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PyvistaPlotterHelper">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.add_curves" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_curves
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.add_mesh" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_mesh
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.coordinate_frame" class="md-nav__link">
+    <span class="md-ellipsis">
+      coordinate_frame
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.distance" class="md-nav__link">
+    <span class="md-ellipsis">
+      distance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.label" class="md-nav__link">
+    <span class="md-ellipsis">
+      label
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot.GomColorMap" class="md-nav__link">
+    <span class="md-ellipsis">
+      GomColorMap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      MatplotlibAxesHelper
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MatplotlibAxesHelper">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.annotate_text_only" class="md-nav__link">
+    <span class="md-ellipsis">
+      annotate_text_only
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.arrow" class="md-nav__link">
+    <span class="md-ellipsis">
+      arrow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.distance" class="md-nav__link">
+    <span class="md-ellipsis">
+      distance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.plot_circle" class="md-nav__link">
+    <span class="md-ellipsis">
+      plot_circle
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.plot_curve" class="md-nav__link">
+    <span class="md-ellipsis">
+      plot_curve
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.set_bounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_bounds
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot" class="md-nav__link">
+    <span class="md-ellipsis">
+      plot
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot.GOM_CMAP" class="md-nav__link">
+    <span class="md-ellipsis">
+      GOM_CMAP
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot.LabelPlace" class="md-nav__link">
+    <span class="md-ellipsis">
+      LabelPlace
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LabelPlace">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.LabelPlace.Inside" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inside
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.LabelPlace.Outside" class="md-nav__link">
+    <span class="md-ellipsis">
+      Outside
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.LabelPlace.OutsideRev" class="md-nav__link">
+    <span class="md-ellipsis">
+      OutsideRev
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      PyvistaPlotterHelper
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PyvistaPlotterHelper">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.add_curves" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_curves
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.add_mesh" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_mesh
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.coordinate_frame" class="md-nav__link">
+    <span class="md-ellipsis">
+      coordinate_frame
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.distance" class="md-nav__link">
+    <span class="md-ellipsis">
+      distance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.PyvistaPlotterHelper.label" class="md-nav__link">
+    <span class="md-ellipsis">
+      label
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot.GomColorMap" class="md-nav__link">
+    <span class="md-ellipsis">
+      GomColorMap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      MatplotlibAxesHelper
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MatplotlibAxesHelper">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.annotate_text_only" class="md-nav__link">
+    <span class="md-ellipsis">
+      annotate_text_only
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.arrow" class="md-nav__link">
+    <span class="md-ellipsis">
+      arrow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.distance" class="md-nav__link">
+    <span class="md-ellipsis">
+      distance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.plot_circle" class="md-nav__link">
+    <span class="md-ellipsis">
+      plot_circle
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.plot_curve" class="md-nav__link">
+    <span class="md-ellipsis">
+      plot_curve
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#engeom.plot.MatplotlibAxesHelper.set_bounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      set_bounds
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="plot-module">Plot Module</h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This module's API is still under development and will likely change in the future.</p>
+</div>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="engeom.plot"></a>
+    <div class="doc doc-contents first">
+
+        <p>This module contains tools to help with the plotting of geometry and other visual elements using optional plotting
+libraries.</p>
+<p>Currently, the following plotting libraries are supported:</p>
+<ul>
+<li>
+<p><strong>PyVista</strong>: A 3D visualization library that is built on top of VTK and provides tools for both interactive and
+  static 3D rendering. The <code>PyvistaPlotterHelper</code> can wrap around a PyVista <code>Plotter</code> object to provide direct
+  functionality for plotting some <code>engeom</code> entities.</p>
+</li>
+<li>
+<p><strong>Matplotlib</strong>: A 2D plotting library that is widely used for creating static plots. The <code>MatplotlibAxesHelper</code> class
+  can wrap around a Matplotlib <code>Axes</code> object to provide direct functionality for plotting some <code>engeom</code> entities, while
+  also forcing the aspect ratio to be 1:1 and expanding the plot to fill all available space.</p>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="engeom.plot.GOM_CMAP" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">GOM_CMAP</span> <span class="o">=</span> <span class="n">GomColorMap</span><span class="p">()</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>A color map similar to the 8 discrete colors in the GOM/Zeiss Inspect software, already instantiated and
+available in the module.</p>
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.plot.LabelPlace" class="doc doc-heading">
+            <code>LabelPlace</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+        <p>Represents the different locations where a label can be placed between its anchor points.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.plot.LabelPlace.Inside" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">Inside</span> <span class="o">=</span> <span class="mi">2</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The label is placed between the two anchor points.</p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.plot.LabelPlace.Outside" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">Outside</span> <span class="o">=</span> <span class="mi">1</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The label is placed outside the anchor points, on the side of the second point in the measurement.</p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="engeom.plot.LabelPlace.OutsideRev" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">OutsideRev</span> <span class="o">=</span> <span class="mi">3</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The label is placed outside the two anchor points, on the side of the first point in the measurement.</p>
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.plot.PyvistaPlotterHelper" class="doc doc-heading">
+            <code>PyvistaPlotterHelper</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>A helper class for working with PyVista. It wraps around a PyVista <code>Plotter</code> object and provides direct methods
+for plotting some <code>engeom</code> entities.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pyvista</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">plotter</span> <span class="o">=</span> <span class="n">pyvista</span><span class="o">.</span><span class="n">Plotter</span><span class="p">()</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">helper</span> <span class="o">=</span> <span class="n">PyvistaPlotterHelper</span><span class="p">(</span><span class="n">plotter</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.PyvistaPlotterHelper.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">plotter</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the helper with a PyVista <code>Plotter</code> object.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>plotter</code>
+            </td>
+            <td>
+                  <code><span title="pyvista.Plotter">Plotter</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The PyVista <code>Plotter</code> object to wrap around.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.PyvistaPlotterHelper.add_curves" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">add_curves</span><span class="p">(</span><span class="o">*</span><span class="n">curves</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Add one or more curves to be plotted.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>curves</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom3.Curve3" href="../geom3/#engeom.geom3.Curve3">Curve3</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The curves to add.</p>
+              </div>
+            </td>
+            <td>
+                  <code>()</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>color</code>
+            </td>
+            <td>
+                  <code><span title="pyvista.ColorLike">ColorLike</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The color to use for the curve(s).</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;w&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>width</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The line width to use for the curve(s).</p>
+              </div>
+            </td>
+            <td>
+                  <code>3.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>label</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The label to use for the curve(s) if a legend is present.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name to use for the actor in the scene.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pyvista.vtkActor">vtkActor</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The PyVista actor that was added to the plotter.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.PyvistaPlotterHelper.add_mesh" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">add_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Add an <code>engeom</code> mesh to be plotted. Additional keyword arguments will be passed directly to the PyVista
+<code>Plotter.add_mesh</code> method, allowing for customization of the mesh appearance.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>mesh</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom3.Mesh" href="../geom3/#engeom.geom3.Mesh">Mesh</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The mesh object to add to the plotter scene</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pyvista.vtkActor">vtkActor</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The PyVista actor that was added to the plotter.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.PyvistaPlotterHelper.coordinate_frame" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">coordinate_frame</span><span class="p">(</span><span class="n">iso</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Add a coordinate frame to the plotter.  This will appear as three lines, with X in red, Y in green,
+and Z in blue.  The length of each line is determined by the <code>size</code> parameter.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>iso</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom3.Iso3" href="../geom3/#engeom.geom3.Iso3">Iso3</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The isometry to use as the origin and orientation of the coordinate frame.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>size</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The length of each line in the coordinate frame.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1.0</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.PyvistaPlotterHelper.distance" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">distance</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{value:.3f}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">label_place</span><span class="o">=</span><span class="n">LabelPlace</span><span class="o">.</span><span class="n">Outside</span><span class="p">,</span> <span class="n">label_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">scale_value</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">font_family</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Add a distance entity to the plotter.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>distance</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.metrology.Distance3" href="../metrology/#engeom.metrology.Distance3">Distance3</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The distance entity to add.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>template</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A format string to use for the label. The <code>value</code> key will be replaced with the actual value read from the measurement.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;{value:.3f}&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>label_place</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom._plot.common.LabelPlace" href="#engeom.plot.LabelPlace">LabelPlace</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The placement of the label relative to the distance entity's anchor points.</p>
+              </div>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom._plot.common.LabelPlace.Outside" href="#engeom.plot.LabelPlace.Outside">Outside</a></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>label_offset</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The distance offset to use for the label. Will have different meanings depending on the <code>label_place</code> parameter.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>font_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The size of the text to use for the label.</p>
+              </div>
+            </td>
+            <td>
+                  <code>12</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>scale_value</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A scaling factor to apply to the value before displaying it in the label. Use this to convert between different units of measurement without having to modify the actual value or the coordinate system.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>font_family</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The font family to use for the label.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.PyvistaPlotterHelper.label" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">label</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Add a text label to the plotter.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>point</code>
+            </td>
+            <td>
+                  <code><span title="engeom._plot.pyvista.PlotCoords">PlotCoords</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The position of the label in 3D space.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>text</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The text to display in the label.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>kwargs</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Additional keyword arguments to pass to the <code>pyvista.Label</code> constructor.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.plot.GomColorMap" class="doc doc-heading">
+            <code>GomColorMap</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="matplotlib.colors.ListedColormap">ListedColormap</span></code></p>
+
+
+        <p>A color map similar to the 8 discrete colors in the GOM/Zeiss Inspect software.</p>
+<p>You can use this to instantiate a color map, or you can use the <code>GOM_CMAP</code> object directly.</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="engeom.plot.MatplotlibAxesHelper" class="doc doc-heading">
+            <code>MatplotlibAxesHelper</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>A helper class for working with Matplotlib. It wraps around a Matplotlib <code>Axes</code> object and provides direct
+methods for plotting some <code>engeom</code> entities.  It also enforces the aspect ratio to be 1:1 and expands the
+subplot to fill its available space.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="kn">import</span> <span class="n">figure</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">figure</span><span class="p">()</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">helper</span> <span class="o">=</span> <span class="n">MatplotlibAxesHelper</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.MatplotlibAxesHelper.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">skip_aspect</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hide_axes</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the helper with a Matplotlib <code>Axes</code> object.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>ax</code>
+            </td>
+            <td>
+                  <code><span title="matplotlib.pyplot.Axes">Axes</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The Matplotlib <code>Axes</code> object to wrap around.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>skip_aspect</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Set this to true to skip enforcing the aspect ratio to be 1:1.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>hide_axes</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Set this to true to hide the axes.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.MatplotlibAxesHelper.annotate_text_only" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">annotate_text_only</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Annotate a Matplotlib Axes object with text only.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>text</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the text to annotate</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>pos</code>
+            </td>
+            <td>
+                  <code><span title="engeom._plot.matplotlib.PlotCoords">PlotCoords</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the position of the annotation</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>kwargs</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>keyword arguments to pass to the annotate function</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the annotation object</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.MatplotlibAxesHelper.arrow" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">arrow</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="s1">&#39;-|&gt;&#39;</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Plot an arrow on a Matplotlib Axes object.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>start</code>
+            </td>
+            <td>
+                  <code><span title="engeom._plot.matplotlib.PlotCoords">PlotCoords</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the start point of the arrow</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>end</code>
+            </td>
+            <td>
+                  <code><span title="engeom._plot.matplotlib.PlotCoords">PlotCoords</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the end point of the arrow</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>arrow</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the style of arrow to use</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;-|&gt;&#39;</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the annotation object</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.MatplotlibAxesHelper.distance" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">distance</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="n">side_shift</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{value:.3f}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">label_place</span><span class="o">=</span><span class="n">LabelPlace</span><span class="o">.</span><span class="n">Outside</span><span class="p">,</span> <span class="n">label_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fontname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale_value</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Plot a <code>Distance2</code> object on a Matplotlib Axes, drawing the leader lines and adding a text label with the
+distance value.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>distance</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.metrology.Distance2" href="../metrology/#engeom.metrology.Distance2">Distance2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The <code>Distance2</code> object to plot.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>side_shift</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Shift the ends of the leader lines by this amount of data units. The direction of the shift is orthogonal to the distance direction, with positive values shifting to the right.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>template</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The format string to use for the distance label. The default is "{value:.3f}".</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;{value:.3f}&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>fontsize</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The font size to use for the label.</p>
+              </div>
+            </td>
+            <td>
+                  <code>10</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>label_place</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom._plot.common.LabelPlace" href="#engeom.plot.LabelPlace">LabelPlace</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The placement of the label.</p>
+              </div>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom._plot.common.LabelPlace.Outside" href="#engeom.plot.LabelPlace.Outside">Outside</a></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>label_offset</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The distance offset to use for the label. Will have different meanings depending on the <code>label_place</code> parameter.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>fontname</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name of the font to use for the label.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>scale_value</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A scaling factor to apply to the value before displaying it in the label. Use this to convert between different units of measurement without having to modify the actual value or the coordinate system.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1.0</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.MatplotlibAxesHelper.plot_circle" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">plot_circle</span><span class="p">(</span><span class="o">*</span><span class="n">circle</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Plot a circle on a Matplotlib Axes object.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>circle</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Circle2" href="../geom2/#engeom.geom2.Circle2">Circle2</a> | <span title="typing.Iterable">Iterable</span>[<span title="float">float</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>a Circle2 object</p>
+              </div>
+            </td>
+            <td>
+                  <code>()</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>kwargs</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>keyword arguments to pass to the plot function</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.MatplotlibAxesHelper.plot_curve" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">plot_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Plot a curve on a Matplotlib Axes object.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>curve</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Curve2" href="../geom2/#engeom.geom2.Curve2">Curve2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>a Curve2 object</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>kwargs</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>keyword arguments to pass to the plot function</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="engeom.plot.MatplotlibAxesHelper.set_bounds" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_bounds</span><span class="p">(</span><span class="n">box</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set the bounds of a Matplotlib Axes object.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>box</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="engeom.geom2.Aabb2" href="../geom2/#engeom.geom2.Aabb2">Aabb2</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>an Aabb2 object</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
