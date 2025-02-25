@@ -98,8 +98,9 @@ else:
                 template: str = "{value:.3f}",
                 label_place: LabelPlace = LabelPlace.Outside,
                 label_offset: float | None = None,
-                text_size: int = 16,
+                font_size: int = 12,
                 scale_value: float = 1.0,
+                font_family=None,
         ):
             """
             Add a distance entity to the plotter.
@@ -109,10 +110,11 @@ else:
             :param label_place: The placement of the label relative to the distance entity's anchor points.
             :param label_offset: The distance offset to use for the label. Will have different meanings depending on
             the `label_place` parameter.
-            :param text_size: The size of the text to use for the label.
+            :param font_size: The size of the text to use for the label.
             :param scale_value: A scaling factor to apply to the value before displaying it in the label. Use this to
             convert between different units of measurement without having to modify the actual value or the coordinate
             system.
+            :param font_family: The font family to use for the label.
             """
             label_offset = label_offset or max(abs(distance.value), 1.0) * 3
 
@@ -162,8 +164,17 @@ else:
             self.plotter.add_lines(lines, color="black", width=1.5)
 
             value = distance.value * scale_value
-            label = pyvista.Label(text=template.format(value=value), position=_tuplefy(label_coords), size=text_size)
-            self.plotter.add_actor(label)
+            self.plotter.add_point_labels(
+                [_tuplefy(label_coords)],
+                [template.format(value=value)],
+                show_points=False,
+                background_color="white",
+                font_family=font_family,
+                # justification_vertical="center",
+                # justification_horizontal="center",
+                font_size=font_size,
+                bold=False,
+            )
 
         def coordinate_frame(self, iso: Iso3, size: float = 1.0):
             """

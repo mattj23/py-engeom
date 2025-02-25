@@ -2,14 +2,11 @@ from typing import List
 
 from numpy.typing import NDArray
 from enum import Enum
-
 import geom2
-import metrology
 
 type MclOrientEnum = MclOrient.TmaxFwd | MclOrient.DirFwd
 type FaceOrientEnum = FaceOrient.Detect | FaceOrient.UpperDir
 type EdgeFindEnum = EdgeFind.Open | EdgeFind.OpenIntersect | EdgeFind.Intersect | EdgeFind.RansacRadius
-type EdgeTypeEnum = EdgeType | geom2.Arc2
 type AfGageEnum = AfGage.OnCamber | AfGage.Radius
 
 
@@ -76,6 +73,7 @@ class FaceOrient:
         In an airfoil with an MCL that exhibits curvature, this will attempt to detect which direction the camber line
         curves and thus identify convex/concave. This will fail if the MCL is straight.
         """
+
         def __init__(self):
             """
             Create a new face orientation parameter that will attempt to detect the orientation of the faces based on
@@ -234,8 +232,10 @@ class InscribedCircle:
     and is tangent to the airfoil section at two points.
     """
 
+    from .geom2 import Circle2, Point2
+
     @property
-    def circle(self) -> geom2.Circle2:
+    def circle(self) -> Circle2:
         """
         Gets the circle object associated with this inscribed circle.
         :return: The circle entity for the inscribed circle
@@ -243,7 +243,7 @@ class InscribedCircle:
         ...
 
     @property
-    def contact_a(self) -> geom2.Point2:
+    def contact_a(self) -> Point2:
         """
         Get a contact point of the inscribed circle with one side of the airfoil cross-section. Inscribed circles
         computed together will have a consistent meaning of `a` and `b` sides, but which is the upper or lower surface
@@ -254,7 +254,7 @@ class InscribedCircle:
         ...
 
     @property
-    def contact_b(self) -> geom2.Point2:
+    def contact_b(self) -> Point2:
         """
         Get the other contact point of the inscribed circle with the airfoil cross-section. Inscribed circles computed
         together will have a consistent meaning of `a` and `b` sides, but which is the upper or lower surface will
@@ -270,9 +270,10 @@ class EdgeResult:
     Represents the results of an airfoil edge detection operation, containing both a point on the airfoil cross-section
     that was detected as the edge, and optional geometric information about the edge depending on the method used.
     """
+    from .geom2 import Arc2, Point2
 
     @property
-    def point(self) -> geom2.Point2:
+    def point(self) -> Point2:
         """
         Gets the point on the airfoil cross-section that was detected as the edge.
         :return: The point on the airfoil cross-section that was detected as the edge
@@ -280,7 +281,7 @@ class EdgeResult:
         ...
 
     @property
-    def geometry(self) -> EdgeTypeEnum:
+    def geometry(self) -> EdgeType | Arc2:
         """
         Gets the geometric information about the edge that was detected.
 
@@ -311,9 +312,12 @@ class AirfoilGeometry:
     See the `from_analyze` method for how to perform the analysis creating an instance of this class.
     """
 
+    from .geom2 import Curve2, Circle2
+    from .metrology import Distance2
+
     @staticmethod
     def from_analyze(
-            section: geom2.Curve2,
+            section: Curve2,
             refine_tol: float,
             camber_orient: MclOrientEnum,
             leading: EdgeFindEnum,
@@ -374,7 +378,7 @@ class AirfoilGeometry:
         ...
 
     @property
-    def camber(self) -> geom2.Curve2:
+    def camber(self) -> Curve2:
         """
         Gets the mean camber line of the airfoil cross-section. The curve will be oriented so that the first point is at
         the leading edge of the airfoil and the last point is at the trailing edge.
@@ -383,7 +387,7 @@ class AirfoilGeometry:
         ...
 
     @property
-    def upper(self) -> geom2.Curve2 | None:
+    def upper(self) -> Curve2 | None:
         """
         The curve representing the upper (suction, convex) side of the airfoil cross-section. The curve will be oriented
         in the same winding direction as the original section, so the first point may be at either the leading or
@@ -394,7 +398,7 @@ class AirfoilGeometry:
         ...
 
     @property
-    def lower(self) -> geom2.Curve2 | None:
+    def lower(self) -> Curve2 | None:
         """
         The curve representing the lower (pressure, concave) side of the airfoil cross-section. The curve will be
         oriented in the same winding direction as the original section, so the first point may be at either the leading
@@ -414,22 +418,24 @@ class AirfoilGeometry:
         """
         ...
 
-    def get_thickness(self, gage: AfGageEnum) -> metrology.Distance2:
+    def get_thickness(self, gage: AfGageEnum) -> Distance2:
         """
-        Get the thickness dimension of the airfoil cross-section.
+        Get the thickness dimension of the airfoil cross-section. The 'a' point of the distance will be on the lower
+        surface of the airfoil, and the 'b' point will be on the upper surface.
         :param gage: the gaging method to use
         :return: a `Distance2` object representing the thickness dimension at the specified gage points
         """
         ...
 
-    def get_tmax(self) -> metrology.Distance2:
+    def get_tmax(self) -> Distance2:
         """
-        Get the maximum thickness dimension of the airfoil cross-section.
+        Get the maximum thickness dimension of the airfoil cross-section. The 'a' point of the distance will be on the
+        lower surface of the airfoil, and the 'b' point will be on the upper surface.
         :return: a `Distance2` object representing the maximum thickness dimension
         """
         ...
 
-    def get_tmax_circle(self) -> geom2.Circle2:
+    def get_tmax_circle(self) -> Circle2:
         """
         Get the circle representing the maximum thickness dimension of the airfoil cross-section.
         :return: a `Circle2` object representing the maximum thickness circle

@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import Iterable, Tuple, TypeVar, Iterator, Any
 
 from numpy.typing import NDArray
-from numpy import dtype
 from engeom.engeom import ResampleEnum
+
+from engeom import geom3
 
 Transformable2 = TypeVar("Transformable2", Vector2, Point2, Iso2, SurfacePoint2)
 PointOrVec2 = TypeVar("PointOrVec2", Point2, Vector2)
@@ -437,7 +438,7 @@ class Iso2:
         """
         ...
 
-    def transform_points(self, points: NDArray[dtype]) -> NDArray[float]:
+    def transform_points(self, points: NDArray[float]) -> NDArray[float]:
         """
         Transform an array of points using the isometry. The semantics of transforming points are such that the full
         matrix is applied, first rotating the point around the origin and then translating it by the translation vector.
@@ -452,7 +453,7 @@ class Iso2:
         """
         ...
 
-    def transform_vectors(self, vectors: NDArray[dtype]) -> NDArray[float]:
+    def transform_vectors(self, vectors: NDArray[float]) -> NDArray[float]:
         """
         Transform an array of vectors using the isometry. The semantics of transforming vectors are such that only the
         rotation matrix is applied, and the translation vector is not used. The vectors retain their original
@@ -483,8 +484,8 @@ class SvdBasis2:
 
     def __init__(
             self,
-            points: NDArray[dtype],
-            weights: NDArray[dtype] | None = None
+            points: NDArray[float],
+            weights: NDArray[float] | None = None
     ):
         """
         Create a basis from a set of points. The basis will be calculated using a singular value decomposition of the
@@ -642,8 +643,8 @@ class Curve2:
 
     def __init__(
             self,
-            vertices: NDArray[dtype],
-            normals: NDArray[dtype] | None = None,
+            vertices: NDArray[float],
+            normals: NDArray[float] | None = None,
             tol: float = 1e-6,
             force_closed: bool = False,
             hull_ccw: bool = False,
@@ -847,6 +848,13 @@ class Curve2:
         """
         ...
 
+    def to_3d(self) -> geom3.Curve3:
+        """
+        Convert the curve to a 3D curve by adding a z-coordinate of 0 to all points.
+        :return: a new `Curve3` object representing the curve in 3D space.
+        """
+        ...
+
 
 class Circle2:
     """
@@ -1040,7 +1048,7 @@ class Aabb2:
         ...
 
     @staticmethod
-    def from_points(points: NDArray[dtype]) -> Aabb2:
+    def from_points(points: NDArray[float]) -> Aabb2:
         """
         Create an AABB that bounds a set of points. If the point array is empty or the wrong shape, an error will be
         thrown.

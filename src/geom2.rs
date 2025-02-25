@@ -2,6 +2,7 @@ use crate::bounding::Aabb2;
 use crate::common::Resample;
 use crate::conversions::{array_to_points2, array_to_vectors2, points_to_array2};
 use engeom::geom2::{HasBounds2, Line2};
+use engeom::To3D;
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn};
 use pyo3::exceptions::PyValueError;
@@ -843,6 +844,13 @@ impl Curve2 {
 
     fn transformed_by(&self, iso: &Iso2) -> Self {
         Self::from_inner(self.inner.transformed_by(iso.get_inner()))
+    }
+
+    fn to_3d(&self) -> PyResult<crate::geom3::Curve3> {
+        let points = self.inner.points().to_3d();
+        let c = engeom::Curve3::from_points(&points, self.inner.tol())
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+        Ok(crate::geom3::Curve3::from_inner(c))
     }
 
     fn __repr__(&self) -> String {
