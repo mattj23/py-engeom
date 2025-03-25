@@ -1,9 +1,9 @@
 use crate::conversions::{array_to_points2, array_to_points3};
+use crate::geom2::{Iso2, Vector2};
 use crate::geom3::{Iso3, Vector3};
 use numpy::ndarray::Array1;
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1, PyReadonlyArrayDyn};
 use pyo3::prelude::*;
-use crate::geom2::{Iso2, Vector2};
 
 #[pyclass]
 pub struct SvdBasis2 {

@@ -7,6 +7,7 @@ mod geom2;
 mod geom3;
 mod mesh;
 mod metrology;
+mod raster;
 mod svd_basis;
 
 use pyo3::prelude::*;
@@ -89,6 +90,14 @@ fn register_metrology_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()
     parent_module.add_submodule(&child)
 }
 
+fn register_raster3_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
+    let child = PyModule::new(parent_module.py(), "_raster3")?;
+
+    child.add_function(wrap_pyfunction!(raster::clusters_from_sparse, &child)?)?;
+
+    parent_module.add_submodule(&child)
+}
+
 /// Engeom is a library for geometric operations in 2D and 3D space.
 #[pymodule(name = "engeom")]
 fn py_engeom(m: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -97,6 +106,9 @@ fn py_engeom(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // 3D geometry submodule
     register_geom3(m)?;
+
+    // 3D raster module
+    register_raster3_module(m)?;
 
     // Alignment submodule
     register_align_module(m)?;

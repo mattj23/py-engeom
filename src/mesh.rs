@@ -161,12 +161,21 @@ impl Mesh {
         Ok(result.into_pyarray(py))
     }
 
-    fn measure_point_deviation(&self, x: f64, y: f64, z: f64, dist_mode: DeviationMode) -> Distance3 {
+    fn measure_point_deviation(
+        &self,
+        x: f64,
+        y: f64,
+        z: f64,
+        dist_mode: DeviationMode,
+    ) -> Distance3 {
         let point = engeom::Point3::new(x, y, z);
         Distance3::from_inner(self.inner.measure_point_deviation(&point, dist_mode.into()))
     }
 
-    fn boundary_first_flatten<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyArrayDyn<f64>>> {
+    fn boundary_first_flatten<'py>(
+        &self,
+        py: Python<'py>,
+    ) -> PyResult<Bound<'py, PyArrayDyn<f64>>> {
         let edges = self
             .inner
             .calc_edges()

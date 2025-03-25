@@ -1024,7 +1024,7 @@ dependencies = [
 
 [[package]]
 name = "py-engeom"
-version = "0.2.6"
+version = "0.2.7"
 dependencies = [
  "engeom",
  "numpy",
