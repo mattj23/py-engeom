@@ -1282,3 +1282,29 @@ class Aabb3:
         :return: a new AABB object with the shrunk bounds.
         """
         ...
+
+
+class RayBundle3:
+    """
+    A class representing a bundle of rays in 3D space. The rays are represented by a set of origins and directions,
+    which are used to define the rays.
+
+    This class is used for ray tracing operations, such as intersection tests with meshes or other geometric objects.
+    """
+
+    def __init__(self, array: NDArray[float]):
+        """
+        Create a ray bundle from a numpy array of shape (n, 6) containing the origins and directions of the rays.
+        :param array: a numpy array of shape (n, 6) containing the origins and directions of the rays.
+        """
+        ...
+
+    def intersect_mesh(self, mesh: Mesh, iso: Iso3 | None = None, angle: float | None = None) -> NDArray[float]:
+        """
+
+        :param angle:
+        :param mesh:
+        :param iso:
+        :return:
+        """
+        ...

@@ -9,6 +9,7 @@ mod mesh;
 mod metrology;
 mod raster;
 mod svd_basis;
+mod ray_casting;
 
 use pyo3::prelude::*;
 
@@ -53,6 +54,9 @@ fn register_geom3(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     // Bounding and tools
     child.add_class::<bounding::Aabb3>()?;
     child.add_class::<svd_basis::SvdBasis3>()?;
+
+    // Intersection and ray casting
+    child.add_class::<ray_casting::RayBundle3>()?;
 
     parent_module.add_submodule(&child)
 }

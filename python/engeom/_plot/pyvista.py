@@ -176,19 +176,48 @@ else:
                 bold=False,
             )
 
-        def coordinate_frame(self, iso: Iso3, size: float = 1.0):
+        def coordinate_frame(self, iso, size: float = 1.0, line_width=3.0, label: str | None = None,
+                             label_size: int = 12):
             """
             Add a coordinate frame to the plotter.  This will appear as three lines, with X in red, Y in green,
             and Z in blue.  The length of each line is determined by the `size` parameter.
-            :param iso: The isometry to use as the origin and orientation of the coordinate frame.
+            :param iso: The isometry to use as the origin and orientation of the coordinate frame. May be an `Iso3`, a
+            4x4 `numpy.ndarray` that validly converts into an `Iso3`, or anything with an `as_numpy` method that
+            returns a valid 4x4 `numpy.ndarray`.
             :param size: The length of each line in the coordinate frame.
+            :param line_width: The width of the lines in the coordinate frame.
+            :param label: An optional label to display at the origin of the coordinate frame.
+            :param label_size: The size of the label text.
             """
+            if not isinstance(iso, Iso3):
+                if hasattr(iso, "as_numpy"):
+                    iso = iso.as_numpy()
+
+                if isinstance(iso, numpy.ndarray):
+                    if iso.shape == (4, 4):
+                        iso = Iso3(iso)
+                    else:
+                        raise ValueError("Invalid shape for iso: expected (4, 4), got {iso.shape}")
+                else:
+                    raise TypeError("Invalid type for iso: expected Iso3 or numpy.ndarray, got {type(iso)}")
+
             points = numpy.array([[0, 0, 0], [size, 0, 0], [0, size, 0], [0, 0, size]], dtype=numpy.float64)
             points = iso.transform_points(points)
 
-            self.plotter.add_lines(points[[0, 1]], color="red", width=5.0)
-            self.plotter.add_lines(points[[0, 2]], color="green", width=5.0)
-            self.plotter.add_lines(points[[0, 3]], color="blue", width=5.0)
+            self.plotter.add_lines(points[[0, 1]], color="red", width=line_width)
+            self.plotter.add_lines(points[[0, 2]], color="green", width=line_width)
+            self.plotter.add_lines(points[[0, 3]], color="blue", width=line_width)
+
+            if label:
+                self.plotter.add_point_labels(
+                    [points[0]],
+                    [label],
+                    show_points=False,
+                    background_color="white",
+                    font_family="courier",
+                    font_size=label_size,
+                    bold=False,
+                )
 
         def label(self, point: PlotCoords, text: str, **kwargs):
             """
