@@ -21,6 +21,6 @@ except ImportError:
     pass
 
 try:
-    from ._plot.matplotlib import GOM_CMAP, GomColorMap, MatplotlibAxesHelper
+    from ._plot.matplotlib import GOM_CMAP, GomColorMap, MatplotlibAxesHelper, TraceBuilder
 except ImportError:
     pass

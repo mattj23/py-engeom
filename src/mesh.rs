@@ -1,6 +1,8 @@
 use crate::bounding::Aabb3;
 use crate::common::{DeviationMode, SelectOp};
-use crate::conversions::{array_to_faces, array_to_points3, faces_to_array, points_to_array3};
+use crate::conversions::{
+    array_to_faces, array_to_points3, faces_to_array, points_to_array3, vectors_to_array3,
+};
 use crate::geom3::{Curve3, Iso3, Plane3, SurfacePoint3};
 use crate::metrology::Distance3;
 use engeom::common::points::dist;
@@ -16,6 +18,8 @@ pub struct Mesh {
     inner: engeom::Mesh,
     vertices: Option<Py<PyArrayDyn<f64>>>,
     faces: Option<Py<PyArrayDyn<u32>>>,
+    face_normals: Option<Py<PyArrayDyn<f64>>>,
+    vertex_normals: Option<Py<PyArrayDyn<f64>>>,
 }
 
 impl Mesh {
@@ -28,6 +32,8 @@ impl Mesh {
             inner,
             vertices: None,
             faces: None,
+            face_normals: None,
+            vertex_normals: None,
         }
     }
 }
@@ -79,6 +85,10 @@ impl Mesh {
 
     fn transform_by(&mut self, iso: &Iso3) {
         self.inner.transform(iso.get_inner());
+
+        self.vertices = None;
+        self.face_normals = None;
+        self.vertex_normals = None;
     }
 
     fn surface_closest_to(&self, x: f64, y: f64, z: f64) -> SurfacePoint3 {
@@ -108,6 +118,72 @@ impl Mesh {
             self.vertices = Some(array.into_pyarray(py).unbind());
         }
         self.vertices.as_ref().unwrap().bind(py)
+    }
+
+    #[getter]
+    fn vertex_normals<'py>(&mut self, py: Python<'py>) -> &Bound<'py, PyArrayDyn<f64>> {
+        if self.vertex_normals.is_none() {
+            let normals = self.inner.get_vertex_normals();
+            let array = vectors_to_array3(&normals);
+            self.vertex_normals = Some(array.into_pyarray(py).unbind());
+        }
+
+        self.vertex_normals.as_ref().unwrap().bind(py)
+    }
+
+    fn get_patch_boundaries(&self) -> PyResult<Vec<Curve3>> {
+        let boundaries = self
+            .inner
+            .get_patch_boundary_points()
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+
+        let mut result = Vec::new();
+        for b in boundaries.iter() {
+            let c = engeom::Curve3::from_points(b, 1.0e-6)
+                .map_err(|e| PyValueError::new_err(e.to_string()))?;
+            result.push(Curve3::from_inner(c))
+        }
+
+        Ok(result)
+    }
+
+    fn visual_outline<'py>(
+        &self,
+        py: Python<'py>,
+    ) -> (Bound<'py, PyArrayDyn<f64>>, Bound<'py, PyArray1<u8>>) {
+        let n = engeom::UnitVec3::new_normalize(engeom::Vector3::new(0.0, 0.0, 1.0));
+        let outline = self.inner.visual_outline(n, 1.0, None);
+        let mut result = ArrayD::zeros(vec![outline.len(), 6]);
+        let mut result_type = Array1::zeros(outline.len());
+        for (i, (p0, p1, t)) in outline.iter().enumerate() {
+            result[[i, 0]] = p0.x;
+            result[[i, 1]] = p0.y;
+            result[[i, 2]] = p0.z;
+            result[[i, 3]] = p1.x;
+            result[[i, 4]] = p1.y;
+            result[[i, 5]] = p1.z;
+
+            result_type[i] = *t;
+        }
+        (result.into_pyarray(py), result_type.into_pyarray(py))
+    }
+
+    #[getter]
+    fn face_normals<'py>(&mut self, py: Python<'py>) -> PyResult<&Bound<'py, PyArrayDyn<f64>>> {
+        if self.face_normals.is_none() {
+            let normals = self
+                .inner
+                .get_face_normals()
+                .map_err(|e| PyValueError::new_err(e.to_string()))?
+                .into_iter()
+                .map(|n| n.into_inner())
+                .collect::<Vec<_>>();
+
+            let array = vectors_to_array3(&normals);
+            self.face_normals = Some(array.into_pyarray(py).unbind());
+        }
+
+        Ok(self.face_normals.as_ref().unwrap().bind(py))
     }
 
     #[getter]

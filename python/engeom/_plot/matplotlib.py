@@ -1,10 +1,13 @@
 from typing import List, Iterable, Tuple, Union
 import numpy
+
 from .common import LabelPlace
 from engeom.geom2 import Curve2, Circle2, Aabb2, Point2, Vector2, SurfacePoint2
+from engeom.geom3 import Vector3, Mesh, Point3
 from engeom.metrology import Distance2
 
 PlotCoords = Union[Point2, Vector2, Iterable[float]]
+PointLike = Union[Point2, Tuple[float, float], Point3]
 
 try:
     from matplotlib.pyplot import Axes, Circle
@@ -273,3 +276,50 @@ def _tuplefy(item: PlotCoords) -> Tuple[float, float]:
     else:
         x, y, *_ = item
         return x, y
+
+
+class TraceBuilder:
+    def __init__(self):
+        self.xs = []
+        self.ys = []
+        self.c = []
+
+    def bounds(self) -> Aabb2:
+        xs = [x for x in self.xs if x is not None]
+        ys = [y for y in self.ys if y is not None]
+        return Aabb2(
+            x_min=min(xs),
+            x_max=max(xs),
+            y_min=min(ys),
+            y_max=max(ys),
+        )
+
+    def add_segment(self, *points: PointLike):
+        self.add_points(*points)
+        self.add_blank()
+
+    def add_blank(self):
+        self.xs.append(None)
+        self.ys.append(None)
+        self.c.append(None)
+
+    def add_points(self, *points: PointLike):
+        for x, y, *_ in points:
+            self.xs.append(x)
+            self.ys.append(y)
+
+    def add_point_and_color(self, point: PointLike, color: float):
+        self.xs.append(point[0])
+        self.ys.append(point[1])
+        self.c.append(color)
+
+    def invert_y(self):
+        self.ys = [-y if y is not None else None for y in self.ys]
+
+    @property
+    def kwargs(self):
+        return dict(x=self.xs, y=self.ys)
+
+    @property
+    def xy(self):
+        return self.xs, self.ys

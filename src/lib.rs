@@ -8,8 +8,8 @@ mod geom3;
 mod mesh;
 mod metrology;
 mod raster;
-mod svd_basis;
 mod ray_casting;
+mod svd_basis;
 
 use pyo3::prelude::*;
 

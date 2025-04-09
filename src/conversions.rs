@@ -15,6 +15,16 @@ pub fn points_to_array3(points: &[Point3]) -> ArrayD<f64> {
     array
 }
 
+pub fn vectors_to_array3(vectors: &[Vector3]) -> ArrayD<f64> {
+    let mut array = ArrayD::zeros(vec![vectors.len(), 3]);
+    for (i, vector) in vectors.iter().enumerate() {
+        array[[i, 0]] = vector.x;
+        array[[i, 1]] = vector.y;
+        array[[i, 2]] = vector.z;
+    }
+    array
+}
+
 pub fn points_to_array2(points: &[Point2]) -> ArrayD<f64> {
     let mut array = ArrayD::zeros(vec![points.len(), 2]);
     for (i, point) in points.iter().enumerate() {

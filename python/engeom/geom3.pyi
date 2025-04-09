@@ -746,6 +746,25 @@ class Mesh:
         ...
 
     @property
+    def face_normals(self) -> NDArray[float]:
+        """
+        Will return an immutable view of the face normals of the mesh as a numpy array of shape (m, 3), where m is the
+        number of triangles in the mesh.
+        :return: a numpy array of shape (m, 3) containing the normals of the triangles of the mesh.
+        """
+        ...
+
+    @property
+    def vertex_normals(self) -> NDArray[float]:
+        """
+        Will return an immutable view of the vertex normals of the mesh as a numpy array of shape (n, 3), where n is the
+        number of vertices in the mesh.  If a vertex has no faces, the normal will be (0, 0, 0), otherwise the normal
+        will have been averaged from the normals of the faces that share the vertex.
+        :return: a numpy array of shape (n, 3) containing the normals of the vertices of the mesh.
+        """
+        ...
+
+    @property
     def faces(self) -> NDArray[numpy.uint32]:
         """
         Will return an immutable view of the triangles of the mesh as a numpy array of shape (m, 3).
