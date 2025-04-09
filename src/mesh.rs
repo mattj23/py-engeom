@@ -3,7 +3,7 @@ use crate::common::{DeviationMode, SelectOp};
 use crate::conversions::{
     array_to_faces, array_to_points3, faces_to_array, points_to_array3, vectors_to_array3,
 };
-use crate::geom3::{Curve3, Iso3, Plane3, SurfacePoint3};
+use crate::geom3::{Curve3, Iso3, Plane3, SurfacePoint3, Vector3};
 use crate::metrology::Distance3;
 use engeom::common::points::dist;
 use engeom::common::{Selection, SplitResult};
@@ -147,12 +147,16 @@ impl Mesh {
         Ok(result)
     }
 
+    #[pyo3(signature=(facing, max_edge_length, corner_angle = None))]
     fn visual_outline<'py>(
         &self,
         py: Python<'py>,
+        facing: Vector3,
+        max_edge_length: f64,
+        corner_angle: Option<f64>,
     ) -> (Bound<'py, PyArrayDyn<f64>>, Bound<'py, PyArray1<u8>>) {
-        let n = engeom::UnitVec3::new_normalize(engeom::Vector3::new(0.0, 0.0, 1.0));
-        let outline = self.inner.visual_outline(n, 1.0, None);
+        let n = engeom::UnitVec3::new_normalize(*facing.get_inner());
+        let outline = self.inner.visual_outline(n, max_edge_length, corner_angle);
         let mut result = ArrayD::zeros(vec![outline.len(), 6]);
         let mut result_type = Array1::zeros(outline.len());
         for (i, (p0, p1, t)) in outline.iter().enumerate() {

@@ -952,6 +952,30 @@ class Mesh:
         """
         ...
 
+    def visual_outline(
+            self,
+            facing: Vector3,
+            max_edge_length: float,
+            corner_angle: float | None = None
+    ) -> Tuple[NDArray[float], NDArray[numpy.uint8]]:
+        """
+        Capture the edges of a visual outline of the mesh, used to draw a line diagram of the mesh in a 2D space. The
+        returned results will consist of two numpy arrays.  The first will be a floating point array of shape (N, 6)
+        where N is the number of edges in the outline. The first three columns will be the start point of the edge, and
+        the last three columns will be the end point of the edge. The second array will be a numpy array of shape (N,)
+        containing a 0 or 1 for each edge at the associated index. A 0 indicates that the edge is unobstructed in the
+        view direction, while a 1 indicates that the edge is obstructed by the mesh.
+
+        :param facing: A vector with the direction to look at the mesh
+        :param max_edge_length: The maximum length of an edge to be included in the outline. Edges longer than this
+        will be broken up into smaller edges.
+        :param corner_angle: The minimum angle between two adjacent faces for the common edge to be considered a corner
+        and included in the outline. If None, the default value is 45 degrees.
+        :return: a tuple of two numpy arrays. The first array is the outline edges, and the second array is a mask
+        indicating whether the edge is obstructed or not.
+        """
+        ...
+
 
 class FaceFilterHandle:
     """
