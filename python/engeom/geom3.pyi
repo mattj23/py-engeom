@@ -646,6 +646,14 @@ class Plane3:
         """
         ...
 
+    def intersection_distance(self, sp: SurfacePoint3) -> float | None:
+        """
+
+        :param sp:
+        :return:
+        """
+        ...
+
 
 class Mesh:
     """

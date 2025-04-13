@@ -409,6 +409,10 @@ impl Circle2 {
     fn aabb(&self) -> Aabb2 {
         Aabb2::from_inner(*self.inner.aabb())
     }
+
+    fn point_at_angle(&self, angle: f64) -> Point2 {
+        Point2::from_inner(self.inner.point_at_angle(angle))
+    }
 }
 
 // ================================================================================================

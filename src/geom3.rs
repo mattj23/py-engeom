@@ -413,6 +413,10 @@ impl Plane3 {
     fn project_point(&self, point: Point3) -> Point3 {
         Point3::from_inner(self.inner.project_point(point.get_inner()))
     }
+
+    fn intersection_distance(&self, sp: &SurfacePoint3) -> Option<f64> {
+        self.inner.intersection_distance(sp.get_inner())
+    }
 }
 
 // ================================================================================================

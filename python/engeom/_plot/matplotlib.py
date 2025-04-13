@@ -210,7 +210,7 @@ else:
 
             value = distance.value * scale_value
             box_style = dict(boxstyle="round,pad=0.3", ec="black", fc="white")
-            self.annotate_text_only(template.format(value=value), label_coords, bbox=box_style, **kwargs)
+            self.text(template.format(value=value), label_coords, bbox=box_style, **kwargs)
 
         def _line_if_needed(self, pad: float, actual: Point2, leader_end: Point2):
             half_pad = pad * 0.5
@@ -221,30 +221,77 @@ else:
             t1 = work.scalar_projection(leader_end) + half_pad
             self.arrow(actual, work.at_distance(t1), arrow="-")
 
-        def annotate_text_only(self, text: str, pos: PlotCoords, **kwargs):
+        def text(self, text: str, pos: PlotCoords, shift: PlotCoords | None = None, ha: str = "center",
+                 va: str = "center", **kwargs):
             """
-            Annotate a Matplotlib Axes object with text only.
+            Annotate a Matplotlib Axes object with text only, by default in the xy data plane.
             :param text: the text to annotate
             :param pos: the position of the annotation
+            :param shift: an optional shift vector to apply to the position
+            :param ha: horizontal alignment
+            :param va: vertical alignment
             :param kwargs: keyword arguments to pass to the annotate function
             :return: the annotation object
             """
-            return self.ax.annotate(text, xy=_tuplefy(pos), **kwargs)
+            xy = _tuplefy(pos)
+            if shift is not None:
+                shift = _tuplefy(shift)
+                xy = (xy[0] + shift[0], xy[1] + shift[1])
 
-        def arrow(self, start: PlotCoords, end: PlotCoords, arrow="-|>"):
+            return self.ax.annotate(text, xy=xy, ha=ha, va=va, **kwargs)
+
+        def points(self, *points: PlotCoords, marker="o", markersize="5", **kwargs):
+            x, y = zip(*[_tuplefy(p) for p in points])
+            return self.ax.plot(x, y, marker, markersize=markersize, **kwargs)
+
+        def labeled_arrow(self, start: PlotCoords, end: PlotCoords, text: str, fraction: float = 0.5,
+                          shift: PlotCoords | None = None,
+                          arrow="->", color="black", linewidth: float | None = None, linestyle="-",
+                          **text_kwargs):
             """
-            Plot an arrow on a Matplotlib Axes object.
-            :param start: the start point of the arrow
-            :param end: the end point of the arrow
-            :param arrow: the style of arrow to use
-            :return: the annotation object
+
+            :param start:
+            :param end:
+            :param text:
+            :param shift:
+            :param fraction:
+            :param arrow:
+            :param color:
+            :param linewidth:
+            :param linestyle:
+            :param text_kwargs: parameters to pass to the text function
+            :return:
             """
-            return self.ax.annotate(
-                "",
-                xy=_tuplefy(end),
-                xytext=_tuplefy(start),
-                arrowprops=dict(arrowstyle=arrow, fc="black"),
+            start = Point2(*_tuplefy(start))
+            end = Point2(*_tuplefy(end))
+
+            self.arrow(start, end, arrow=arrow, color=color, linewidth=linewidth, linestyle=linestyle)
+
+            v: Vector2 = end - start
+            position = start + v * fraction
+            self.text(text, position, shift=shift, color=color, **text_kwargs)
+
+        def arrow(self, start: PlotCoords, end: PlotCoords, arrow="->", color="black", linewidth: float | None = None,
+                  linestyle="-"):
+            """
+            Draw an arrow on a Matplotlib Axes object from `start` to `end`.
+            :param start:
+            :param end:
+            :param arrow:
+            :param color:
+            :param linewidth:
+            :param linestyle:
+            :return:
+            """
+            props = dict(
+                arrowstyle=arrow,
+                fc=color,
+                ec=color,
+                linewidth=linewidth,
+                linestyle=linestyle,
             )
+
+            return self.ax.annotate("", xy=_tuplefy(end), xytext=_tuplefy(start), arrowprops=props)
 
         def _font_height(self, font_size: int) -> float:
             # Get the height of a font in data units

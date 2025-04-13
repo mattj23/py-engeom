@@ -910,6 +910,14 @@ class Circle2:
         """
         ...
 
+    def point_at_angle(self, angle: float) -> Point2:
+        """
+        Get the point on the circle at a given angle.
+        :param angle: the angle in radians.
+        :return: the point on the circle at the given angle.
+        """
+        ...
+
 
 class Arc2:
     """
