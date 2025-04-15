@@ -1,6 +1,6 @@
 use crate::common::Resample;
 use crate::conversions::{array_to_points3, array_to_vectors3, points_to_array3};
-use engeom::geom3::{iso3_try_from_array, Flip3};
+use engeom::geom3::IsoExtensions3;
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
 use pyo3::exceptions::PyValueError;
@@ -247,6 +247,14 @@ impl Point3 {
             self.inner.x, self.inner.y, self.inner.z
         )
     }
+
+    #[staticmethod]
+    fn mid(a: Point3, b: Point3) -> Self {
+        Self::from_inner(engeom::common::points::mid_point(
+            a.get_inner(),
+            b.get_inner(),
+        ))
+    }
 }
 
 // ================================================================================================
@@ -357,6 +365,10 @@ impl SurfacePoint3 {
     fn get_plane(&self) -> Plane3 {
         Plane3::from_inner(engeom::Plane3::from(&self.inner))
     }
+
+    fn shift(&self, offset: f64) -> Self {
+        Self::from_inner(self.inner.shift(offset))
+    }
 }
 
 // ================================================================================================
@@ -397,10 +409,6 @@ impl Plane3 {
             self.inner.normal.x, self.inner.normal.y, self.inner.normal.z, self.inner.d
         )
     }
-
-    // fn transform_by(&self, iso: Iso3) -> Self {
-    //     Self::from_inner(self.inner.transform_by(iso.get_inner()))
-    // }
 
     fn inverted_normal(&self) -> Self {
         Self::from_inner(self.inner.inverted_normal())
@@ -656,7 +664,7 @@ impl Iso3 {
             array[i] = *value;
         }
 
-        let inner = iso3_try_from_array(&array)
+        let inner = engeom::Iso3::try_from_array(&array)
             .map_err(|e| PyValueError::new_err(format!("Error creating Iso3: {}", e)))?;
 
         Ok(Self { inner })
@@ -756,6 +764,84 @@ impl Iso3 {
         Self {
             inner: self.inner.flip_around_z(),
         }
+    }
+
+    #[staticmethod]
+    #[pyo3(signature=(e0, e1, origin=None))]
+    fn from_basis_xy(e0: &Vector3, e1: &Vector3, origin: Option<Point3>) -> PyResult<Iso3> {
+        let iso = engeom::Iso3::try_from_basis_xy(
+            e0.get_inner(),
+            e1.get_inner(),
+            origin.map(|p| *p.get_inner()),
+        )
+        .map_err(|e| PyValueError::new_err(format!("Error creating Iso3: {}", e)))?;
+
+        Ok(Self { inner: iso })
+    }
+
+    #[staticmethod]
+    #[pyo3(signature=(e0, e2, origin=None))]
+    fn from_basis_xz(e0: &Vector3, e2: &Vector3, origin: Option<Point3>) -> PyResult<Iso3> {
+        let iso = engeom::Iso3::try_from_basis_xz(
+            e0.get_inner(),
+            e2.get_inner(),
+            origin.map(|p| *p.get_inner()),
+        )
+        .map_err(|e| PyValueError::new_err(format!("Error creating Iso3: {}", e)))?;
+
+        Ok(Self { inner: iso })
+    }
+
+    #[staticmethod]
+    #[pyo3(signature=(e1, e2, origin=None))]
+    fn from_basis_yz(e1: &Vector3, e2: &Vector3, origin: Option<Point3>) -> PyResult<Iso3> {
+        let iso = engeom::Iso3::try_from_basis_yz(
+            e1.get_inner(),
+            e2.get_inner(),
+            origin.map(|p| *p.get_inner()),
+        )
+        .map_err(|e| PyValueError::new_err(format!("Error creating Iso3: {}", e)))?;
+
+        Ok(Self { inner: iso })
+    }
+
+    #[staticmethod]
+    #[pyo3(signature=(e1, e0, origin=None))]
+    fn from_basis_yx(e1: &Vector3, e0: &Vector3, origin: Option<Point3>) -> PyResult<Iso3> {
+        let iso = engeom::Iso3::try_from_basis_yx(
+            e1.get_inner(),
+            e0.get_inner(),
+            origin.map(|p| *p.get_inner()),
+        )
+        .map_err(|e| PyValueError::new_err(format!("Error creating Iso3: {}", e)))?;
+
+        Ok(Self { inner: iso })
+    }
+
+    #[staticmethod]
+    #[pyo3(signature=(e2, e0, origin=None))]
+    fn from_basis_zx(e2: &Vector3, e0: &Vector3, origin: Option<Point3>) -> PyResult<Iso3> {
+        let iso = engeom::Iso3::try_from_basis_zx(
+            e2.get_inner(),
+            e0.get_inner(),
+            origin.map(|p| *p.get_inner()),
+        )
+        .map_err(|e| PyValueError::new_err(format!("Error creating Iso3: {}", e)))?;
+
+        Ok(Self { inner: iso })
+    }
+
+    #[staticmethod]
+    #[pyo3(signature=(e2, e1, origin=None))]
+    fn from_basis_zy(e2: &Vector3, e1: &Vector3, origin: Option<Point3>) -> PyResult<Iso3> {
+        let iso = engeom::Iso3::try_from_basis_zy(
+            e2.get_inner(),
+            e1.get_inner(),
+            origin.map(|p| *p.get_inner()),
+        )
+        .map_err(|e| PyValueError::new_err(format!("Error creating Iso3: {}", e)))?;
+
+        Ok(Self { inner: iso })
     }
 
     fn transform_points<'py>(

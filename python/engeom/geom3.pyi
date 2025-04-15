@@ -260,6 +260,13 @@ class Point3(Iterable[float]):
         """
         ...
 
+    @staticmethod
+    def mid(a: Point3, b: Point3) -> Point3:
+        """
+        Return the midpoint between two points. This is the average of the x, y, and z coordinates of the two points.
+        """
+        ...
+
 
 class SurfacePoint3:
     """
@@ -386,6 +393,15 @@ class SurfacePoint3:
     def __neg__(self) -> SurfacePoint3:
         """
         Invert both the position AND the normal vector of the surface point.
+        """
+        ...
+
+    def shift(self, offset: float) -> SurfacePoint3:
+        """
+        Return a new surface point with the position shifted by the specified distance along the normal vector. The
+        normal vector is unchanged.
+        :param offset: the distance to shift the position by along the normal vector.
+        :return:
         """
         ...
 
@@ -518,6 +534,114 @@ class Iso3:
         Return a new isometry that flips the isometry 180° around the z-axis. The origin of the isometry will be
         preserved, but the x and y axes will point in the opposite directions.
         :return: a new isometry that is the result of the flip.
+        """
+        ...
+
+    @staticmethod
+    def from_basis_xy(e0: Vector3, e1: Vector3, origin: Point3 | None = None) -> Iso3:
+        """
+        Create an isometry from two vectors defining the X and Y axes.
+
+        This method creates an isometry where:
+        - The X axis aligns with e0 (normalized)
+        - The Y axis aligns with e1 (normalized and adjusted to be orthogonal to e0)
+        - The Z axis is calculated as the cross product of X and Y
+
+        :param e0: Vector defining the X axis direction
+        :param e1: Vector defining the approximate Y axis direction (will be orthogonalized)
+        :param origin: Optional point to use as the origin of the isometry (defaults to world origin)
+        :return: A new Iso3 representing the coordinate system
+        :raises: ValueError if the vectors are parallel or too small to create a valid basis
+        """
+        ...
+
+    @staticmethod
+    def from_basis_xz(e0: Vector3, e2: Vector3, origin: Point3 | None = None) -> Iso3:
+        """
+        Create an isometry from two vectors defining the X and Z axes.
+
+        This method creates an isometry where:
+        - The X axis aligns with e0 (normalized)
+        - The Z axis aligns with e2 (normalized and adjusted to be orthogonal to e0)
+        - The Y axis is calculated as the cross product of Z and X
+
+        :param e0: Vector defining the X axis direction
+        :param e2: Vector defining the approximate Z axis direction (will be orthogonalized)
+        :param origin: Optional point to use as the origin of the isometry (defaults to world origin)
+        :return: A new Iso3 representing the coordinate system
+        :raises: ValueError if the vectors are parallel or too small to create a valid basis
+        """
+        ...
+
+    @staticmethod
+    def from_basis_yz(e1: Vector3, e2: Vector3, origin: Point3 | None = None) -> Iso3:
+        """
+        Create an isometry from two vectors defining the Y and Z axes.
+
+        This method creates an isometry where:
+        - The Y axis aligns with e1 (normalized)
+        - The Z axis aligns with e2 (normalized and adjusted to be orthogonal to e1)
+        - The X axis is calculated as the cross product of Y and Z
+
+        :param e1: Vector defining the Y axis direction
+        :param e2: Vector defining the approximate Z axis direction (will be orthogonalized)
+        :param origin: Optional point to use as the origin of the isometry (defaults to world origin)
+        :return: A new Iso3 representing the coordinate system
+        :raises: ValueError if the vectors are parallel or too small to create a valid basis
+        """
+        ...
+
+    @staticmethod
+    def from_basis_yx(e1: Vector3, e0: Vector3, origin: Point3 | None = None) -> Iso3:
+        """
+        Create an isometry from two vectors defining the Y and X axes.
+
+        This method creates an isometry where:
+        - The Y axis aligns with e1 (normalized)
+        - The X axis aligns with e0 (normalized and adjusted to be orthogonal to e1)
+        - The Z axis is calculated as the cross product of X and Y
+
+        :param e1: Vector defining the Y axis direction
+        :param e0: Vector defining the approximate X axis direction (will be orthogonalized)
+        :param origin: Optional point to use as the origin of the isometry (defaults to world origin)
+        :return: A new Iso3 representing the coordinate system
+        :raises: ValueError if the vectors are parallel or too small to create a valid basis
+        """
+        ...
+
+    @staticmethod
+    def from_basis_zx(e2: Vector3, e0: Vector3, origin: Point3 | None = None) -> Iso3:
+        """
+        Create an isometry from two vectors defining the Z and X axes.
+
+        This method creates an isometry where:
+        - The Z axis aligns with e2 (normalized)
+        - The X axis aligns with e0 (normalized and adjusted to be orthogonal to e2)
+        - The Y axis is calculated as the cross product of Z and X
+
+        :param e2: Vector defining the Z axis direction
+        :param e0: Vector defining the approximate X axis direction (will be orthogonalized)
+        :param origin: Optional point to use as the origin of the isometry (defaults to world origin)
+        :return: A new Iso3 representing the coordinate system
+        :raises: ValueError if the vectors are parallel or too small to create a valid basis
+        """
+        ...
+
+    @staticmethod
+    def from_basis_zy(e2: Vector3, e1: Vector3, origin: Point3 | None = None) -> Iso3:
+        """
+        Create an isometry from two vectors defining the Z and Y axes.
+
+        This method creates an isometry where:
+        - The Z axis aligns with e2 (normalized)
+        - The Y axis aligns with e1 (normalized and adjusted to be orthogonal to e2)
+        - The X axis is calculated as the cross product of Y and Z
+
+        :param e2: Vector defining the Z axis direction
+        :param e1: Vector defining the approximate Y axis direction (will be orthogonalized)
+        :param origin: Optional point to use as the origin of the isometry (defaults to world origin)
+        :return: A new Iso3 representing the coordinate system
+        :raises: ValueError if the vectors are parallel or too small to create a valid basis
         """
         ...
 
@@ -981,6 +1105,33 @@ class Mesh:
         and included in the outline. If None, the default value is 45 degrees.
         :return: a tuple of two numpy arrays. The first array is the outline edges, and the second array is a mask
         indicating whether the edge is obstructed or not.
+        """
+        ...
+
+    @staticmethod
+    def create_box(width: float, height: float, depth: float) -> Mesh:
+        """
+        Creates a box with the corner at the origin and the specified width, height, and depth all positive.
+
+        :param width:
+        :param height:
+        :param depth:
+        :return:
+        """
+        ...
+
+    @staticmethod
+    def create_cylinder(radius: float, height: float, steps: int) -> Mesh:
+        """
+        Creates a cylinder with a radius and height. The cylinder will be centered at the origin and oriented along the
+        Z-axis. The bottom of the cylinder will be at Z = 0 and the top will be at Z = height. The cylinder will be
+        created with a number of steps around the circumference, which will determine the number of vertices used to
+        create the cylinder. The number of steps should be at least 3. The first set of vertices will be at X = radius,
+        Y = 0.
+        :param radius:
+        :param height:
+        :param steps:
+        :return:
         """
         ...
 

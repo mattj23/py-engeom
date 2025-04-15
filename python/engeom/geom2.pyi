@@ -236,6 +236,13 @@ class Point2(Iterable[float]):
         """
         ...
 
+    @staticmethod
+    def mid(a: Point2, b: Point2) -> Point2:
+        """
+        Return the midpoint between two points. This is the average of the x and y components of the two points.
+        """
+        ...
+
 
 class SurfacePoint2:
     """
@@ -374,6 +381,23 @@ class SurfacePoint2:
     def __neg__(self) -> SurfacePoint2:
         """
         Invert both the position AND the normal vector of the surface point.
+        """
+        ...
+
+    def offset(self, offset: Vector2) -> SurfacePoint2:
+        """
+        Offset the surface point by a given vector. The normal vector is not affected.
+        :param offset: the vector to offset the surface point by.
+        :return: a new surface point with the position offset by the given vector.
+        """
+        ...
+
+    def shift(self, distance: float) -> SurfacePoint2:
+        """
+        Shift the surface point by a given distance along the normal vector. The position of the surface point is
+        affected, but the normal vector is not.
+        :param distance: the distance to shift the surface point.
+        :return: a new surface point with the position shifted by the given distance.
         """
         ...
 
@@ -852,6 +876,14 @@ class Curve2:
         """
         Convert the curve to a 3D curve by adding a z-coordinate of 0 to all points.
         :return: a new `Curve3` object representing the curve in 3D space.
+        """
+        ...
+
+    @property
+    def aabb(self) -> Aabb2:
+        """
+        Get the axis-aligned bounding box of the curve.
+        :return: the axis-aligned bounding box of the curve.
         """
         ...
 

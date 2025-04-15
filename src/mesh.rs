@@ -333,6 +333,18 @@ impl Mesh {
             .map(|indices| self.create_from_indices(indices))
             .collect()
     }
+
+    #[staticmethod]
+    fn create_box(width: f64, height: f64, depth: f64) -> Self {
+        let mesh = engeom::Mesh::create_box(width, height, depth, false);
+        Self::from_inner(mesh)
+    }
+
+    #[staticmethod]
+    fn create_cylinder(radius: f64, height: f64, steps: usize) -> Self {
+        let mesh = engeom::Mesh::create_cylinder(radius, height, steps);
+        Self::from_inner(mesh)
+    }
 }
 
 #[pyclass]

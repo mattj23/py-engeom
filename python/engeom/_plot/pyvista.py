@@ -40,6 +40,25 @@ else:
             """
             self.plotter = plotter
 
+        def add_points(self, *points, color: pyvista.ColorLike = "b", point_size: float = 5.0,
+                       render_points_as_spheres: bool = True, **kwargs) -> pyvista.vtkActor:
+            """
+            Add one or more points to be plotted.
+            :param points: The points to add.
+            :param color: The color to use for the point(s).
+            :param point_size: The size of the point(s).
+            :param render_points_as_spheres: Whether to render the points as spheres or not.
+            :param kwargs: Additional keyword arguments to pass to the PyVista `Plotter.add_points` method.
+            :return: The PyVista actor that was added to the plotter.
+            """
+            return self.plotter.add_points(
+                numpy.array([_tuplefy(p) for p in points], dtype=numpy.float64),
+                color=color,
+                point_size=point_size,
+                render_points_as_spheres=render_points_as_spheres,
+                **kwargs
+            )
+
         def add_curves(
                 self,
                 *curves: Curve3,

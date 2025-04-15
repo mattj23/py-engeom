@@ -1,6 +1,7 @@
 use crate::bounding::Aabb2;
 use crate::common::Resample;
 use crate::conversions::{array_to_points2, array_to_vectors2, points_to_array2};
+use crate::geom3::Point3;
 use engeom::geom2::{HasBounds2, Line2};
 use engeom::To3D;
 use numpy::ndarray::{Array1, ArrayD};
@@ -237,6 +238,14 @@ impl Point2 {
     fn __repr__(&self) -> String {
         format!("Point2({}, {})", self.inner.x, self.inner.y)
     }
+
+    #[staticmethod]
+    fn mid(a: Point2, b: Point2) -> Self {
+        Self::from_inner(engeom::common::points::mid_point(
+            a.get_inner(),
+            b.get_inner(),
+        ))
+    }
 }
 
 // ================================================================================================
@@ -345,6 +354,10 @@ impl SurfacePoint2 {
 
     fn rot_normal(&self, angle: f64) -> Self {
         Self::from_inner(self.inner.rot_normal(angle))
+    }
+
+    fn shift(&self, distance: f64) -> Self {
+        Self::from_inner(self.inner.shift(distance))
     }
 }
 
