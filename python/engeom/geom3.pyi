@@ -537,6 +537,45 @@ class Iso3:
         """
         ...
 
+    def translation(self) -> Iso3:
+        """
+        Return the translation component of the isometry as a separate isometry.
+        """
+        ...
+
+    def rotation(self) -> Iso3:
+        """
+        Return the rotation component of the isometry as a separate isometry.
+        """
+        ...
+
+    @staticmethod
+    def from_rx(angle: float) -> Iso3:
+        """
+        Create an isometry representing a rotation around the x-axis by the specified angle in radians.
+        :param angle: the angle to rotate by in radians.
+        :return: an isometry containing only a rotation component
+        """
+        ...
+
+    @staticmethod
+    def from_ry(angle: float) -> Iso3:
+        """
+        Create an isometry representing a rotation around the y-axis by the specified angle in radians.
+        :param angle: the angle to rotate by in radians.
+        :return: an isometry containing only a rotation component
+        """
+        ...
+
+    @staticmethod
+    def from_rz(angle: float) -> Iso3:
+        """
+        Create an isometry representing a rotation around the z-axis by the specified angle in radians.
+        :param angle: the angle to rotate by in radians.
+        :return: an isometry containing only a rotation component
+        """
+        ...
+
     @staticmethod
     def from_basis_xy(e0: Vector3, e1: Vector3, origin: Point3 | None = None) -> Iso3:
         """

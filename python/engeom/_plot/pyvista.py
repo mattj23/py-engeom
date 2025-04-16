@@ -223,12 +223,12 @@ else:
             points = numpy.array([[0, 0, 0], [size, 0, 0], [0, size, 0], [0, 0, size]], dtype=numpy.float64)
             points = iso.transform_points(points)
 
-            self.plotter.add_lines(points[[0, 1]], color="red", width=line_width)
-            self.plotter.add_lines(points[[0, 2]], color="green", width=line_width)
-            self.plotter.add_lines(points[[0, 3]], color="blue", width=line_width)
+            actors = [self.plotter.add_lines(points[[0, 1]], color="red", width=line_width),
+                      self.plotter.add_lines(points[[0, 2]], color="green", width=line_width),
+                      self.plotter.add_lines(points[[0, 3]], color="blue", width=line_width)]
 
             if label:
-                self.plotter.add_point_labels(
+                actors.append(self.plotter.add_point_labels(
                     [points[0]],
                     [label],
                     show_points=False,
@@ -236,7 +236,9 @@ else:
                     font_family="courier",
                     font_size=label_size,
                     bold=False,
-                )
+                ))
+
+            return actors
 
         def label(self, point: PlotCoords, text: str, **kwargs):
             """

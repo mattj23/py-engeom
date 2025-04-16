@@ -3,6 +3,7 @@ use crate::conversions::{array_to_points3, array_to_vectors3, points_to_array3};
 use engeom::geom3::IsoExtensions3;
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
+use parry3d_f64::na::{Translation3, UnitQuaternion};
 use pyo3::exceptions::PyValueError;
 use pyo3::types::PyIterator;
 use pyo3::{
@@ -766,6 +767,18 @@ impl Iso3 {
         }
     }
 
+    fn translation(&self) -> Iso3 {
+        Self {
+            inner: engeom::Iso3::from_parts(self.inner.translation, UnitQuaternion::identity())
+        }
+    }
+
+    fn rotation(&self) -> Iso3 {
+        Self {
+            inner: engeom::Iso3::from_parts(Translation3::identity(), self.inner.rotation)
+        }
+    }
+
     #[staticmethod]
     #[pyo3(signature=(e0, e1, origin=None))]
     fn from_basis_xy(e0: &Vector3, e1: &Vector3, origin: Option<Point3>) -> PyResult<Iso3> {
@@ -842,6 +855,21 @@ impl Iso3 {
         .map_err(|e| PyValueError::new_err(format!("Error creating Iso3: {}", e)))?;
 
         Ok(Self { inner: iso })
+    }
+
+    #[staticmethod]
+    fn from_rx(angle: f64) -> Self {
+        Self::from_inner(engeom::Iso3::from_rx(angle))
+    }
+
+    #[staticmethod]
+    fn from_ry(angle: f64) -> Self {
+        Self::from_inner(engeom::Iso3::from_ry(angle))
+    }
+
+    #[staticmethod]
+    fn from_rz(angle: f64) -> Self {
+        Self::from_inner(engeom::Iso3::from_rz(angle))
     }
 
     fn transform_points<'py>(

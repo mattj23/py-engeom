@@ -6,6 +6,7 @@ use numpy::{IntoPyArray, PyArrayDyn, PyReadonlyArrayDyn};
 use numpy::ndarray::ArrayD;
 use pyo3::exceptions::PyValueError;
 use pyo3::{pyclass, pymethods, Bound, PyResult, Python};
+use crate::conversions::points_to_array3;
 
 #[pyclass]
 #[derive(Clone)]
@@ -62,15 +63,7 @@ impl LaserLine {
         let result = self
             .inner
             .get_points(target.get_inner(), obstruction.map(|o| o.get_inner()), iso.get_inner());
-
-        let mut result_array = ArrayD::zeros(vec![result.len(), 3]);
-        for (i, point) in result.iter().enumerate() {
-            result_array[[i, 0]] = point.x;
-            result_array[[i, 1]] = point.y;
-            result_array[[i, 2]] = point.z;
-        }
-
-        Ok(result_array.into_pyarray(py))
+        Ok(points_to_array3(&result).into_pyarray(py))
     }
 }
 
@@ -119,17 +112,6 @@ impl PanningLaserLine {
         let result = self
             .inner
             .get_points(target.get_inner(), obstruction.map(|o| o.get_inner()), iso.get_inner());
-
-        // let duration = start.elapsed();
-        // println!("Time taken: {:?}", duration);
-
-        let mut result_array = ArrayD::zeros(vec![result.len(), 3]);
-        for (i, point) in result.iter().enumerate() {
-            result_array[[i, 0]] = point.x;
-            result_array[[i, 1]] = point.y;
-            result_array[[i, 2]] = point.z;
-        }
-
-        Ok(result_array.into_pyarray(py))
+        Ok(points_to_array3(&result).into_pyarray(py))
     }
 }
