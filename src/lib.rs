@@ -10,6 +10,7 @@ mod metrology;
 mod raster;
 mod ray_casting;
 mod svd_basis;
+mod sensor;
 
 use pyo3::prelude::*;
 
@@ -102,6 +103,15 @@ fn register_raster3_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> 
     parent_module.add_submodule(&child)
 }
 
+fn register_sensor_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
+    let child = PyModule::new(parent_module.py(), "_sensor")?;
+
+    child.add_class::<sensor::LaserLine>()?;
+    child.add_class::<sensor::PanningLaserLine>()?;
+
+    parent_module.add_submodule(&child)
+}
+
 /// Engeom is a library for geometric operations in 2D and 3D space.
 #[pymodule(name = "engeom")]
 fn py_engeom(m: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -122,6 +132,9 @@ fn py_engeom(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // Metrology submodule
     register_metrology_module(m)?;
+
+    // Sensor submodule
+    register_sensor_module(m)?;
 
     // Common features and primitives
     m.add_class::<common::DeviationMode>()?;

@@ -98,9 +98,6 @@ impl RayBundle3 {
             }
         }
 
-        // let result = ArrayD::from_shape_vec((result.len(), 3), result.into_iter().flat_map(|p| p.to_array()).collect())
-        //     .map_err(|_| PyValueError::new_err("Failed to create array"))?;
-
         let mut result_array = ArrayD::zeros(vec![result.len(), 3]);
         for (i, point) in result.iter().enumerate() {
             result_array[[i, 0]] = point.x;
