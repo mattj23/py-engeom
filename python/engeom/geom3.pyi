@@ -1250,6 +1250,51 @@ class FaceFilterHandle:
         ...
 
 
+class MeshCollisionSet:
+    """
+    A class holding a set of meshes for collision detection. This class is used to perform collision detection between
+    a set of moving and stationary meshes in 3D space.
+    """
+
+    def __init__(self):
+        """
+        Creates an empty collision set.
+        """
+        ...
+
+    def add_stationary(self, mesh: Mesh) -> int:
+        """
+        Add a stationary mesh to the collision set. This mesh will be used as a reference for collision detection.
+        :param mesh: the mesh to add to the collision set.
+        :return: the ID of the mesh in the collision set.
+        """
+        ...
+
+    def add_moving(self, mesh: Mesh) -> int:
+        """
+        Add a moving mesh to the collision set. This mesh will be used to check for collisions against the stationary
+        meshes in the set.
+        :param mesh: the mesh to add to the collision set.
+        :return: the ID of the mesh in the collision set.
+        """
+        ...
+
+    def add_exception(self, id1: int, id2: int):
+        """
+        Add an exception to the collision set. This will prevent the two meshes from being checked for collisions.
+        :param id1: the ID of the first mesh.
+        :param id2: the ID of the second mesh.
+        """
+        ...
+
+    def check_all(self, transforms: List[Tuple[int, Iso3]], stop_at_first: bool) -> List[Tuple[int, int]]:
+        """
+        Check all moving meshes against all stationary meshes for collisions. This will return a list of tuples
+        containing the IDs of the two meshes that are colliding.
+        :return: a list of tuples containing the IDs of the colliding meshes.
+        """
+        ...
+
 class CurveStation3:
     """
     A class representing a station along a curve in 3D space. The station is represented by a point on the curve, a

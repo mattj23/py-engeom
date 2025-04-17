@@ -420,3 +420,56 @@ impl FaceFilterHandle {
             .create_from_indices(self.indices.clone())
     }
 }
+
+#[pyclass]
+pub struct MeshCollisionSet {
+    inner: engeom::geom3::MeshCollisionSet,
+}
+
+impl MeshCollisionSet {
+    pub fn get_inner(&self) -> &engeom::geom3::MeshCollisionSet {
+        &self.inner
+    }
+
+    pub fn from_inner(inner: engeom::geom3::MeshCollisionSet) -> Self {
+        Self { inner }
+    }
+}
+
+#[pymethods]
+impl MeshCollisionSet {
+    #[new]
+    fn new() -> Self {
+        Self::from_inner(engeom::geom3::MeshCollisionSet::new())
+    }
+
+    fn add_stationary(&mut self, mesh: &Mesh) -> usize {
+        let inner = mesh.inner.clone();
+        self.inner.add_stationary(inner)
+    }
+    
+    fn add_moving(&mut self, mesh: &Mesh) -> usize {
+        let inner = mesh.inner.clone();
+        self.inner.add_moving(inner)
+    }
+    
+    fn add_exception(&mut self, id1: usize, id2: usize) {
+        self.inner.add_exception(id1, id2);
+    }
+
+    fn check_all(
+        &self,
+        transforms: Vec<(usize, Iso3)>,
+        stop_at_first: bool,
+    ) -> PyResult<Vec<(usize, usize)>> {
+        let transforms = transforms
+            .into_iter()
+            .map(|(id, iso)| (id, iso.get_inner().clone()))
+            .collect::<Vec<_>>();
+        
+        let result = self.inner.check_all(&transforms, stop_at_first)
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+        
+        Ok(result)
+    }
+}
