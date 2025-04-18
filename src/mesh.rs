@@ -334,6 +334,10 @@ impl Mesh {
             .collect()
     }
 
+    fn convex_hull(&self) -> Self {
+        Self::from_inner(self.inner.convex_hull())
+    }
+
     #[staticmethod]
     fn create_box(width: f64, height: f64, depth: f64) -> Self {
         let mesh = engeom::Mesh::create_box(width, height, depth, false);

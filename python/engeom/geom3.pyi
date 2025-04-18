@@ -1147,6 +1147,15 @@ class Mesh:
         """
         ...
 
+    def convex_hull(self) -> Mesh:
+        """
+        Calculate the convex hull of the mesh. The convex hull is the smallest convex shape that contains all the
+        vertices of the mesh. This will return a new mesh object containing the vertices and triangles of the convex
+        hull. This method will not modify the original mesh.
+        :return: a new mesh object containing the convex hull of the original mesh.
+        """
+        ...
+
     @staticmethod
     def create_box(width: float, height: float, depth: float) -> Mesh:
         """
