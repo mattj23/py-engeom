@@ -614,6 +614,74 @@ impl From<engeom::CurveStation3<'_>> for CurveStation3 {
 // Transformations
 // ================================================================================================
 
+#[pyclass]
+#[derive(Clone, Debug)]
+pub struct XyzWpr {
+    inner: engeom::geom3::XyzWpr,
+}
+
+impl XyzWpr {
+    pub fn get_inner(&self) -> &engeom::geom3::XyzWpr {
+        &self.inner
+    }
+
+    pub fn from_inner(inner: engeom::geom3::XyzWpr) -> Self {
+        Self { inner }
+    }
+}
+
+// #[pymethods]
+// impl XyzWpr {
+//     #[new]
+//     fn new(x: f64, y: f64, z: f64, w: f64, p: f64, r: f64) -> Self {
+//         Self {
+//             inner: engeom::geom3::XyzWpr::new(x, y, z, w, p, r),
+//         }
+//     }
+//
+//     #[getter]
+//     fn values(&self) -> Vec<f64> {
+//         vec![
+//             self.inner.x,
+//             self.inner.y,
+//             self.inner.z,
+//             self.inner.w,
+//             self.inner.p,
+//             self.inner.r,
+//         ]
+//     }
+//
+//     #[getter]
+//     fn x(&self) -> f64 {
+//         self.inner.x
+//     }
+//
+//     #[getter]
+//     fn y(&self) -> f64 {
+//         self.inner.y
+//     }
+//
+//     #[getter]
+//     fn z(&self) -> f64 {
+//         self.inner.z
+//     }
+//
+//     #[getter]
+//     fn w(&self) -> f64 {
+//         self.inner.w
+//     }
+//
+//     #[getter]
+//     fn p(&self) -> f64 {
+//         self.inner.p
+//     }
+//
+//     #[getter]
+//     fn r(&self) -> f64 {
+//         self.inner.r
+//     }
+// }
+
 #[derive(FromPyObject)]
 enum Transformable3 {
     Iso(Iso3),
@@ -652,6 +720,27 @@ impl Iso3 {
             self.inner.rotation.k,
             self.inner.rotation.w,
         )
+    }
+
+    #[getter]
+    fn origin(&self) -> Point3 {
+        Point3::from_inner(engeom::Point3::new(
+            self.inner.translation.x,
+            self.inner.translation.y,
+            self.inner.translation.z,
+        ))
+    }
+
+    #[staticmethod]
+    fn from_xyzwpr(x: f64, y: f64, z: f64, w: f64, p: f64, r: f64) -> Self {
+        Self {
+            inner: engeom::geom3::XyzWpr::new(x, y, z, w, p, r).to_isometry(),
+        }
+    }
+
+    fn to_xyzwpr(&self) -> Vec<f64> {
+        let v = engeom::geom3::XyzWpr::from_isometry(&self.inner);
+        vec![v.x, v.y, v.z, v.w, v.p, v.r]
     }
 
     #[new]
@@ -769,13 +858,13 @@ impl Iso3 {
 
     fn translation(&self) -> Iso3 {
         Self {
-            inner: engeom::Iso3::from_parts(self.inner.translation, UnitQuaternion::identity())
+            inner: engeom::Iso3::from_parts(self.inner.translation, UnitQuaternion::identity()),
         }
     }
 
     fn rotation(&self) -> Iso3 {
         Self {
-            inner: engeom::Iso3::from_parts(Translation3::identity(), self.inner.rotation)
+            inner: engeom::Iso3::from_parts(Translation3::identity(), self.inner.rotation),
         }
     }
 

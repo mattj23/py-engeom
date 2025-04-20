@@ -461,6 +461,29 @@ class Iso3:
         """
         ...
 
+    @staticmethod
+    def from_xyzwpr(x: float, y: float, z: float, w: float, p: float, r: float) -> Iso3:
+        """
+        Create an isometry from the specified translation and rotation angles in yaw, pitch, and roll format, following
+        the convention typically used in robotics. The angles are specified in degrees.
+        :param x:
+        :param y:
+        :param z:
+        :param w:
+        :param p:
+        :param r:
+        :return:
+        """
+        ...
+
+    def to_xyzwpr(self) -> List[float]:
+        """
+        Convert the isometry to a list of translation and rotation angles in yaw, pitch, and roll format, following the
+        convention typically used in robotics. The angles are returned in degrees.
+        :return: a list of 6 floats representing the translation and rotation angles.
+        """
+        ...
+
     def __matmul__(self, other: Transformable3) -> Transformable3:
         """
         Multiply another object by the isometry, transforming it and returning a new object of the same type.
@@ -534,6 +557,14 @@ class Iso3:
         Return a new isometry that flips the isometry 180° around the z-axis. The origin of the isometry will be
         preserved, but the x and y axes will point in the opposite directions.
         :return: a new isometry that is the result of the flip.
+        """
+        ...
+
+    @property
+    def origin(self) -> Point3:
+        """
+        Get the origin of the isometry as a Point3 object.
+        :return: a Point3 object representing the origin of the isometry.
         """
         ...
 
@@ -1157,14 +1188,14 @@ class Mesh:
         ...
 
     @staticmethod
-    def create_box(width: float, height: float, depth: float) -> Mesh:
+    def create_box(length: float, width: float, height: float) -> Mesh:
         """
-        Creates a box with the corner at the origin and the specified width, height, and depth all positive.
+        Creates a box with the center at the origin and the specified length, width, and height
 
-        :param width:
-        :param height:
-        :param depth:
-        :return:
+        :param length: the size of the box along the X-axis
+        :param width: the size of the box along the Y-axis
+        :param height: the size of the box along the Z-axis
+        :return: a new `Mesh` object representing the box
         """
         ...
 
@@ -1172,14 +1203,91 @@ class Mesh:
     def create_cylinder(radius: float, height: float, steps: int) -> Mesh:
         """
         Creates a cylinder with a radius and height. The cylinder will be centered at the origin and oriented along the
-        Z-axis. The bottom of the cylinder will be at Z = 0 and the top will be at Z = height. The cylinder will be
-        created with a number of steps around the circumference, which will determine the number of vertices used to
-        create the cylinder. The number of steps should be at least 3. The first set of vertices will be at X = radius,
-        Y = 0.
-        :param radius:
-        :param height:
-        :param steps:
-        :return:
+        Y-axis.
+
+        :param radius: the radius of the cylinder
+        :param height: the size of the cylinder along the Y-axis
+        :param steps: the number of subdivisions to create vertices around the cylinder. The more steps the smoother the
+        cylinder will be.
+        :return: a new `Mesh` object representing the cylinder
+        """
+        ...
+
+    @staticmethod
+    def create_sphere(radius: float, n_theta: int, n_phi: int) -> Mesh:
+        """
+        Creates a sphere with a radius. The sphere will be centered at the origin. The step counts `n_theta` and `n_phi`
+        will determine the smoothness of the sphere in the radial (n_theta) and polar (n_phi) directions. The poles
+        will be located at Y=+radius and Y=-radius, and the equator will lie in the XZ plane.
+
+        :param radius: the radius of the sphere
+        :param n_theta: the number of subdivisions to create vertices around the sphere in the theta direction
+        :param n_phi: the number of subdivisions to create vertices around the sphere in the phi direction
+        :return: a new `Mesh` object representing the sphere
+        """
+        ...
+
+    @staticmethod
+    def create_cone(radius: float, height: float, steps: int) -> Mesh:
+        """
+        Creates a cone with a radius and height. The cone will be centered at the origin and oriented so that the
+        point of the cone is located at Y=height/2 and the base is located at Y=-height/2.
+
+        :param radius: the radius of the base of the cone
+        :param height: the size of the cone along the Y-axis
+        :param steps: the number of subdivisions to create vertices around the cone. The more steps the smoother the
+        cone will be.
+        :return: a new `Mesh` object representing the cone
+        """
+        ...
+
+    @staticmethod
+    def create_capsule(p0: Point3, p1: Point3, radius: float, n_theta: int, n_phi: int) -> Mesh:
+        """
+        Creates a capsule shape between two points with a specified radius. The capsule will be centered between the two
+        points and oriented along the line connecting them. The step counts `n_theta` and `n_phi` will determine the
+        smoothness of the sphere in the radial (n_theta) and polar (n_phi) directions.
+
+        :param p0: the first point of the capsule
+        :param p1: the second point of the capsule
+        :param radius: the radius of the capsule
+        :param n_theta: the number of subdivisions to create vertices around the sphere in the theta direction
+        :param n_phi: the number of subdivisions to create vertices around the sphere in the phi direction
+        :return: a new `Mesh` object representing the capsule
+        """
+        ...
+
+    @staticmethod
+    def create_cylinder_between(p0: Point3, p1: Point3, radius: float, steps: int) -> Mesh:
+        """
+        Creates a cylinder between two points with a specified radius. The cylinder will be centered between the two
+        points and oriented along the line connecting them.
+
+        :param p0: the first point of the cylinder
+        :param p1: the second point of the cylinder
+        :param radius: the radius of the cylinder
+        :param steps: the number of subdivisions to create vertices around the cylinder. The more steps the smoother the
+        cylinder will be.
+        :return: a new `Mesh` object representing the cylinder
+        """
+        ...
+
+    @staticmethod
+    def create_rect_beam_between(p0: Point3, p1: Point3, width: float, height: float, up: Vector3 | None = None) -> Mesh:
+        """
+        Create a rectangular cross-sectioned prism between two points with a specified width and height. The prism will
+        be centered between the two points and oriented along the line connecting them. The up vector's projection onto
+        the line connecting the two end points will determine the direction of the height of the prism. If None, the
+        height will be aligned with the projection of the Z-axis.
+
+        If the up vector is parallel to the line connecting the two points, an error will be thrown.
+
+        :param p0: the first point of the prism
+        :param p1: the second point of the prism
+        :param width: the width of the prism
+        :param height: the height of the prism
+        :param up: the up vector to use for the height direction. If None, the Z-axis will be used
+        :return: a new `Mesh` object representing the prism
         """
         ...
 
@@ -1303,6 +1411,7 @@ class MeshCollisionSet:
         :return: a list of tuples containing the IDs of the colliding meshes.
         """
         ...
+
 
 class CurveStation3:
     """

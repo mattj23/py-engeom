@@ -3,7 +3,7 @@ use crate::common::{DeviationMode, SelectOp};
 use crate::conversions::{
     array_to_faces, array_to_points3, faces_to_array, points_to_array3, vectors_to_array3,
 };
-use crate::geom3::{Curve3, Iso3, Plane3, SurfacePoint3, Vector3};
+use crate::geom3::{Curve3, Iso3, Plane3, Point3, SurfacePoint3, Vector3};
 use crate::metrology::Distance3;
 use engeom::common::points::dist;
 use engeom::common::{Selection, SplitResult};
@@ -23,6 +23,13 @@ pub struct Mesh {
 }
 
 impl Mesh {
+    fn clear_cached(&mut self) {
+        self.vertices = None;
+        self.faces = None;
+        self.face_normals = None;
+        self.vertex_normals = None;
+    }
+
     pub fn get_inner(&self) -> &engeom::Mesh {
         &self.inner
     }
@@ -86,9 +93,7 @@ impl Mesh {
     fn transform_by(&mut self, iso: &Iso3) {
         self.inner.transform(iso.get_inner());
 
-        self.vertices = None;
-        self.face_normals = None;
-        self.vertex_normals = None;
+        self.clear_cached()
     }
 
     fn surface_closest_to(&self, x: f64, y: f64, z: f64) -> SurfacePoint3 {
@@ -97,6 +102,7 @@ impl Mesh {
     }
 
     fn append(&mut self, other: &Mesh) -> PyResult<()> {
+        self.clear_cached();
         self.inner
             .append(&other.inner)
             .map_err(|e| PyValueError::new_err(e.to_string()))
@@ -339,8 +345,8 @@ impl Mesh {
     }
 
     #[staticmethod]
-    fn create_box(width: f64, height: f64, depth: f64) -> Self {
-        let mesh = engeom::Mesh::create_box(width, height, depth, false);
+    fn create_box(length: f64, width: f64, height: f64) -> Self {
+        let mesh = engeom::Mesh::create_box(length, width, height, true);
         Self::from_inner(mesh)
     }
 
@@ -348,6 +354,58 @@ impl Mesh {
     fn create_cylinder(radius: f64, height: f64, steps: usize) -> Self {
         let mesh = engeom::Mesh::create_cylinder(radius, height, steps);
         Self::from_inner(mesh)
+    }
+
+    #[staticmethod]
+    fn create_sphere(radius: f64, n_theta: usize, n_phi: usize) -> Self {
+        let mesh = engeom::Mesh::create_sphere(radius, n_theta, n_phi);
+        Self::from_inner(mesh)
+    }
+
+    #[staticmethod]
+    fn create_cone(radius: f64, height: f64, steps: usize) -> Self {
+        let mesh = engeom::Mesh::create_cone(radius, height, steps);
+        Self::from_inner(mesh)
+    }
+
+    #[staticmethod]
+    fn create_capsule(p0: Point3, p1: Point3, radius: f64, n_theta: usize, n_phi: usize) -> Self {
+        let mesh =
+            engeom::Mesh::create_capsule(p0.get_inner(), p1.get_inner(), radius, n_theta, n_phi);
+        Self::from_inner(mesh)
+    }
+
+    #[staticmethod]
+    #[pyo3(signature=(p0, p1, width, height, up=None))]
+    fn create_rect_beam_between(
+        p0: Point3,
+        p1: Point3,
+        width: f64,
+        height: f64,
+        up: Option<Vector3>,
+    ) -> PyResult<Self> {
+        let up = up.map_or(engeom::Vector3::z(), |v| v.get_inner().clone());
+        let mesh = engeom::Mesh::create_rect_beam_between(
+            p0.get_inner(),
+            p1.get_inner(),
+            width,
+            height,
+            &up,
+        )
+        .map_err(|e| PyValueError::new_err(e.to_string()))?;
+        Ok(Self::from_inner(mesh))
+    }
+
+    #[staticmethod]
+    fn create_cylinder_between(
+        p0: Point3,
+        p1: Point3,
+        radius: f64,
+        steps: usize,
+    ) -> PyResult<Self> {
+        let mesh =
+            engeom::Mesh::create_cylinder_between(p0.get_inner(), p1.get_inner(), radius, steps);
+        Ok(Self::from_inner(mesh))
     }
 }
 
@@ -451,12 +509,12 @@ impl MeshCollisionSet {
         let inner = mesh.inner.clone();
         self.inner.add_stationary(inner)
     }
-    
+
     fn add_moving(&mut self, mesh: &Mesh) -> usize {
         let inner = mesh.inner.clone();
         self.inner.add_moving(inner)
     }
-    
+
     fn add_exception(&mut self, id1: usize, id2: usize) {
         self.inner.add_exception(id1, id2);
     }
@@ -470,10 +528,12 @@ impl MeshCollisionSet {
             .into_iter()
             .map(|(id, iso)| (id, iso.get_inner().clone()))
             .collect::<Vec<_>>();
-        
-        let result = self.inner.check_all(&transforms, stop_at_first)
+
+        let result = self
+            .inner
+            .check_all(&transforms, stop_at_first)
             .map_err(|e| PyValueError::new_err(e.to_string()))?;
-        
+
         Ok(result)
     }
 }
