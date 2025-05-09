@@ -150,6 +150,33 @@ class Vector3(Iterable[float]):
         """
         ...
 
+    def with_x(self, x: float) -> Vector3:
+        """
+        Return a new vector with the same y and z components as this vector, but with the x component set to the
+        specified value.
+        :param x: the new x component of the vector.
+        :return: a new vector with the specified x component.
+        """
+        ...
+
+    def with_y(self, y: float) -> Vector3:
+        """
+        Return a new vector with the same x and z components as this vector, but with the y component set to the
+        specified value.
+        :param y: the new y component of the vector.
+        :return: a new vector with the specified y component.
+        """
+        ...
+
+    def with_z(self, z: float) -> Vector3:
+        """
+        Return a new vector with the same x and y components as this vector, but with the z component set to the
+        specified value.
+        :param z: the new z component of the vector.
+        :return: a new vector with the specified z component.
+        """
+        ...
+
 
 class Point3(Iterable[float]):
     """
@@ -264,6 +291,33 @@ class Point3(Iterable[float]):
     def mid(a: Point3, b: Point3) -> Point3:
         """
         Return the midpoint between two points. This is the average of the x, y, and z coordinates of the two points.
+        """
+        ...
+
+    def with_x(self, x: float) -> Point3:
+        """
+        Return a new point with the same y and z coordinates as this point, but with the x coordinate set to the
+        specified value.
+        :param x: the new x coordinate of the point.
+        :return: a new point with the specified x coordinate.
+        """
+        ...
+
+    def with_y(self, y: float) -> Point3:
+        """
+        Return a new point with the same x and z coordinates as this point, but with the y coordinate set to the
+        specified value.
+        :param y: the new y coordinate of the point.
+        :return: a new point with the specified y coordinate.
+        """
+        ...
+
+    def with_z(self, z: float) -> Point3:
+        """
+        Return a new point with the same x and y coordinates as this point, but with the z coordinate set to the
+        specified value.
+        :param z: the new z coordinate of the point.
+        :return: a new point with the specified z coordinate.
         """
         ...
 
@@ -1273,7 +1327,8 @@ class Mesh:
         ...
 
     @staticmethod
-    def create_rect_beam_between(p0: Point3, p1: Point3, width: float, height: float, up: Vector3 | None = None) -> Mesh:
+    def create_rect_beam_between(p0: Point3, p1: Point3, width: float, height: float,
+                                 up: Vector3 | None = None) -> Mesh:
         """
         Create a rectangular cross-sectioned prism between two points with a specified width and height. The prism will
         be centered between the two points and oriented along the line connecting them. The up vector's projection onto
@@ -1684,6 +1739,15 @@ class Aabb3:
 
         :param d: the distance to shrink the AABB by.
         :return: a new AABB object with the shrunk bounds.
+        """
+        ...
+
+    def merged(self, other: Aabb3) -> Aabb3:
+        """
+        Merge this AABB with another AABB. The resulting AABB will be the smallest AABB that contains both AABBs.
+
+        :param other: the other AABB to merge with.
+        :return: a new AABB object representing the merged bounds.
         """
         ...
 

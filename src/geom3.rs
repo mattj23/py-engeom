@@ -139,6 +139,24 @@ impl Vector3 {
     fn angle_to(&self, other: Vector3) -> f64 {
         self.inner.angle(&other.inner)
     }
+
+    fn with_z(&self, z: f64) -> Self {
+        Self {
+            inner: engeom::Vector3::new(self.inner.x, self.inner.y, z),
+        }
+    }
+
+    fn with_x(&self, x: f64) -> Self {
+        Self {
+            inner: engeom::Vector3::new(x, self.inner.y, self.inner.z),
+        }
+    }
+
+    fn with_y(&self, y: f64) -> Self {
+        Self {
+            inner: engeom::Vector3::new(self.inner.x, y, self.inner.z),
+        }
+    }
 }
 
 // ================================================================================================
@@ -255,6 +273,24 @@ impl Point3 {
             a.get_inner(),
             b.get_inner(),
         ))
+    }
+
+    fn with_x(&self, x: f64) -> Self {
+        Self {
+            inner: engeom::Point3::new(x, self.inner.y, self.inner.z),
+        }
+    }
+
+    fn with_y(&self, y: f64) -> Self {
+        Self {
+            inner: engeom::Point3::new(self.inner.x, y, self.inner.z),
+        }
+    }
+
+    fn with_z(&self, z: f64) -> Self {
+        Self {
+            inner: engeom::Point3::new(self.inner.x, self.inner.y, z),
+        }
     }
 }
 
@@ -629,58 +665,6 @@ impl XyzWpr {
         Self { inner }
     }
 }
-
-// #[pymethods]
-// impl XyzWpr {
-//     #[new]
-//     fn new(x: f64, y: f64, z: f64, w: f64, p: f64, r: f64) -> Self {
-//         Self {
-//             inner: engeom::geom3::XyzWpr::new(x, y, z, w, p, r),
-//         }
-//     }
-//
-//     #[getter]
-//     fn values(&self) -> Vec<f64> {
-//         vec![
-//             self.inner.x,
-//             self.inner.y,
-//             self.inner.z,
-//             self.inner.w,
-//             self.inner.p,
-//             self.inner.r,
-//         ]
-//     }
-//
-//     #[getter]
-//     fn x(&self) -> f64 {
-//         self.inner.x
-//     }
-//
-//     #[getter]
-//     fn y(&self) -> f64 {
-//         self.inner.y
-//     }
-//
-//     #[getter]
-//     fn z(&self) -> f64 {
-//         self.inner.z
-//     }
-//
-//     #[getter]
-//     fn w(&self) -> f64 {
-//         self.inner.w
-//     }
-//
-//     #[getter]
-//     fn p(&self) -> f64 {
-//         self.inner.p
-//     }
-//
-//     #[getter]
-//     fn r(&self) -> f64 {
-//         self.inner.r
-//     }
-// }
 
 #[derive(FromPyObject)]
 enum Transformable3 {

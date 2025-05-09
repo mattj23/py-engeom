@@ -114,6 +114,12 @@ impl Aabb2 {
         use parry2d_f64::bounding_volume::BoundingVolume;
         Aabb2::from_inner(self.inner.tightened(d))
     }
+
+    fn merged(&self, other: &Self) -> Self {
+        use parry2d_f64::bounding_volume::BoundingVolume;
+        let merged = self.get_inner().merged(other.get_inner());
+        Aabb2::from_inner(merged)
+    }
 }
 
 // ================================================================================================
@@ -237,5 +243,11 @@ impl Aabb3 {
     fn shrink(&self, d: f64) -> Self {
         use parry3d_f64::bounding_volume::BoundingVolume;
         Aabb3::from_inner(self.inner.tightened(d))
+    }
+
+    fn merged(&self, other: &Self) -> Self {
+        use parry3d_f64::bounding_volume::BoundingVolume;
+        let merged = self.get_inner().merged(other.get_inner());
+        Aabb3::from_inner(merged)
     }
 }

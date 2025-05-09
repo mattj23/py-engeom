@@ -1,11 +1,14 @@
 use crate::bounding::Aabb2;
 use crate::common::Resample;
-use crate::conversions::{array_to_points2, array_to_vectors2, points_to_array2};
+use crate::conversions::{
+    array2_to_points2, array_to_points2, array_to_vectors2, points_to_array2,
+};
 use crate::geom3::Point3;
 use engeom::geom2::{HasBounds2, Line2};
-use engeom::To3D;
+use engeom::{BestFit, To3D};
+use engeom::airfoil::OpenEdge;
 use numpy::ndarray::{Array1, ArrayD};
-use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArrayDyn};
+use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArray2, PyReadonlyArrayDyn};
 use pyo3::exceptions::PyValueError;
 use pyo3::types::PyIterator;
 use pyo3::{
@@ -136,6 +139,18 @@ impl Vector2 {
     fn angle_to(&self, other: Vector2) -> f64 {
         self.inner.angle(&other.inner)
     }
+
+    fn with_x(&self, x: f64) -> Self {
+        Self {
+            inner: engeom::Vector2::new(x, self.inner.y),
+        }
+    }
+
+    fn with_y(&self, y: f64) -> Self {
+        Self {
+            inner: engeom::Vector2::new(self.inner.x, y),
+        }
+    }
 }
 
 // ================================================================================================
@@ -245,6 +260,18 @@ impl Point2 {
             a.get_inner(),
             b.get_inner(),
         ))
+    }
+
+    fn with_x(&self, x: f64) -> Self {
+        Self {
+            inner: engeom::Point2::new(x, self.inner.y),
+        }
+    }
+
+    fn with_y(&self, y: f64) -> Self {
+        Self {
+            inner: engeom::Point2::new(self.inner.x, y),
+        }
     }
 }
 
@@ -425,6 +452,52 @@ impl Circle2 {
 
     fn point_at_angle(&self, angle: f64) -> Point2 {
         Point2::from_inner(self.inner.point_at_angle(angle))
+    }
+
+    #[staticmethod]
+    #[pyo3(signature=(points, guess=None, sigma=None))]
+    fn fitting<'py>(
+        points: PyReadonlyArray2<'py, f64>,
+        guess: Option<Circle2>,
+        sigma: Option<f64>,
+    ) -> PyResult<Self> {
+        let points = array2_to_points2(&points.as_array())?;
+        let guess = if let Some(c) = guess {
+            c.get_inner().clone()
+        } else {
+            engeom::Circle2::new(0.0, 0.0, 1.0)
+        };
+
+        let mode = if let Some(s) = sigma {
+            BestFit::Gaussian(s)
+        } else {
+            BestFit::All
+        };
+
+        let circle = engeom::Circle2::fitting_circle(&points, &guess, mode)
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+        Ok(Self::from_inner(circle))
+    }
+
+    #[staticmethod]
+    #[pyo3(signature=(points, tol, iterations=None, min_r=None, max_r=None))]
+    fn ransac<'py>(
+        points: PyReadonlyArray2<'py, f64>,
+        tol: f64,
+        iterations: Option<usize>,
+        min_r: Option<f64>,
+        max_r: Option<f64>,
+    ) -> PyResult<Self> {
+        let points = array2_to_points2(&points.as_array())?;
+        let result = engeom::Circle2::ransac(
+            &points,
+            tol,
+            iterations,
+            min_r,
+            max_r,
+        )
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+        Ok(Self::from_inner(result))
     }
 }
 

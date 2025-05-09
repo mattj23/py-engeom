@@ -138,6 +138,22 @@ class Vector2(Iterable[float]):
         """
         ...
 
+    def with_x(self, x: float) -> Vector2:
+        """
+        Return a new vector with the same y component as this vector, but with the x component set to the given value.
+        :param x: the new x component of the vector.
+        :return: a new vector with the same y component as this vector, but with the x component set to the given value.
+        """
+        ...
+
+    def with_y(self, y: float) -> Vector2:
+        """
+        Return a new vector with the same x component as this vector, but with the y component set to the given value.
+        :param y: the new y component of the vector.
+        :return: a new vector with the same x component as this vector, but with the y component set to the given value.
+        """
+        ...
+
 
 class Point2(Iterable[float]):
     """
@@ -240,6 +256,22 @@ class Point2(Iterable[float]):
     def mid(a: Point2, b: Point2) -> Point2:
         """
         Return the midpoint between two points. This is the average of the x and y components of the two points.
+        """
+        ...
+
+    def with_x(self, x: float) -> Point2:
+        """
+        Return a new point with the same y component as this point, but with the x component set to the given value.
+        :param x: the new x component of the point.
+        :return: a new point with the same y component as this point, but with the x component set to the given value.
+        """
+        ...
+
+    def with_y(self, y: float) -> Point2:
+        """
+        Return a new point with the same x component as this point, but with the y component set to the given value.
+        :param y: the new y component of the point.
+        :return: a new point with the same x component as this point, but with the y component set to the given value.
         """
         ...
 
@@ -950,6 +982,43 @@ class Circle2:
         """
         ...
 
+    @staticmethod
+    def fitting(points: NDArray[float], guess: Circle2 | None = None, sigma: float | None = None) -> Circle2:
+        """
+        Fit a circle to a set of points using an unconstrained Levenberg-Marquardt minimization of the sum of
+        squared errors between the points and the boundary of the circle.
+
+        The initial guess is used to provide a starting point for the optimization. If no guess is provided, the
+        unit circle will be used.
+
+        The sigma parameter is used to weight the points in the optimization. If no sigma is provided, all points
+        will be weighted equally, otherwise points beyond `sigma` standard deviations from the mean will be
+        assigned a weight of 0.0.
+        :param points: the points to fit the circle to.
+        :param guess: an optional initial guess for the circle. If None, the unit circle will be used.
+        :param sigma: an optional standard deviation to use for weighting the points. If None, all points will be
+        weighted equally.
+        :return: a new `Circle2` object representing the fitted circle.
+        """
+        ...
+
+    @staticmethod
+    def ransac(points: NDArray[float], tol: float, iterations: int | None = None, min_r: float | None = None,
+               max_r: float | None = None) -> Circle2:
+        """
+        Fit a circle to a set of points using the RANSAC algorithm. The algorithm will randomly sample points from the
+        input set and fit a circle to them, then check how many points are within the given tolerance of the fitted
+        circle. The best fitting circle will be returned.
+
+        :param points: the points to fit the circle to.
+        :param tol: the tolerance for the RANSAC algorithm.
+        :param iterations: the number of iterations to run. If None, a default value of 500 will be used.
+        :param min_r: the minimum radius of the circle. If None, no minimum will be enforced.
+        :param max_r: the maximum radius of the circle. If None, no maximum will be enforced.
+        :return: a new `Circle2` object representing the fitted circle.
+        """
+        ...
+
 
 class Arc2:
     """
@@ -1146,5 +1215,13 @@ class Aabb2:
 
         :param d: the distance to shrink the AABB by.
         :return: a new AABB object with the shrunk bounds.
+        """
+        ...
+
+    def merged(self, other: Aabb2) -> Aabb2:
+        """
+        Merge this AABB with another AABB and return a new AABB.
+        :param other: the other AABB to merge with.
+        :return: a new AABB object that is the result of merging this AABB with the other AABB.
         """
         ...
