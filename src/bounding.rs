@@ -1,6 +1,6 @@
 use crate::geom2::{Point2, Vector2};
 use crate::geom3::{Point3, Vector3};
-use numpy::PyReadonlyArrayDyn;
+use numpy::{PyReadonlyArray2, PyReadonlyArrayDyn};
 use pyo3::exceptions::PyValueError;
 use pyo3::{pyclass, pymethods, PyResult};
 // ================================================================================================
@@ -119,6 +119,25 @@ impl Aabb2 {
         use parry2d_f64::bounding_volume::BoundingVolume;
         let merged = self.get_inner().merged(other.get_inner());
         Aabb2::from_inner(merged)
+    }
+
+    fn contains_point(&self, point: &Point2) -> bool {
+        self.inner.contains_local_point(point.get_inner())
+    }
+
+    fn indices_contained<'py>(&self, points: PyReadonlyArray2<'py, f64>) -> PyResult<Vec<usize>> {
+        let view = points.as_array();
+        if view.shape().len() != 2 || view.shape()[1] != 2 {
+            return Err(PyValueError::new_err("Expected Nx2 array of points"));
+        }
+
+        let mut indices = Vec::new();
+        for (i, point) in view.outer_iter().enumerate() {
+            if self.contains_point(&Point2::from_inner(engeom::Point2::new(point[0], point[1]))) {
+                indices.push(i);
+            }
+        }
+        Ok(indices)
     }
 }
 
@@ -249,5 +268,26 @@ impl Aabb3 {
         use parry3d_f64::bounding_volume::BoundingVolume;
         let merged = self.get_inner().merged(other.get_inner());
         Aabb3::from_inner(merged)
+    }
+
+    fn contains_point(&self, point: &Point3) -> bool {
+        self.inner.contains_local_point(point.get_inner())
+    }
+
+    fn indices_contained<'py>(&self, points: PyReadonlyArray2<'py, f64>) -> PyResult<Vec<usize>> {
+        let view = points.as_array();
+        if view.shape().len() != 2 || view.shape()[1] != 3 {
+            return Err(PyValueError::new_err("Expected Nx3 array of points"));
+        }
+
+        let mut indices = Vec::new();
+        for (i, point) in view.outer_iter().enumerate() {
+            if self.contains_point(&Point3::from_inner(engeom::Point3::new(
+                point[0], point[1], point[2],
+            ))) {
+                indices.push(i);
+            }
+        }
+        Ok(indices)
     }
 }

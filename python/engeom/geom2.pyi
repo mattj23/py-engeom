@@ -1225,3 +1225,19 @@ class Aabb2:
         :return: a new AABB object that is the result of merging this AABB with the other AABB.
         """
         ...
+
+    def indices_contained(self, points: NDArray[float]) -> NDArray[int]:
+        """
+        Get the indices of the points that are contained within the AABB.
+        :param points: a numpy array of shape (N, 2) containing the points to check.
+        :return: a numpy array of indices of the points that are contained within the AABB.
+        """
+        ...
+
+    def contains_point(self, point: Point2) -> bool:
+        """
+        Check if a point is contained within the AABB.
+        :param point: the point to check.
+        :return: True if the point is contained within the AABB, False otherwise.
+        """
+        ...

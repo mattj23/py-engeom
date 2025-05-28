@@ -5,6 +5,7 @@ use numpy::{IntoPyArray, PyArrayDyn};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::IntoPyObjectExt;
+use rmp_serde::{from_slice, to_vec_named};
 
 // ================================================================================================
 // Orientation Methods
@@ -287,6 +288,20 @@ impl Clone for AirfoilGeometry {
 
 #[pymethods]
 impl AirfoilGeometry {
+    fn to_bytes(&self) -> PyResult<Vec<u8>> {
+        let bytes = to_vec_named(self.get_inner())
+            .map_err(|e| PyValueError::new_err(format!("Failed to serialize: {}", e)))?;
+
+        Ok(bytes)
+    }
+
+    #[staticmethod]
+    fn from_bytes(bytes: &[u8]) -> PyResult<Self> {
+        let inner = from_slice(bytes).map_err(|e| PyValueError::new_err(e.to_string()))?;
+
+        Ok(AirfoilGeometry::from_inner(inner))
+    }
+
     #[getter]
     fn camber<'py>(&mut self, py: Python<'py>) -> &Bound<'py, Curve2> {
         if self.camber.is_none() {

@@ -316,6 +316,23 @@ class AirfoilGeometry:
     from .metrology import Distance2
 
     @staticmethod
+    def from_bytes(data: bytes) -> AirfoilGeometry:
+        """
+        Create an instance of `AirfoilGeometry` from a byte string containing the airfoil geometry data serialized in
+        a msgpack format.
+        :param data: The byte string containing the serialized data
+        :return: An instance of `AirfoilGeometry`
+        """
+        ...
+
+    def to_bytes(self) -> bytes:
+        """
+        Serialize the `AirfoilGeometry` instance to a byte string msgpack representation.
+        :return: A byte string containing the serialized data
+        """
+        ...
+
+    @staticmethod
     def from_analyze(
             section: Curve2,
             refine_tol: float,

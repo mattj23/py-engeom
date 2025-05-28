@@ -1751,6 +1751,26 @@ class Aabb3:
         """
         ...
 
+    def indices_contained(self, points: NDArray[float]) -> NDArray[int]:
+        """
+        Get the indices of the points that are contained within this AABB. The points should be a numpy array of shape
+        (n, 3) where n is the number of points.
+
+        :param points: a numpy array of shape (n, 3) containing the points to check.
+        :return: a numpy array of shape (m,) containing the indices of the points that are contained within this AABB,
+        where m is the number of points contained within the AABB.
+        """
+        ...
+
+    def contains_point(self, point: Point3) -> bool:
+        """
+        Check if a point is contained within this AABB.
+
+        :param point: the point to check.
+        :return: True if the point is contained within the AABB, False otherwise.
+        """
+        ...
+
 
 class RayBundle3:
     """
