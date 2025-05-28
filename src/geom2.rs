@@ -1,19 +1,19 @@
 use crate::bounding::Aabb2;
 use crate::common::Resample;
 use crate::conversions::{
-    array2_to_points2, array_to_points2, array_to_vectors2, points_to_array2,
+    array_to_points2, array_to_vectors2, array2_to_points2, points_to_array2,
 };
 use crate::geom3::Point3;
+use engeom::airfoil::OpenEdge;
 use engeom::geom2::{HasBounds2, Line2};
 use engeom::{BestFit, To3D};
-use engeom::airfoil::OpenEdge;
 use numpy::ndarray::{Array1, ArrayD};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArray2, PyReadonlyArrayDyn};
 use pyo3::exceptions::PyValueError;
 use pyo3::types::PyIterator;
 use pyo3::{
-    pyclass, pymethods, Bound, FromPyObject, IntoPyObject, IntoPyObjectExt, Py, PyAny, PyResult,
-    Python,
+    Bound, FromPyObject, IntoPyObject, IntoPyObjectExt, Py, PyAny, PyResult, Python, pyclass,
+    pymethods,
 };
 
 #[derive(FromPyObject)]
@@ -489,13 +489,7 @@ impl Circle2 {
         max_r: Option<f64>,
     ) -> PyResult<Self> {
         let points = array2_to_points2(&points.as_array())?;
-        let result = engeom::Circle2::ransac(
-            &points,
-            tol,
-            iterations,
-            min_r,
-            max_r,
-        )
+        let result = engeom::Circle2::ransac(&points, tol, iterations, min_r, max_r)
             .map_err(|e| PyValueError::new_err(e.to_string()))?;
         Ok(Self::from_inner(result))
     }
@@ -941,6 +935,30 @@ impl Curve2 {
         let c = engeom::Curve3::from_points(&points, self.inner.tol())
             .map_err(|e| PyValueError::new_err(e.to_string()))?;
         Ok(crate::geom3::Curve3::from_inner(c))
+    }
+
+    fn offset_vertices(&self, offset: f64) -> PyResult<Self> {
+        let inner = self
+            .inner
+            .offset_vertices(offset)
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+        Ok(Self::from_inner(inner))
+    }
+
+    fn offset_segments(&self, offset: f64) -> PyResult<Self> {
+        let inner = self
+            .inner
+            .offset_segments(offset)
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+        Ok(Self::from_inner(inner))
+    }
+
+    fn __add__(&self, other: &Self) -> PyResult<Self> {
+        let result = self
+            .get_inner()
+            .extended(other.get_inner())
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+        Ok(Self::from_inner(result))
     }
 
     fn __repr__(&self) -> String {

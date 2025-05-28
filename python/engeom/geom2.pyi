@@ -919,6 +919,55 @@ class Curve2:
         """
         ...
 
+    def offset_vertices(self, offset: float) -> Curve2:
+        """
+        Create a new curve which is the result of offsetting the vertices of this curve by the
+        given offset. The direction of each vertex offset will be the same as the direction of the
+        surface normal at the curve station corresponding to that vertex, which is the angle
+        bisecting the normals of the two edges that meet at the vertex.  Vertices at the ends of
+        the curve (on an open curve) will have the same normal as the edge they are connected to.
+
+        Compared to `offset_segments`, this method will move the vertices of the curve while
+        allowing the distance between the bodies of the initial and resulting segments to change.
+        Generally speaking, use this method if you primarily care about the vertices and not the
+        segments, or if the curvature between adjacent segments is very low.
+
+        :param offset: the distance to offset the vertices by.
+        :return: a new curve with the vertices offset by the given distance.
+        """
+        ...
+
+    def offset_segments(self, offset: float) -> Curve2:
+        """
+        Create a new curve which is the result of offsetting the segments of this curve by the
+        given offset. The direction of the offset is perpendicular to the direction of the segment,
+        and a positive offset will move the segment outward from the curve, while a negative offset
+        will move it inward.  Outward and inward are defined based on the counter-clockwise winding
+        convention.
+
+        Vertices will be moved to the intersection of their adjacent segments.
+
+        Compared to `offset_vertices`, this method will preserve the distance between the segments
+        bodies of the initial and resulting curves, while allowing vertices on outside corners to
+        get farther from the original as necessary for the segments to be straight lines.
+
+        :param offset: the distance to offset the segments by.
+        :return: a new curve with the segments offset by the given distance.
+        """
+        ...
+
+    def __add__(self, other: Curve2) -> Curve2:
+        """
+        Concatenate two curves together, returning a new curve that is the result of appending the vertices of the
+        second curve to the first curve. Both curves must be open or this will throw an error. The resulting curve
+        will be open.
+
+        :param other: the curve to append to this curve.
+        :return: a new curve that is the result of concatenating the two curves.
+        """
+        ...
+
+
 
 class Circle2:
     """

@@ -147,6 +147,15 @@ else:
             """
             self.ax.plot(curve.points[:, 0], curve.points[:, 1], **kwargs)
 
+        def fill_curve(self, curve: Curve2, **kwargs):
+            """
+            Fill a curve on a Matplotlib Axes object.
+            :param curve: a Curve2 object (can be closed but doesn't need to be, will be closed automatically)
+            :param kwargs: keyword arguments to pass to the inner Axes.fill function
+            :return:
+            """
+            self.ax.fill(curve.points[:, 0], curve.points[:, 1], **kwargs)
+
         def distance(
                 self,
                 distance: Distance2,
